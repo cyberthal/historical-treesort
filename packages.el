@@ -44,6 +44,7 @@ Each entry is either:
 
   (push "~/.emacs.d/private/cyborganize/functions/" load-path)
   (require 'cb-throw)
+  (require 'cb-macros)
 
   (message "cb-throw reloaded v3")
   )
