@@ -57,27 +57,39 @@ If no match found, fails with an error, and does not kill the line."
   (interactive "sEnter target heading's unique prefix: ")
 
   ;; fail with an error if user passes a bad heading prefix BEFORE deleting the line to be thrown.  Avoids data loss
-  (save-excursion   
+  (save-excursion
     (cb-Goto-Target-Heading))
 
   ;; safe to proceed.  commence throwing the line.
-  (save-excursion   
 
     ;; cut the object line
-    (beginning-of-line) 
-    (kill-line 1)	
-;    (delete-char -1)	; delete trailing newline
+    (beginning-of-line)
+    (kill-line 1)
 
     (cb-Goto-Target-Heading)
-    
-    ; go to end of target heading, add a blank line, and yank.
+
+    ;; go to end of target heading, add a blank line, and yank.
     (org-narrow-to-subtree)
-    (goto-char (point-max))    
+    (goto-char (point-max))
     (newline)
     (yank)
+    (goto-char (point-max)) ; prevents edge case where yank into empty category fails to restore correct visibility in target window
+
+   ;; restore original visibility of target window
+    (widen)
+    (outline-up-heading 2)
+    (org-narrow-to-subtree)
+    (condition-case nil ; catch pointless org-cycle error
+        (dotimes (i 2) ; org cycle twice
+          (org-cycle))
+      (error nil))
   
-    ) ; end of main save excursion
-  )   ; end of Throw defun
+  ;; return to source window
+    (other-window -2)
+    (outline-up-heading 1)
+  (outline-next-visible-heading 1)
+  
+)   ; end of Throw defun
  
 
 (provide 'cb-throw)
