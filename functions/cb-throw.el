@@ -1,12 +1,11 @@
 ;; * Code body
 
 ;; ** sub-functions
-;; *** cb-Current-Heading-Level
+;; *** cb-Target-Max-Heading-Level
 
-;; Defines a function that cb-throw depends upon.  Returns the number of stars in the top-level heading of the narrowed region.
-(defun cb-Current-Heading-Level ()
-  "Returns current outline heading level.
-Bounces point to parent heading & counts stars."
+(defun cb-Target-Max-Heading-Level ()
+  "Returns target window's max outline heading level.
+Bounces point to target top visible heading & counts stars."
   (save-excursion
     (other-window 1)
     (goto-char (point-min)) ; goes to top of narrowed region
@@ -23,7 +22,7 @@ for the search string."
        "\n" ;; newline to avoid grabbing subheading matches
        (make-string
 	(+
-	 (cb-Current-Heading-Level) 0)
+	 (cb-Target-Max-Heading-Level) 0)
 	?*)
        " ")	    
 )
