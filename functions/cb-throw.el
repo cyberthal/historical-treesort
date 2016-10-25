@@ -1,4 +1,5 @@
-;; * Code body
+;; * cb-throw.el
+;; * Code
 
 ;; ** sub-functions
 ;; *** cb-Target-Max-Heading-Level
@@ -27,7 +28,7 @@ for the search string."
        " ")	    
 )
 
-;; *** cb-Goto-Target
+;; *** cb-Goto-Target-Heading
 
 (defun cb-Goto-Target-Heading ()
   "Goes to targeted heading"
