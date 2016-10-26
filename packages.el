@@ -46,7 +46,7 @@ Each entry is either:
   (require 'cb-throw)
   (require 'cb-dthrow)
   (require 'cb-macros)
-  
+  (require 'cb-library)
   )
 
 ;;; packages.el ends here
