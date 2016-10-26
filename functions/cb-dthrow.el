@@ -53,3 +53,5 @@ Like cb-throw but with a dired target."
   (other-window 1)
 
 ) ; end defun
+
+(provide 'cb-dthrow)
