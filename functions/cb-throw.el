@@ -82,12 +82,9 @@ If no match found, fails with an error, and does not kill the line."
    ;; restore original visibility of target window
 (goto-char (point-min))
 (widen)
+; (org-global-cycle)
     (outline-up-heading 1)
     (org-narrow-to-subtree)
-    (condition-case nil ; catch pointless org-cycle error
-        (dotimes (i 2) ; org cycle twice
-          (org-cycle))
-      (error nil))
   
   ;; return to source window
     (other-window 1)
