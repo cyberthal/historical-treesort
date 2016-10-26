@@ -7,11 +7,11 @@
 (defun cb-Target-Max-Heading-Level ()
   "Returns target window's max outline heading level.
 Bounces point to target top visible heading & counts stars."
-  (save-excursion
+
     (other-window 1)
     (goto-char (point-min)) ; goes to top of narrowed region
     (skip-chars-forward "*") ; move point to the end of the stars, returns number of chars moved forward.
-    )			     ; end save excursion
+    
   )			     ; end defun
 
 ;; *** cb-Prints-Starry-String
@@ -25,7 +25,8 @@ for the search string."
 	(+
 	 (cb-Target-Max-Heading-Level) 0)
 	?*)
-       " ")	    
+       " ")
+(other-window 1)
 )
 
 ;; *** cb-Goto-Target-Heading
@@ -57,8 +58,11 @@ If no match found, fails with an error, and does not kill the line."
   (interactive "sEnter target heading's unique prefix: ")
 
   ;; fail with an error if user passes a bad heading prefix BEFORE deleting the line to be thrown.  Avoids data loss
-  (save-excursion
-    (cb-Goto-Target-Heading))
+
+(save-excursion
+  (cb-Goto-Target-Heading)
+  )
+(other-window 1)
 
   ;; safe to proceed.  commence throwing the line.
 
@@ -76,8 +80,9 @@ If no match found, fails with an error, and does not kill the line."
     (goto-char (point-max)) ; prevents edge case where yank into empty category fails to restore correct visibility in target window
 
    ;; restore original visibility of target window
-    (widen)
-    (outline-up-heading 2)
+(goto-char (point-min))
+(widen)
+    (outline-up-heading 1)
     (org-narrow-to-subtree)
     (condition-case nil ; catch pointless org-cycle error
         (dotimes (i 2) ; org cycle twice
@@ -85,7 +90,7 @@ If no match found, fails with an error, and does not kill the line."
       (error nil))
   
   ;; return to source window
-    (other-window -2)
+    (other-window 1)
     (outline-up-heading 1)
   (outline-next-visible-heading 1)
   
