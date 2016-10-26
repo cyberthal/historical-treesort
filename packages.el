@@ -44,9 +44,9 @@ Each entry is either:
 
   (push "~/.emacs.d/private/cyborganize/functions/" load-path)
   (require 'cb-throw)
+  (require 'cb-dthrow)
   (require 'cb-macros)
-
-  (message "cb-throw reloaded v3")
+  
   )
 
 ;;; packages.el ends here
