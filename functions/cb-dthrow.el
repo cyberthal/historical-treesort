@@ -51,6 +51,10 @@ Like cb-throw but with a dired target."
   (dired-up-directory)
   (other-window 1)
 
+  ;; goto next heading
+  (outline-up-heading 1)
+  (outline-next-visible-heading 1)
+
 ) ; end defun
 
 (provide 'cb-dthrow)
