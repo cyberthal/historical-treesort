@@ -10,6 +10,7 @@
 
 (other-window 1)
 (goto-char (point-min))
+(forward-line)
 
 ;; find target dir using manual isearch interface
 (isearch-forward)
