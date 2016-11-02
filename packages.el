@@ -49,4 +49,10 @@ Each entry is either:
   (require 'cb-library)
   )
 
+;; ensure don't isearch invisible text in dired mode
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (make-local-variable 'search-invisible)
+            (setq search-invisible nil)))
+
 ;;; packages.el ends here

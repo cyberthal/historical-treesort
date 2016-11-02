@@ -11,10 +11,8 @@
 (other-window 1)
 (goto-char (point-min))
 
-;; find target dir
-(isearch-toggle-invisible)
+;; find target dir using manual isearch interface
 (isearch-forward)
-(isearch-toggle-invisible)
 
 ) ; end defun
 ;; *** Open target dir, Inbox.org, and paste
