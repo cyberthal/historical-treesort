@@ -44,9 +44,15 @@ Each entry is either:
 
   (push "~/.emacs.d/private/cyborganize/functions/" load-path)
   (require 'cb-throw)
+  (require 'cb-dthrow)
   (require 'cb-macros)
-
-  (message "cb-throw reloaded v3")
+  (require 'cb-library)
   )
+
+;; ensure don't isearch invisible text in dired mode
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (make-local-variable 'search-invisible)
+            (setq search-invisible nil)))
 
 ;;; packages.el ends here

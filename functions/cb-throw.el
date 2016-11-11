@@ -8,25 +8,29 @@
   "Returns target window's max outline heading level.
 Bounces point to target top visible heading & counts stars."
 
+  ;; net side effect: switches to other window, top heading
+
     (other-window 1)
     (goto-char (point-min)) ; goes to top of narrowed region
     (skip-chars-forward "*") ; move point to the end of the stars, returns number of chars moved forward.
     
   )			     ; end defun
 
-;; *** cb-Prints-Starry-String
+;; *** cb-Print-Starry-String
 
 (defun cb-Print-Starry-String ()
   "Print starry string prefix of target heading 
 for the search string."
+
+  ;; net side effect: switches to other window, top heading
+
 (concat
        "\n" ;; newline to avoid grabbing subheading matches
        (make-string
 	(+
-	 (cb-Target-Max-Heading-Level) 0)
+	 (cb-Target-Max-Heading-Level) 1)
 	?*)
        " ")
-(other-window 1)
 )
 
 ;; *** cb-Goto-Target-Heading
@@ -34,9 +38,11 @@ for the search string."
 (defun cb-Goto-Target-Heading ()
   "Goes to targeted heading"
 
+;; net effect - switches to other window, then jumps to targeted heading
+
   ;; jump to top left of other windows
-    (other-window 1)
-    (goto-char (point-min)) 
+;    (other-window 1)
+;    (goto-char (point-min)) 
 
     ;; find target heading
     (search-forward 
@@ -82,12 +88,9 @@ If no match found, fails with an error, and does not kill the line."
    ;; restore original visibility of target window
 (goto-char (point-min))
 (widen)
+; (org-global-cycle)
     (outline-up-heading 1)
     (org-narrow-to-subtree)
-    (condition-case nil ; catch pointless org-cycle error
-        (dotimes (i 2) ; org cycle twice
-          (org-cycle))
-      (error nil))
   
   ;; return to source window
     (other-window 1)
