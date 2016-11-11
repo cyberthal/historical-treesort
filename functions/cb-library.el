@@ -15,3 +15,11 @@
 )
 
 (provide 'cb-library)
+
+;; **cb-org-time-and-date-stamp-inactive
+
+(defun cb-org-time-and-date-stamp-inactive () 
+  "Calls org-time-stamp-inactive with universal prefix" 
+  (interactive)
+  (org-insert-time-stamp (current-time) t t)
+  )
