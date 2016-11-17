@@ -58,4 +58,4 @@
   (cb-dired-upstairs)
 )
 
-
+(provide 'cb-throw-file-to-dired)

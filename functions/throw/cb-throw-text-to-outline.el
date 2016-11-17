@@ -100,4 +100,4 @@ If no match found, fails with an error, and does not kill the line."
 )   ; end of Throw defun
  
 
-(provide 'cb-throw-org-to-org)
+(provide 'cb-throw-text-to-outline)

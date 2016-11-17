@@ -82,5 +82,10 @@
 ) ; end defun
 
 
-
+(provide 'cb-throw)
+(require 'cb-library)
+(require 'cb-throw-file-to-dired)
+(require 'cb-throw-library)
+(require 'cb-throw-text-to-dired)
+(require 'cb-throw-text-to-outline)
 
