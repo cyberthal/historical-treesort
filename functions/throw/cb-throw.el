@@ -19,8 +19,8 @@
   "Determines whether throwing text or files."
 
 (if (eq major-mode 'dired-mode)
-    (then cb-throw-file)
-  (else cb-throw-text)
+    (cb-throw-file)
+  (cb-throw-text)
   )
 )
 
@@ -38,8 +38,8 @@
 
 (other-window 1)
 (if (eq major-mode 'dired-mode)
-    (then cb-throw-file-to-dired)
-  (else print error "Target buffer type must be dired")
+    (cb-throw-file-to-dired)
+  (print error "Target buffer type must be dired")
   )
 (other-window 1)
 )
@@ -58,11 +58,21 @@
 
 (other-window 1)
 (if (eq major-mode 'dired-mode)
-    (then cb-throw-text-to-dired)
-  (else cb-throw-text-to-outline)
+
+;; then
+(progn
+    (other-window 1)
+    (cb-throw-text-to-dired)
+    )
+
+;; else
+(progn
+  (other-window 1)
+  (cb-throw-text-to-outline)
   )
-(other-window 1)
-)
+
+  ) ; end if
+) ; end defun
 
 
 

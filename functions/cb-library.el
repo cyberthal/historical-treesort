@@ -8,10 +8,14 @@
   ;; detect whether or not search for inbox succeeds
   ;; if fails, create it. 
   (condition-case nil
-      (re-search-forward "Inbox\.org$")
-    (dired-find-file)
+
+      (progn 
+        (re-search-forward "Inbox\.org$")
+        (dired-find-file))
+
     (error (find-file "Inbox.org"))
     )
+
   )
 
 ;; ** kill line, with error handling
