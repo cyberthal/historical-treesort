@@ -62,7 +62,9 @@
 (previous-buffer)
 (dired-up-directory)
 (other-window 1)
+
 )
+
 ;; ** main defun
 
 (defun cb-throw-text-to-dired ()
@@ -83,17 +85,3 @@
 
 (provide 'cb-throw-text-to-dired)
 
-
-;; ** human notes
-
-in the middle of drill deliver function
-I need to check whether target is file or directory.
-if file, dump atop the first top level heading.
-if dir, go with already written pattern.
-
-sounds like I need to rewrite significant swathes of this
-
-(if (eq major-mode 'dired-mode)
-    (then cb-throw-file)
-  (else cb-throw-text)
-  )
