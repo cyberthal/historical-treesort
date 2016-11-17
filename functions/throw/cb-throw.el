@@ -2,6 +2,15 @@
 
 ;; * code
 
+;; ** main defun
+
+(defun cb-throw ()
+  "Throw text or dired item to a target."
+
+  (interactive)
+  (cb-throw-q-is-source-buffer-dired)
+  )
+
 ;; ** flow control dispatcher
 
 ;; *** Is source buffer dired?
@@ -55,14 +64,6 @@
 (other-window 1)
 )
 
-;; ** human notes
-;; *** dispatch permutations
 
-org-org
-org-dired
-dired-dired
-dired-org = error
 
-;; *** undefined functions
 
-cb-throw-file-to-dired

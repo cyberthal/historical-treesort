@@ -6,7 +6,7 @@
 
 ;; *** drill down and deliver the file to the inbox
 
-(defun cb-Dir-Drill-Deliver-File ()
+(defun cb-dir-drill-deliver-file ()
   "open dir, open /0-inbox, and paste"
 
   ;; open target dir and jump to top left for search
@@ -17,7 +17,7 @@
   ;; if fails, create it. 
   (condition-case nil
       (re-search-forward "0-inbox$")
-    (error (cb-Create-00-inbox-Dir))
+    (error (cb-create-00-inbox-dir))
     )
 
   (dired-find-file) ; open inbox
@@ -29,7 +29,7 @@
 
 ;; **** create 0-inbox dir
 
-(defun cb-Create-00-inbox-Dir ()
+(defun cb-create-00-inbox-dir ()
   "create 0-inbox dir"
 
   (dired-create-directory "00-inbox")
@@ -38,7 +38,7 @@
 
 ;; *** return to original state
 
-(defun cb-Dired-Upstairs ()
+(defun cb-dired-upstairs ()
   "open dir, open /0-inbox, and paste"
 
   (other-window 1)
@@ -53,9 +53,9 @@
   "Throw file(s) or directories to an isearch'd dired target."
   (interactive)
 
-  (cb-Find-Target-Dir)
-  (cb-Dir-Drill-Deliver-File)
-  (cb-Dired-Upstairs)
+  (cb-find-target-dir)
+  (cb-dir-drill-deliver-file)
+  (cb-dired-upstairs)
 )
 
 

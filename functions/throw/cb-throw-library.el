@@ -2,9 +2,9 @@
 
 ;; * code
 
-;; *** Find the target directory in other window
+;; ** Find the target directory in other window
 
-(defun cb-Find-Target-Dir ()
+(defun cb-find-target-dir ()
   "Finds targeted dir in other window"
 
   (other-window 1)
