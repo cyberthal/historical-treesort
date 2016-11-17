@@ -26,12 +26,15 @@
 
 ;; put point either before first top-level heading or at end of buffer
 (condition-case nil
-(re-search-forward "^* ") ; deliver right before first heading
-(open-line)
-(error ((progn
-          (goto-char (point-min))
+(progn 
+  (re-search-forward "^* ") ; deliver right before first heading
+  (beginning-of-line)
+  (open-line 1)
+)
+(error (progn
+          (goto-char (point-max))
           (newline)
-          ))) ; end error
+          )) ; end error
 ) ; end condition case 
 
 ;; yank and save
