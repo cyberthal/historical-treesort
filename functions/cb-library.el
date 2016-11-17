@@ -1,10 +1,28 @@
 ;; * cb-library.el
 ;; * code
-;; ** cb-Grab-Line
+;; ** find or create Inbox.org in dired
 
-(defun cb-Grab-Line ()
+(defun cb-find-or-create-inbox-org ()
+  "In a dired buffer, find or create Inbox.org"
 
-;; cut the target heading
+  ;; detect whether or not search for inbox succeeds
+  ;; if fails, create it. 
+  (condition-case nil
+
+      (progn 
+        (re-search-forward "Inbox\.org$")
+        (dired-find-file))
+
+    (error (find-file "Inbox.org"))
+    )
+
+  )
+
+;; ** kill line, with error handling
+
+(defun cb-grab-line ()
+
+;; cut the target line
 (goto-char (line-beginning-position))
 
 ;; avoids error quit when killing from end of buffer
@@ -14,12 +32,17 @@
 
 )
 
-(provide 'cb-library)
-
-;; **cb-org-time-and-date-stamp-inactive
+;; ** Insert inactive timestamp of current time
 
 (defun cb-org-time-and-date-stamp-inactive () 
-  "Calls org-time-stamp-inactive with universal prefix" 
+  "Insert inactive timestamp of current time"
+
+  ;; Calls org-time-stamp-inactive with universal prefix
   (interactive)
   (org-insert-time-stamp (current-time) t t)
   )
+
+;; ** provide
+
+(provide 'cb-library)
+
