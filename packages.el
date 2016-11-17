@@ -43,8 +43,8 @@ Each entry is either:
 (with-eval-after-load 'org
 
   (push "~/.emacs.d/private/cyborganize/functions/" load-path)
+  (push "~/.emacs.d/private/cyborganize/functions/throw/" load-path)
   (require 'cb-throw)
-  (require 'cb-dthrow)
   (require 'cb-macros)
   (require 'cb-library)
   )
