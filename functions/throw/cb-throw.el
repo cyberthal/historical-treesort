@@ -38,10 +38,17 @@
 
 (other-window 1)
 (if (eq major-mode 'dired-mode)
-    (cb-throw-file-to-dired)
-  (print error "Target buffer type must be dired")
+
+    ;; then
+    (progn
+      (other-window 1)
+      (cb-throw-file-to-dired)
+      )
+
+  ;; else
+  (print "Target buffer type must be dired")
   )
-(other-window 1)
+
 )
 
 ;; *** cb-throw-text
