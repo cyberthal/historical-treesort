@@ -1,4 +1,4 @@
-;; * cb-throw.el
+;; * cb-throw-org-to-org.el
 ;; * Code
 
 ;; ** sub-functions
@@ -52,9 +52,9 @@ for the search string."
       ))	       ; end search-forward 
     ) ; end defun
 
-;; ** cb-throw
+;; ** cb-throw-text-to-outline
 
-(defun cb-throw (x)
+(defun cb-throw-text-to-outline (x)
   "Appends current line to the body of a selected child heading.  Assumes parent heading is at the top of the visible region.
 
 Prompts user for input.  Asks for enough letters from the beginning of the target child heading to distinguish it from the other immediate children of the parent heading.  Searches for a simple string.  Takes the first match.  Does not take any other arguments.
@@ -100,4 +100,4 @@ If no match found, fails with an error, and does not kill the line."
 )   ; end of Throw defun
  
 
-(provide 'cb-throw)
+(provide 'cb-throw-org-to-org)

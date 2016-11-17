@@ -3,22 +3,9 @@
 
 ;; ** sub-functions
 
-;; *** Find the target directory in other window
-
-(defun cb-Find-Target-Dir ()
-  "Finds targeted dir in other window"
-
-(other-window 1)
-(goto-char (point-min))
-(forward-line)
-
-;; find target dir using manual isearch interface
-(isearch-forward)
-
-) ; end defun
 ;; *** Open target dir, Inbox.org, and paste
 
-(defun cb-Dir-Drill-Deliver ()
+(defun cb-Dir-Drill-Deliver-Text ()
   "open dir, Inbox.org, and paste"
 
   (dired-find-file)
@@ -44,7 +31,7 @@ Like cb-throw but with a dired target."
 
   (cb-Grab-Line)
   (other-window 1)
-  (cb-Dir-Drill-Deliver)
+  (cb-Dir-Drill-Deliver-Text)
   
   ;; sloppy functional programming method of returning to prior layout.
   (previous-buffer)
