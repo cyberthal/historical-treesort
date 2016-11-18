@@ -82,6 +82,8 @@
 ) ; end defun
 
 
+;; ** provide and require
+
 (provide 'cb-throw)
 (require 'cb-library)
 (require 'cb-throw-file-to-dired)
