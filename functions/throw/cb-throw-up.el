@@ -48,3 +48,7 @@
   (rename-file (dired-get-filename "no-dir") "../")
 
   )
+
+;; ** provide
+
+(provide 'cb-throw-up)
