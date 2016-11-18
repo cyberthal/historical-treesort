@@ -81,7 +81,7 @@
   (cb-dir-drill-deliver-text)
 
   ;; goto next heading
-  (outline-up-heading 1)
+;;  (outline-up-heading 1)
   (outline-next-visible-heading 1)
 
 ) ; end defun
