@@ -35,11 +35,9 @@
 
 ;; return to prior layout
 (previous-buffer)
-(outline-up-heading 1)
 (outline-next-visible-heading 1)
 
 )
-
 ;; ** target = file
 
 (defun cb-throw-up-file ()
