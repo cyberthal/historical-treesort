@@ -17,7 +17,7 @@
   ;; if fails, create it. 
   (condition-case nil
       (re-search-forward "0-inbox$")
-    (error (cb-create-00-inbox-dir))
+    (error (cb-create-0-inbox-dir))
     )
 
   (dired-find-file) ; open inbox
@@ -29,10 +29,10 @@
 
 ;; **** create 0-inbox dir
 
-(defun cb-create-00-inbox-dir ()
+(defun cb-create-0-inbox-dir ()
   "create 0-inbox dir"
 
-  (dired-create-directory "00-inbox")
+  (dired-create-directory "0-inbox")
   )
 
 
