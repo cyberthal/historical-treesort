@@ -45,6 +45,7 @@ Each entry is either:
   (push "~/.emacs.d/private/cyborganize/functions/" load-path)
   (push "~/.emacs.d/private/cyborganize/functions/throw/" load-path)
   (require 'cb-throw)
+  (require 'cb-throw-up)
   (require 'cb-macros)
   (require 'cb-library)
   )
