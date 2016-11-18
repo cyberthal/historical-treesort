@@ -8,8 +8,8 @@
 (interactive)
 
 ;; ensure destination exists
-(make-directory "../0-inbox" t)
-(f-touch "../0-inbox/Inbox.org")
+(make-directory "../../0-inbox" t)
+(f-touch "../../0-inbox/Inbox.org")
 
 (if (eq major-mode 'dired-mode)
     (cb-throw-up-file)
@@ -25,7 +25,7 @@
 
 (cb-grab-line)
 
-(find-file "../0-inbox/Inbox.org")
+(find-file "../../0-inbox/Inbox.org")
 
 ;; yank to bottom of buffer
 (end-of-buffer)
@@ -45,7 +45,7 @@
 (defun cb-throw-up-file ()
   "Throw file to ../0-inbox"
 
-  (rename-file (dired-get-filename "no-dir") "../")
+  (rename-file (dired-get-filename "no-dir") "../../0-inbox/")
 
   )
 
