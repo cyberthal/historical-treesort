@@ -21,24 +21,23 @@
 
 (cb-grab-line)
 
-(f-touch "../Inbox.org")
-(find-file "../Inbox.org")
+(if
+    (cb-parent-equal-inbox)
+    (progn ; then
+      (f-touch "../../Inbox.org")
+      (find-file "../../Inbox.org")
+      )
+  (progn ; else
+    (f-touch "../Inbox.org")
+    (find-file "../Inbox.org")
+    )
+  )
 
-;; if *** offset exists, nil, else create it
-(create-inbox-offset)
-
-;; yank to bottom of buffer
-(end-of-buffer)
-(newline)
-(yank)
-(save-buffer)
-
-;; return to prior layout
-(previous-buffer)
-(outline-up-heading 1)
-(outline-next-visible-heading 1)
-
+(cb-create-inbox-offset)
+(cb-yank-to-bottom-of-buffer)
+(cb-prev-buffer-next-heading)
 )
+
 
 ;; ** target = file
 
@@ -46,13 +45,7 @@
   "Throw file upwards in the dir tree to the next /0-inbox"
 
   (if
-    ;; return t if immediate parent dir is "0-inbox"
-    (equal
-     ;; return immediate parent directory
-     (file-name-nondirectory
-      (directory-file-name default-directory))
-     "0-inbox"
-     )
+      (cb-parent-equal-inbox)
     (progn ; then
       (make-directory "../../0-inbox" t)
       (rename-file (dired-get-filename "no-dir") "../../0-inbox/")
