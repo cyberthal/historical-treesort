@@ -3,12 +3,9 @@
 ;; ** main defun
 
 (defun cb-throw-up()
-"Throw file or text to ../"
+"Throw file or text one directory upwards"
 
 (interactive)
-
-;; ensure destination exists
-(make-directory "../../0-inbox" t)
 
 (if (eq major-mode 'dired-mode)
     (cb-throw-up-file)
@@ -20,12 +17,12 @@
 ;; ** target = text
 
 (defun cb-throw-up-text ()
-"Throw text to ../0-inbox/Inbox.org"
+"Throw text to ../Inbox.org"
 
 (cb-grab-line)
 
-(f-touch "../../0-inbox/Inbox.org")
-(find-file "../../0-inbox/Inbox.org")
+(f-touch "../Inbox.org")
+(find-file "../Inbox.org")
 
 ;; if *** offset exists, nil, else create it
 (create-inbox-offset)
@@ -71,6 +68,7 @@
 (defun cb-throw-up-file ()
   "Throw file to ../0-inbox"
 
+  (make-directory "../../0-inbox" t)
   (rename-file (dired-get-filename "no-dir") "../../0-inbox/")
 
   )
