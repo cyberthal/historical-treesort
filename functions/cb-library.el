@@ -1,23 +1,5 @@
 ;; * cb-library.el
 ;; * code
-;; ** find or create Inbox.org in dired
-
-(defun cb-find-or-create-inbox-org ()
-  "In a dired buffer, find or create Inbox.org"
-
-  ;; detect whether or not search for inbox succeeds
-  ;; if fails, create it. 
-  (condition-case nil
-
-      (progn 
-        (re-search-forward "Inbox\.org$")
-        (dired-find-file))
-
-    (error (find-file "Inbox.org"))
-    )
-
-  )
-
 ;; ** kill line, with error handling
 
 (defun cb-grab-line ()

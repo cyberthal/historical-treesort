@@ -17,3 +17,47 @@
   ) ; end defun
 
 (provide 'cb-throw-library)
+
+;; ** if *** offset exists, nil, else create it
+
+(defun create-inbox-offset ()
+  "Creates *** offset at top of Inbox.org"
+  (interactive)
+
+  (beginning-of-buffer)
+
+  (if
+
+      ;; return nil if buffer is new and empty
+      (thing-at-point 'line)
+
+      ()
+
+    (progn
+      (insert "*** offset")
+      (newline)
+      )
+    )
+
+  )
+
+;; ** find or create Inbox.org in dired
+
+(defun cb-find-or-create-inbox-org ()
+  "In a dired buffer, find or create Inbox.org"
+
+  ;; detect whether or not search for inbox succeeds
+  ;; if fails, create it. 
+  (condition-case nil
+      (progn 
+        (re-search-forward "Inbox\.org$")
+        (dired-find-file)
+        )
+    (error 
+     (progn 
+       (find-file "Inbox.org")
+       (create-inbox-offset)
+       )
+     )
+    )
+  )
