@@ -9,7 +9,6 @@
 
 ;; ensure destination exists
 (make-directory "../../0-inbox" t)
-(f-touch "../../0-inbox/Inbox.org")
 
 (if (eq major-mode 'dired-mode)
     (cb-throw-up-file)
@@ -25,7 +24,11 @@
 
 (cb-grab-line)
 
+(f-touch "../../0-inbox/Inbox.org")
 (find-file "../../0-inbox/Inbox.org")
+
+;; if *** offset exists, nil, else create it
+(create-inbox-offset)
 
 ;; yank to bottom of buffer
 (end-of-buffer)
@@ -40,6 +43,34 @@
 
 )
 
+<<<<<<< Updated upstream
+=======
+;; ** if *** offset exists, nil, else create it
+
+(defun create-inbox-offset ()
+  "Creates *** offset at top of Inbox.org"
+  (interactive)
+
+(beginning-of-buffer)
+
+(if
+     ;; return nil if offset heading missing
+     (let ((current-line
+            (thing-at-point 'line)))
+       (string-match "*** offset" current-line)
+     )
+
+    (print "true")
+
+  (progn
+    (insert "*** offset")
+    (newline)
+    )
+  )
+
+)
+
+>>>>>>> Stashed changes
 ;; ** target = file
 
 (defun cb-throw-up-file ()
