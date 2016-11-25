@@ -43,11 +43,25 @@
 ;; ** target = file
 
 (defun cb-throw-up-file ()
-  "Throw file to ../0-inbox"
+  "Throw file upwards in the dir tree to the next /0-inbox"
 
-  (make-directory "../../0-inbox" t)
-  (rename-file (dired-get-filename "no-dir") "../../0-inbox/")
-
+  (if
+    ;; return t if immediate parent dir is "0-inbox"
+    (equal
+     ;; return immediate parent directory
+     (file-name-nondirectory
+      (directory-file-name default-directory))
+     "0-inbox"
+     )
+    (progn ; then
+      (make-directory "../../0-inbox" t)
+      (rename-file (dired-get-filename "no-dir") "../../0-inbox/")
+      )
+  (progn ; else
+    (make-directory "../0-inbox" t)
+    (rename-file (dired-get-filename "no-dir") "../0-inbox/")
+    )
+  )
   )
 
 ;; ** provide
