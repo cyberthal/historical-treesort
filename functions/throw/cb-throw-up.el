@@ -1,15 +1,12 @@
 ;; * cb-throw-up.el
+(provide 'cb-throw-up)
 ;; * code
 ;; ** main defun
 
 (defun cb-throw-up()
-"Throw file or text to ../"
+"Throw file or text one directory upwards"
 
 (interactive)
-
-;; ensure destination exists
-(make-directory "../../0-inbox" t)
-(f-touch "../../0-inbox/Inbox.org")
 
 (if (eq major-mode 'dired-mode)
     (cb-throw-up-file)
@@ -21,34 +18,43 @@
 ;; ** target = text
 
 (defun cb-throw-up-text ()
-"Throw text to ../0-inbox/Inbox.org"
+"Throw text to ../Inbox.org"
 
 (cb-grab-line)
 
-(find-file "../../0-inbox/Inbox.org")
+(if
+    (cb-parent-equal-inbox)
+    (progn ; then
+      (f-touch "../../Inbox.org")
+      (find-file "../../Inbox.org")
+      )
+  (progn ; else
+    (f-touch "../Inbox.org")
+    (find-file "../Inbox.org")
+    )
+  )
 
-;; yank to bottom of buffer
-(end-of-buffer)
-(newline)
-(yank)
-(save-buffer)
-
-;; return to prior layout
-(previous-buffer)
-(outline-up-heading 1)
-(outline-next-visible-heading 1)
-
+(cb-create-inbox-offset)
+(cb-yank-to-bottom-of-buffer)
+(cb-prev-buffer-next-heading)
 )
+
 
 ;; ** target = file
 
 (defun cb-throw-up-file ()
-  "Throw file to ../0-inbox"
+  "Throw file upwards in the dir tree to the next /0-inbox"
 
-  (rename-file (dired-get-filename "no-dir") "../../0-inbox/")
-
+  (if
+      (cb-parent-equal-inbox)
+    (progn ; then
+      (make-directory "../../0-inbox" t)
+      (rename-file (dired-get-filename "no-dir") "../../0-inbox/")
+      )
+  (progn ; else
+    (make-directory "../0-inbox" t)
+    (rename-file (dired-get-filename "no-dir") "../0-inbox/")
+    )
   )
-
-;; ** provide
-
-(provide 'cb-throw-up)
+  (revert-buffer)
+  )
