@@ -43,8 +43,6 @@
 
 )
 
-<<<<<<< Updated upstream
-=======
 ;; ** if *** offset exists, nil, else create it
 
 (defun create-inbox-offset ()
@@ -70,7 +68,6 @@
 
 )
 
->>>>>>> Stashed changes
 ;; ** target = file
 
 (defun cb-throw-up-file ()
