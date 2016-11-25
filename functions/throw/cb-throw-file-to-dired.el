@@ -45,6 +45,7 @@
   (dired-up-directory)
   (dired-up-directory)
   (other-window 1)
+  (revert-buffer)
   )
 
 ;; ** main defun
