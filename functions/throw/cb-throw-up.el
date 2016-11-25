@@ -52,13 +52,11 @@
 (beginning-of-buffer)
 
 (if
-     ;; return nil if offset heading missing
-     (let ((current-line
-            (thing-at-point 'line)))
-       (string-match "*** offset" current-line)
-     )
 
-    (print "true")
+    ;; return nil if buffer is new and empty
+    (thing-at-point 'line)
+
+    ()
 
   (progn
     (insert "*** offset")
