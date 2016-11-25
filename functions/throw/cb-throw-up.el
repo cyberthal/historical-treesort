@@ -1,4 +1,5 @@
 ;; * cb-throw-up.el
+(provide 'cb-throw-up)
 ;; * code
 ;; ** main defun
 
@@ -55,8 +56,5 @@
     (rename-file (dired-get-filename "no-dir") "../0-inbox/")
     )
   )
+  (revert-buffer)
   )
-
-;; ** provide
-
-(provide 'cb-throw-up)
