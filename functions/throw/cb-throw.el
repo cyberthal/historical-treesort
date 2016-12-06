@@ -74,6 +74,7 @@
 
 ;; else
 (progn
+(other-window 1)
   (call-interactively
    'cb-throw-text-to-outline)
   )
