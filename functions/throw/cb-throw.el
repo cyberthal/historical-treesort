@@ -75,7 +75,8 @@
 ;; else
 (progn
   (other-window 1)
-  (cb-throw-text-to-outline)
+  (call-interactively
+   'cb-throw-text-to-outline)
   )
 
   ) ; end if
