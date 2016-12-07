@@ -24,6 +24,20 @@
   (org-insert-time-stamp (current-time) t t)
   )
 
+;; ** macro to create a file or switch to the buffer if it's open
+
+;; avoids messiness with creating warnings that underlying file has changed, and/or losing unsaved changes.  
+
+(defmacro cb-create-file-or-switch-to-buffer (var)
+  (list 'if
+        (list 'f-exists? var)
+        (list 'find-file var)
+        (list 'progn
+              (list 'f-touch var)
+              (list 'find-file var)
+              )
+        )
+  )
 ;; ** provide
 
 (provide 'cb-library)

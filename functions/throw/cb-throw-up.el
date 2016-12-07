@@ -22,23 +22,17 @@
 
 (cb-grab-line)
 
+;; decide whether to jump up two directories or one
 (if
     (cb-parent-equal-inbox)
-    (progn ; then
-      (f-touch "../../Inbox.org")
-      (find-file "../../Inbox.org")
-      )
-  (progn ; else
-    (f-touch "../Inbox.org")
-    (find-file "../Inbox.org")
+    (cb-create-file-or-switch-to-buffer "../../Inbox.org")
+  (cb-create-file-or-switch-to-buffer "../Inbox.org")
     )
-  )
 
 (cb-create-inbox-offset)
 (cb-yank-to-bottom-of-buffer)
 (cb-prev-buffer-next-heading)
 )
-
 
 ;; ** target = file
 
