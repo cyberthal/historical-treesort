@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 rm -rf ~/.emacs.d/private/cyborganize
-ln -s ~/1-mansort/git-/hub/emacs/spacemacs/cyborganize ~/.emacs.d/private/
+ln -s $SCRIPT_DIR ~/.emacs.d/private/
 
