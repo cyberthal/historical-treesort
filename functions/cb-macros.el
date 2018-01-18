@@ -18,4 +18,16 @@
 (global-set-key (kbd "C-S-n") 'boxes)
 
 
+(defun cb-pipify-word-list
+    ()
+  "Converts multi-line word list into one line separated by pipes."
+  (interactive)
+
+  (end-of-line)
+  (insert " | ")
+  (delete-char 1)
+  (end-of-line)
+  )
+(global-set-key (kbd "s-n") 'cb-pipify-word-list)
+
 (provide 'cb-macros)
