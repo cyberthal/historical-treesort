@@ -5,18 +5,27 @@
 
 # TOC links should be GitHub style anchors.
 * Table of Contents                                        :TOC_4_gh:noexport:
- - [[#description][Description]]
- - [[#install][Install]]
- - [[#key-bindings][Key bindings]]
+- [[#description][Description]]
+- [[#install][Install]]
+  - [[#add-cyborganize-to-your-private-layers-directory][Add Cyborganize to your private layers directory]]
+  - [[#add-cyborganize-to-your-spacemacs][Add Cyborganize to your =~/.spacemacs=]]
+- [[#key-bindings][Key bindings]]
 
 * Description
 This layer does wonderful things:
   - thing01
 
 * Install
-To use this configuration layer, add it to your =~/.spacemacs=. You will need to
-add =cyborganize= to the existing =dotspacemacs-configuration-layers= list in this
-file.
+
+** Add Cyborganize to your private layers directory
+
+Cyborganize's deploy script assumes your Spacemacs is installed in the default directory.
+
+Run =deploy.sh=.
+
+** Add Cyborganize to your =~/.spacemacs=
+
+Add =cyborganize= to the existing =dotspacemacs-configuration-layers= list.
 
 * Key bindings
 
