@@ -62,12 +62,11 @@
 
 ;; return to original state
 ;; Sloppy imperative programming method of returning to prior layout.
-(previous-buffer)
+(dired (file-name-directory buffer-file-name))
 (dired-up-directory)
 (other-window 1)
 
 )
-
 ;; ** main defun
 
 (defun cb-throw-text-to-dired ()
