@@ -1,4 +1,6 @@
-;; if buffer is empty, leave this comment or else .emacs throws an error.
+;; * cb-macros.el
+;; * code
+;; ** cb-checklist-to-not-done
 
 (defun cb-checklist-to-not-done
      ()
@@ -17,6 +19,7 @@
 ;; binding it to a handy key, since as a command it won't macro repeat
 (global-set-key (kbd "C-S-n") 'boxes)
 
+;; ** cb-pipify-word-list
 
 (defun cb-pipify-word-list
     ()
@@ -31,3 +34,24 @@
 (global-set-key (kbd "s-n") 'cb-pipify-word-list)
 
 (provide 'cb-macros)
+
+;; ** Zinks directory
+
+(defun cb-dired-zinks
+    ()
+  "From Dired, creates a 'Zinks' directory with anchor org-id link."
+  (interactive)
+
+  (dired-create-directory "Zinks")
+  (dired-find-file)
+  (find-file "Inbox.org")
+  (insert "**** ")
+  (insert (file-name-directory buffer-file-name))
+  (search-backward "/1-Human")
+  (delete-char 8) ;; remove /1-Human
+  (delete-char (- 6 (point)))   ;; remove portion before /1-Human
+  (save-buffer)
+  ;;  (org-store-link 0) this fails to produce same result as interactive
+  ;; return to original position - can't be implemented.
+  ;; best to leave it "incomplete" so it can fail gracefully under unexpected conditions
+    )
