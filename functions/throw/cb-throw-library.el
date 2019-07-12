@@ -24,7 +24,8 @@
   "Creates *** offset at top of Inbox.org"
   (interactive)
 
-  (beginning-of-buffer)
+  (widen)
+  (goto-char (point-min))
 
   (if
 
