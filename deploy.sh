@@ -2,7 +2,6 @@
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-LINK_NAME=${PWD##*/}
-link_name=$(echo "$LINK_NAME" | tr '[:upper:]' '[:lower:]')
+LINK_NAME="cyborganize"
 
-ln -sf $SCRIPT_DIR ~/.emacs.d/private/$link_name
+ln -sf $SCRIPT_DIR ~/.emacs.d/private/$LINK_NAME
