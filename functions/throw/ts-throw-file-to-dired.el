@@ -1,4 +1,4 @@
-;; * cb-throw-file-to-dired.el
+;; * ts-throw-file-to-dired.el
 
 ;; * code
 
@@ -6,7 +6,7 @@
 
 ;; *** drill down and deliver the file to the inbox
 
-(defun cb-dir-drill-deliver-file ()
+(defun ts-dir-drill-deliver-file ()
   "open dir, open /0-inbox, and paste"
 
   ;; open target dir and jump to top left for search
@@ -14,10 +14,10 @@
   (goto-char (point-min))
 
   ;; detect whether or not search for inbox succeeds
-  ;; if fails, create it. 
+  ;; if fails, create it.
   (condition-case nil
       (re-search-forward "0-inbox$")
-    (error (cb-create-0-inbox-dir))
+    (error (ts-create-0-inbox-dir))
     )
 
   (dired-find-file) ; open inbox
@@ -29,7 +29,7 @@
 
 ;; **** create 0-inbox dir
 
-(defun cb-create-0-inbox-dir ()
+(defun ts-create-0-inbox-dir ()
   "create 0-inbox dir"
 
   (dired-create-directory "0-inbox")
@@ -38,7 +38,7 @@
 
 ;; *** return to original state
 
-(defun cb-dired-upstairs ()
+(defun ts-dired-upstairs ()
   "open dir, open /0-inbox, and paste"
 
   (other-window 1)
@@ -50,13 +50,13 @@
 
 ;; ** main defun
 
-(defun cb-throw-file-to-dired ()
+(defun ts-throw-file-to-dired ()
   "Throw file(s) or directories to an isearch'd dired target."
   (interactive)
 
-  (cb-find-target-dir)
-  (cb-dir-drill-deliver-file)
-  (cb-dired-upstairs)
+  (ts-find-target-dir)
+  (ts-dir-drill-deliver-file)
+  (ts-dired-upstairs)
 )
 
-(provide 'cb-throw-file-to-dired)
+(provide 'ts-throw-file-to-dired)

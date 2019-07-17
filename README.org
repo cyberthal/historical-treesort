@@ -1,14 +1,14 @@
-#+TITLE: cyborganize layer
+#+TITLE: Treesort layer
 
 # The maximum height of the logo should be 200 pixels.
-[[img/cyborganize.png]]
+[[img/treesort.png]]
 
 # TOC links should be GitHub style anchors.
 * Table of Contents                                        :TOC_4_gh:noexport:
 - [[#description][Description]]
 - [[#install][Install]]
-  - [[#add-cyborganize-to-your-private-layers-directory][Add Cyborganize to your private layers directory]]
-  - [[#add-cyborganize-to-your-spacemacs][Add Cyborganize to your =~/.spacemacs=]]
+  - [[#add-treesort-to-your-private-layers-directory][Add Treesort to your private layers directory]]
+  - [[#add-treesort-to-your-spacemacs][Add Treesort to your =~/.spacemacs=]]
 - [[#key-bindings][Key bindings]]
 
 * Description
@@ -17,15 +17,15 @@ This layer does wonderful things:
 
 * Install
 
-** Add Cyborganize to your private layers directory
+** Add Treesort to your private layers directory
 
-Cyborganize's deploy script assumes your Spacemacs is installed in the default directory.
+Treesort's deploy script assumes your Spacemacs is installed in the default directory.
 
 Run =deploy.sh=.
 
-** Add Cyborganize to your =~/.spacemacs=
+** Add Treesort to your =~/.spacemacs=
 
-Add =cyborganize= to the existing =dotspacemacs-configuration-layers= list.
+Add =treesort= to the existing =dotspacemacs-configuration-layers= list.
 
 * Key bindings
 

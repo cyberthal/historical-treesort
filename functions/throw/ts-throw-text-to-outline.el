@@ -1,10 +1,10 @@
-;; * cb-throw-org-to-org.el
+;; * ts-throw-org-to-org.el
 ;; * Code
 
 ;; ** sub-functions
-;; *** cb-target-max-heading-level
+;; *** ts-target-max-heading-level
 
-(defun cb-target-max-heading-level ()
+(defun ts-target-max-heading-level ()
   "Returns target window's max outline heading level.
 Bounces point to target top visible heading & counts stars."
 
@@ -16,9 +16,9 @@ Bounces point to target top visible heading & counts stars."
     
   )			     ; end defun
 
-;; *** cb-print-starry-string
+;; *** ts-print-starry-string
 
-(defun cb-print-starry-string ()
+(defun ts-print-starry-string ()
   "Print starry string prefix of target heading 
 for the search string."
 
@@ -28,14 +28,14 @@ for the search string."
        "\n" ;; newline to avoid grabbing subheading matches
        (make-string
 	(+
-	 (cb-target-max-heading-level) 1)
+	 (ts-target-max-heading-level) 1)
 	?*)
        " ")
 )
 
-;; *** cb-goto-target-heading
+;; *** ts-goto-target-heading
 
-(defun cb-goto-target-heading ()
+(defun ts-goto-target-heading ()
   "Goes to targeted heading"
 
 ;; net effect - switches to other window, then jumps to targeted heading
@@ -47,14 +47,14 @@ for the search string."
     ;; find target heading
     (search-forward 
      (concat 
-      (cb-print-starry-string)
+      (ts-print-starry-string)
       (message "%s" x) ; appends user-entered prefix to search string
       ))	       ; end search-forward 
     ) ; end defun
 
-;; ** cb-throw-text-to-outline
+;; ** ts-throw-text-to-outline
 
-(defun cb-throw-text-to-outline (x)
+(defun ts-throw-text-to-outline (x)
   "Appends current line to the body of a selected child heading.  Assumes parent heading is at the top of the visible region.
 
 Prompts user for input.  Asks for enough letters from the beginning of the target child heading to distinguish it from the other immediate children of the parent heading.  Searches for a simple string.  Takes the first match.  Does not take any other arguments.
@@ -66,7 +66,7 @@ If no match found, fails with an error, and does not kill the line."
   ;; fail with an error if user passes a bad heading prefix BEFORE deleting the line to be thrown.  Avoids data loss
 
 (save-excursion
-  (cb-goto-target-heading)
+  (ts-goto-target-heading)
   )
 (other-window 1)
 
@@ -76,7 +76,7 @@ If no match found, fails with an error, and does not kill the line."
     (beginning-of-line)
     (kill-line 1)
 
-    (cb-goto-target-heading)
+    (ts-goto-target-heading)
 
     ;; go to end of target heading, add a blank line, and yank.
     (org-narrow-to-subtree)
@@ -100,4 +100,4 @@ If no match found, fails with an error, and does not kill the line."
 )   ; end of Throw defun
  
 
-(provide 'cb-throw-text-to-outline)
+(provide 'ts-throw-text-to-outline)
