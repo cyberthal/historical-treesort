@@ -42,7 +42,6 @@
   "From Dired, creates a 'Zinks' file with anchor org-id link."
   (interactive)
 
-  (dired-find-file)
   (find-file "Zinks.org")
 
   (insert (concat "*** " (file-name-directory buffer-file-name)))
