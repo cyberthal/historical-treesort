@@ -1,8 +1,8 @@
-;; * cb-macros.el
+;; * ts-macros.el
 ;; * code
-;; ** cb-checklist-to-not-done
+;; ** ts-checklist-to-not-done
 
-(defun cb-checklist-to-not-done
+(defun ts-checklist-to-not-done
      ()
   "Replaces all checklist X with SPACE"
   (interactive)
@@ -19,9 +19,9 @@
 ;; binding it to a handy key, since as a command it won't macro repeat
 (global-set-key (kbd "C-S-n") 'boxes)
 
-;; ** cb-pipify-word-list
+;; ** ts-pipify-word-list
 
-(defun cb-pipify-word-list
+(defun ts-pipify-word-list
     ()
   "Converts multi-line word list into one line separated by pipes."
   (interactive)
@@ -31,13 +31,13 @@
   (delete-char 1)
   (end-of-line)
   )
-(global-set-key (kbd "s-n") 'cb-pipify-word-list)
+(global-set-key (kbd "s-n") 'ts-pipify-word-list)
 
-(provide 'cb-macros)
+(provide 'ts-macros)
 
 ;; ** Zinks directory
 
-(defun cb-dired-zinks
+(defun ts-dired-zinks
     ()
   "From Dired, creates a 'Zinks' directory with anchor org-id link."
   (interactive)

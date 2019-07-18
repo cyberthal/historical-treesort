@@ -1,9 +1,9 @@
-;; * cb-throw-text-to-dired.el
+;; * ts-throw-text-to-dired.el
 ;; * Code 
 
 ;; ** Open target file or dir, and yank text
 
-(defun cb-dir-drill-deliver-text ()
+(defun ts-dir-drill-deliver-text ()
   "Open target file or dir, and yank text"
 
 ;;open and jump top left
@@ -12,14 +12,14 @@
 
 ;; detect whether file or directory
 (if (eq major-mode 'dired-mode)
-    (cb-throw-text-to-dir)
-  (cb-throw-text-to-file)
+    (ts-throw-text-to-dir)
+  (ts-throw-text-to-file)
   )
 )
 
 ;; *** final target is a file
 
-(defun cb-throw-text-to-file ()
+(defun ts-throw-text-to-file ()
 "Last mile delivery of text to target file."
 
 (goto-char (point-min))
@@ -49,10 +49,10 @@
 
 ;; *** final target is a dir
 
-(defun cb-throw-text-to-dir ()
+(defun ts-throw-text-to-dir ()
 "Last mile delivery of text to Inbox.org"
 
-(cb-find-or-create-inbox-org)
+(ts-find-or-create-inbox-org)
 
 ;; yank to bottom of buffer
 (goto-char (point-max))
@@ -69,20 +69,20 @@
 )
 ;; ** main defun
 
-(defun cb-throw-text-to-dired ()
+(defun ts-throw-text-to-dired ()
 
    ;; test validity of user isearch input
-  (cb-find-target-dir)
+  (ts-find-target-dir)
   (other-window 1)
 
-  (cb-grab-line)
+  (ts-grab-line)
   (other-window 1)
-  (cb-dir-drill-deliver-text)
+  (ts-dir-drill-deliver-text)
 
   ;; goto next heading
   (outline-next-visible-heading 1)
 
 ) ; end defun
 
-(provide 'cb-throw-text-to-dired)
+(provide 'ts-throw-text-to-dired)
 

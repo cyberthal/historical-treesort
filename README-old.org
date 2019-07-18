@@ -1,23 +1,13 @@
-* My notes
+* Treesort
 
-TODO add iswitchb style fuzzy autocomplete.  add range support.
- will have to use an iterative counter on the search function rather than repeating it twice, to permit flexibility on exactly what is searched for.  so can support functionality in other modes ala Outshine.  but really, I'm doing away with it entirely in favor of fuzzy autocomplete.  so may as well go straight to that. 
+** Introduction
 
-Does snort repeat easily? yes, it can repeat with repeat-complex-command, then repeat.  cool.  C-x ESC ESC then C-x z then z z z 
-TODO todo: somehow allow it not add extra spaces if not needed, but do add if needed.  I'm torn on this.  It's probably not hard to clean up the extra blank lines - DEFINITELY not hard.  So maybe only don't add extra lines if you're tossing a region.  This goes back to adding region support, then. 
-TODO: make intro better.  See for reference:
-https://github.com/xahlee/xah-find/blob/master/xah-find.el
-https://github.com/xahlee/xah-find/blob/master/README.org
-https://learnxinyminutes.com/docs/elisp/
-
-* Introduction
-
-cb-line-snort.el replicates the "Throw" functionality of the Windows
+Treesort replicates the "Throw" functionality of the Windows
 application "BrainStorm".
 
 BrainStorm is an outliner that allows rapid text sorting into nested
 hierarchical layers. It is hosted at
-http://www.brainstormsw.com/bvo.html
+http://www.brainstormsw.com
 
 Org-Mode already has outliner functionality.  It refiles headings
 well.  However, I have not found anything in Org-Mode or Emacs that
@@ -28,18 +18,18 @@ Refiling headings is not an adequate substitute for refiling lines.
 Transforming every single line into a heading generates a huge mess.
 This task should be easy, fast and fun, not painful.
 
-Thanks to the power of Elisp, cb-line-toss actually improves on the
+Thanks to the power of Elisp, Treesort actually improves on the
 BrainStorm's strongest capabilities.
 
 ** Instructions
 
-First, you should bind cb-throw to your preferred keychord.  It is
+First, you should bind ts-throw to your preferred keychord.  It is
 the only command you will need to s(n)ort lines.
 
-Next, you should understand how cb-throw works.  Here's the
+Next, you should understand how ts-throw works.  Here's the
 human-friendly version:
 
-cb-throw will kill the whole line at point.  It will ask you for the
+ts-throw will kill the whole line at point.  It will ask you for the
 first letter(s) of your target child heading.  Then it will append
 the line to that heading as an invisible background operation.
 
@@ -48,11 +38,11 @@ the line to that heading as an invisible background operation.
 Here is a more technical explanation, so that you can avoid
 surprises:
 
-1. cb-throw believes that the "parent" outline heading is at the top
+1. ts-throw believes that the "parent" outline heading is at the top
 of the visible buffer.  You should narrow the region to your desired
-parent heading before using cb-throw.
+parent heading before using ts-throw.
 
-2. cb-throw will only throw to an immediate child of the parent
+2. ts-throw will only throw to an immediate child of the parent
 heading.  This prevents you from unknowingly sending a line to a
 buried heading with a similar prefix.
 
@@ -62,15 +52,15 @@ your intended target.  So be wary of single-letter prefixes, and be
 careful when throwing to a crowd of potential targets.  (The Windows
 BrainStorm application only allowed 6 simultaneous targets.
 Sometimes the brain works faster when it has fewer options to
-juggle.  However, cb-throw sets no limit on the number of targets.)
+juggle.  However, ts-throw sets no limit on the number of targets.)
 
-4. If cb-throw cannot find a child heading that matches your prefix,
+4. If ts-throw cannot find a child heading that matches your prefix,
 it will echo a "Search failed:" error in the minibuffer.  Your line
 will not be killed.
 
 5. You can grab lines from any level of the outline.
 
-6. cb-throw will not disturb your view.  Exception - if you throw to
+6. ts-throw will not disturb your view.  Exception - if you throw to
 a collapsed heading, the thrown line will not be hidden until you
 refresh the visibility for that heading.  If this becomes bothersome
 due to large number of lines, use C-c C-k

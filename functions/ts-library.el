@@ -1,8 +1,8 @@
-;; * cb-library.el
+;; * ts-library.el
 ;; * code
 ;; ** kill line, with error handling
 
-(defun cb-grab-line ()
+(defun ts-grab-line ()
 
 ;; cut the target line
 (goto-char (line-beginning-position))
@@ -16,7 +16,7 @@
 
 ;; ** Insert inactive timestamp of current time
 
-(defun cb-org-time-and-date-stamp-inactive () 
+(defun ts-org-time-and-date-stamp-inactive () 
   "Insert inactive timestamp of current time"
 
   ;; Calls org-time-stamp-inactive with universal prefix
@@ -28,7 +28,7 @@
 
 ;; avoids messiness with creating warnings that underlying file has changed, and/or losing unsaved changes.  
 
-(defmacro cb-create-file-or-switch-to-buffer (var)
+(defmacro ts-create-file-or-switch-to-buffer (var)
   (list 'if
         (list 'f-exists? var)
         (list 'find-file var)
@@ -40,5 +40,5 @@
   )
 ;; ** provide
 
-(provide 'cb-library)
+(provide 'ts-library)
 

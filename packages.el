@@ -1,8 +1,8 @@
-;;; packages.el --- cyborganize layer packages file for Spacemacs.
+;;; packages.el --- treesort layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
-;; Author: Leo Joseph Buchignani III <leo3@vbox-manjaro>
+;; Author: Texas Cyberthal
 ;; URL: https://github.com/syl20bnr/spacemacs
 ;;
 ;; This file is not part of GNU Emacs.
@@ -11,9 +11,9 @@
 
 ;;; Code:
 
-(defconst cyborganize-packages
+(defconst treesort-packages
   '()
-  "The list of Lisp packages required by the cyborganize layer.
+  "The list of Lisp packages required by the treesort layer.
 
 Each entry is either:
 
@@ -42,12 +42,18 @@ Each entry is either:
 
 (with-eval-after-load 'org
 
-  (push "~/.emacs.d/private/cyborganize/functions/" load-path)
-  (push "~/.emacs.d/private/cyborganize/functions/throw/" load-path)
-  (require 'cb-throw)
-  (require 'cb-throw-up)
-  (require 'cb-macros)
-  (require 'cb-library)
+  (push
+   (concat user-emacs-directory "private/treesort/functions/")
+   load-path)
+
+  (push
+   (concat user-emacs-directory "private/treesort/functions/throw/")
+   load-path)
+
+  (require 'ts-throw)
+  (require 'ts-throw-up)
+  (require 'ts-macros)
+  (require 'ts-library)
   )
 
 ;; ensure don't isearch invisible text in dired mode
