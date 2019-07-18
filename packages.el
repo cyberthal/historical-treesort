@@ -42,8 +42,14 @@ Each entry is either:
 
 (with-eval-after-load 'org
 
-  (push "~/.emacs.d/private/treesort/functions/" load-path)
-  (push "~/.emacs.d/private/treesort/functions/throw/" load-path)
+  (push
+   (concat user-emacs-directory "private/treesort/functions/")
+   load-path)
+
+  (push
+   (concat user-emacs-directory "private/treesort/functions/throw/")
+   load-path)
+
   (require 'ts-throw)
   (require 'ts-throw-up)
   (require 'ts-macros)
