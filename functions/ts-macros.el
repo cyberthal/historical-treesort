@@ -35,23 +35,19 @@
 
 (provide 'ts-macros)
 
-;; ** Zinks directory
+;; ** Zinks.org
 
 (defun ts-dired-zinks
     ()
-  "From Dired, creates a 'Zinks' directory with anchor org-id link."
+  "From Dired, creates a 'Zinks' file with anchor org-id link."
   (interactive)
 
-  (dired-create-directory "Zinks")
-  (dired-find-file)
-  (find-file "Inbox.org")
-  (insert "**** ")
-  (insert (file-name-directory buffer-file-name))
-  (search-backward "/1-Human")
-  (delete-char 8) ;; remove /1-Human
-  (delete-char (- 6 (point)))   ;; remove portion before /1-Human
+  (find-file "Zinks.org")
+
+  (insert (concat "*** " (file-name-directory buffer-file-name)))
   (save-buffer)
-  ;;  (org-store-link 0) this fails to produce same result as interactive
-  ;; return to original position - can't be implemented.
-  ;; best to leave it "incomplete" so it can fail gracefully under unexpected conditions
-    )
+  (org-id-store-link)
+  (forward-line)
+  (org-cycle)
+  (goto-char (point-max))
+  )
