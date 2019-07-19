@@ -40,26 +40,4 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(with-eval-after-load 'org
-
-  (push
-   (concat user-emacs-directory "private/treesort/functions/")
-   load-path)
-
-  (push
-   (concat user-emacs-directory "private/treesort/functions/throw/")
-   load-path)
-
-  (require 'ts-throw)
-  (require 'ts-throw-up)
-  (require 'ts-macros)
-  (require 'ts-library)
-  )
-
-;; ensure don't isearch invisible text in dired mode
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (make-local-variable 'search-invisible)
-            (setq search-invisible nil)))
-
 ;;; packages.el ends here
