@@ -78,7 +78,6 @@
 (defun ts-prev-buffer-next-heading ()
 "Return to prior buffer and move point to next heading."
 (previous-buffer)
-;; (outline-up-heading 1) ;removed cuz loses place when sorting in the middle of a list
 (outline-next-visible-heading 1)
 )
 ;; ** return t if immediate parent dir is "0-inbox"
