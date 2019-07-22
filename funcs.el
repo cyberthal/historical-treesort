@@ -439,6 +439,18 @@ do setup to decompose a heading."
   (org-cycle)
   (org-narrow-to-subtree))
 
+;; *** Store link and hide the PROPERTIES drawer
+
+(defun ts-store-link-hide-drawer ()
+    (interactive)
+
+(save-excursion
+  (org-store-link nil t)
+  (org-narrow-to-subtree)
+  (outline-previous-visible-heading 1)
+  (next-line)
+  (org-cycle)))
+
 ;; ** provide
 
 (provide 'treesort)
