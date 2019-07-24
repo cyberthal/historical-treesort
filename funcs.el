@@ -416,14 +416,16 @@ Bounces point to target top visible heading & counts *'s."
 ;; **** Store link and hide the PROPERTIES drawer
 
 (defun ts-store-link-hide-drawer ()
-    (interactive)
+  (interactive)
 
-(save-excursion
-  (org-store-link nil t)
-  (org-narrow-to-subtree)
-  (outline-previous-visible-heading 1)
-  (next-line)
-  (org-cycle)))
+  (save-excursion
+    (org-store-link nil t)
+    (org-narrow-to-subtree)
+    (outline-previous-visible-heading 1)
+    (next-line)
+    (org-cycle))
+  (widen)
+  )
 
 ;; *** proc sprinted
 ;; **** pipify word list
