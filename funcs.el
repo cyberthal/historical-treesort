@@ -19,6 +19,20 @@
   (interactive)
   (ts-throw-q-is-source-buffer-dired))
 
+;; *** batch throw
+
+(defun ts-batch-throw ()
+  "Loop ts-throw infinitely. C-g to quit."
+  (interactive)
+
+  (condition-case nil
+      (let ((count 0))
+        (while (< count 100)
+          (ts-throw)
+          (setq count (1+ count))))
+    (error "%s" "Done running batch throw"))
+  (other-window 1))
+
 ;; *** flow control dispatcher
 
 ;; **** Is source buffer dired?
@@ -379,19 +393,8 @@ Bounces point to target top visible heading & counts *'s."
           (kill-buffer buffer)
           (message "File '%s' successfully removed" filename))))))
 
-;; *** pipify word list
-
-(defun ts-pipify-word-list
-    ()
-  "Converts multi-line word list into one line separated by pipes."
-  (interactive)
-
-  (end-of-line)
-  (insert " | ")
-  (delete-char 1)
-  (end-of-line))
-
-;; *** create Zinks.org
+;; *** org links
+;; **** create Zinks.org
 
 (defun ts-dired-zinks
     ()
@@ -410,7 +413,32 @@ Bounces point to target top visible heading & counts *'s."
 
   (goto-char (point-max)))
 
-;; *** decompose a heading, after saving a mummy of it
+;; **** Store link and hide the PROPERTIES drawer
+
+(defun ts-store-link-hide-drawer ()
+    (interactive)
+
+(save-excursion
+  (org-store-link nil t)
+  (org-narrow-to-subtree)
+  (outline-previous-visible-heading 1)
+  (next-line)
+  (org-cycle)))
+
+;; *** proc sprinted
+;; **** pipify word list
+
+(defun ts-pipify-word-list
+    ()
+  "Converts multi-line word list into one line separated by pipes."
+  (interactive)
+
+  (end-of-line)
+  (insert " | ")
+  (delete-char 1)
+  (end-of-line))
+
+;; **** decompose a heading, after saving a mummy of it
 
 (defun ts-decomposing-mummy ()
   "From a single-window frame in org-mode,
@@ -438,18 +466,105 @@ do setup to decompose a heading."
   (org-previous-visible-heading 1)
   (org-cycle)
   (org-narrow-to-subtree))
+;; **** Textmind checklist funcs
+;; ***** create new sprinting
 
-;; *** Store link and hide the PROPERTIES drawer
+(defun ts-create-new-sprinting ()
+    "Make new sprinting heading in '1sprinting.org"
+  (set-buffer "'1sprinting.org")
+  (widen)
+  (goto-char (point-max))
+  (insert "Creating new sprinting heading via elisp func.\n")
+  (insert (concat "\n\n* Sprinting " (ts-org-time-and-date-stamp-inactive) "\n\n** proc sprinted\n\n*** deletion pass from bottom up\n\n")))
 
-(defun ts-store-link-hide-drawer ()
-    (interactive)
+;; ***** double-file prior sprinting log
 
-(save-excursion
-  (org-store-link nil t)
+(defun ts-cut-prior-sprinting ()
+  "File prior sprinting heading twice to '2sprinted.org"
+
+  (set-buffer "'1sprinting.org")
+  (widen)
+  (goto-char (point-min))
+  (org-next-visible-heading)
+  (org-cycle)
+  (org-demote-subtree)
+  (org-demote-subtree)
+  (org-demote-subtree)
+  (ts-kill-line)
+  )
+
+(defun ts-double-file-prior-sprinting ()
+  "File prior sprinting heading twice to '2sprinted.org"
+
+  (ts-cut-prior-sprinting)
+  (find-file "~/1-Mansort/1-Textmind/2-Linked/8-Hud/'2sprinted.org")
+  (goto-char (point-min))
+  (word-search-forward "Log")
+  (org-cycle)
+  (org-forward-heading-same-level)
+  (org-yank)
+  (goto-char (point-max))
+  (org-yank)
+  (org-previous-visible-heading)
+  (ts-throw-up)
+  )
+
+;; ***** deletion pass
+
+(defun ts-proc-sprinted-deletion-pass ()
+    "Setup other frame to begin deletion pass for proc sprinted checklist."
+
+  (other-frame 1)
+  (delete-other-windows)
+  (find-file "~/1-Mansort/1-Textmind/2-Linked/Inbox.org")
+  (org-show-all)
+  (goto-char (point-max))
+  )
+
+;; ***** headingfy
+
+(defun ts-headingfy ()
+  "Create a heading and advance 2 paragraphs."
+
+  (org-open-line 2)
+  (org-ctrl-c-ret)
+  (insert "?")
+  (org-forward-paragraph)
+  (org-forward-paragraph)
+  (recenter-top-bottom)
+  )
+
+;; ***** lazy-title
+
+(defun ts-lazy-title ()
+  "Advance to next heading while lazy-titling proc sprinted."
+  (interactive)
+
   (org-narrow-to-subtree)
-  (outline-previous-visible-heading 1)
-  (next-line)
-  (org-cycle)))
+  (org-previous-visible-heading 1)
+  (widen)
+  (org-cycle)
+  (org-next-visible-heading 1)
+  (org-narrow-to-subtree)
+  (mwim-end-of-line-or-code)
+  )
+
+;; ***** duplicate line to other window
+
+(defun ts-duplicate-line-to-other-window ()
+  "Copy line and yank to the bottom of the other window, then save."
+  (interactive)
+
+  (save-excursion
+    (copy-region-as-kill (mwim-beginning-of-code-or-line) (mwim-end-of-code-or-line))
+    (other-window 1)
+    (goto-char (point-max))
+    (newline)
+    (yank)
+    (save-buffer))
+  (save-buffer)
+  (org-next-visible-heading 1)
+  )
 
 ;; ** provide
 
