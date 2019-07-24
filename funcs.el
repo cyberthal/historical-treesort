@@ -164,8 +164,9 @@
 ;; **** target = text
 
 (defun ts-throw-up-text ()
-  "Throw text to ../Inbox.org"
+  "Throw text to ../Inbox.org. Using immediately after a kill will append to kill ring item."
 
+  ;; Because this function does not ask for user input before killing, if the prior action was a kill, then the following kill will append to the current kill-ring entry, instead of starting a new entry. This behavior is annoying, but I don't know how to prevent this. User beware.
   (ts-kill-line)
 
   ;; jump either two directories or one
