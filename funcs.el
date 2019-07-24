@@ -19,6 +19,20 @@
   (interactive)
   (ts-throw-q-is-source-buffer-dired))
 
+;; *** batch throw
+
+(defun ts-batch-throw ()
+  "Loop ts-throw infinitely. C-g to quit."
+  (interactive)
+
+  (condition-case nil
+      (let ((count 0))
+        (while (< count 100)
+          (ts-throw)
+          (setq count (1+ count))))
+    (error "%s" "Done running batch throw"))
+  (other-window 1))
+
 ;; *** flow control dispatcher
 
 ;; **** Is source buffer dired?
@@ -518,6 +532,38 @@ do setup to decompose a heading."
   (org-forward-paragraph)
   (org-forward-paragraph)
   (recenter-top-bottom)
+  )
+
+;; ***** lazy-title
+
+(defun ts-lazy-title ()
+  "Advance to next heading while lazy-titling proc sprinted."
+  (interactive)
+
+  (org-narrow-to-subtree)
+  (org-previous-visible-heading 1)
+  (widen)
+  (org-cycle)
+  (org-next-visible-heading 1)
+  (org-narrow-to-subtree)
+  (mwim-end-of-line-or-code)
+  )
+
+;; ***** duplicate line to other window
+
+(defun ts-duplicate-line-to-other-window ()
+  "Copy line and yank to the bottom of the other window, then save."
+  (interactive)
+
+  (save-excursion
+    (copy-region-as-kill (mwim-beginning-of-code-or-line) (mwim-end-of-code-or-line))
+    (other-window 1)
+    (goto-char (point-max))
+    (newline)
+    (yank)
+    (save-buffer))
+  (save-buffer)
+  (org-next-visible-heading 1)
   )
 
 ;; ** provide
