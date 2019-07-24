@@ -379,19 +379,8 @@ Bounces point to target top visible heading & counts *'s."
           (kill-buffer buffer)
           (message "File '%s' successfully removed" filename))))))
 
-;; *** pipify word list
-
-(defun ts-pipify-word-list
-    ()
-  "Converts multi-line word list into one line separated by pipes."
-  (interactive)
-
-  (end-of-line)
-  (insert " | ")
-  (delete-char 1)
-  (end-of-line))
-
-;; *** create Zinks.org
+;; *** org links
+;; **** create Zinks.org
 
 (defun ts-dired-zinks
     ()
@@ -410,7 +399,32 @@ Bounces point to target top visible heading & counts *'s."
 
   (goto-char (point-max)))
 
-;; *** decompose a heading, after saving a mummy of it
+;; **** Store link and hide the PROPERTIES drawer
+
+(defun ts-store-link-hide-drawer ()
+    (interactive)
+
+(save-excursion
+  (org-store-link nil t)
+  (org-narrow-to-subtree)
+  (outline-previous-visible-heading 1)
+  (next-line)
+  (org-cycle)))
+
+;; *** proc sprinted
+;; **** pipify word list
+
+(defun ts-pipify-word-list
+    ()
+  "Converts multi-line word list into one line separated by pipes."
+  (interactive)
+
+  (end-of-line)
+  (insert " | ")
+  (delete-char 1)
+  (end-of-line))
+
+;; **** decompose a heading, after saving a mummy of it
 
 (defun ts-decomposing-mummy ()
   "From a single-window frame in org-mode,
@@ -438,18 +452,16 @@ do setup to decompose a heading."
   (org-previous-visible-heading 1)
   (org-cycle)
   (org-narrow-to-subtree))
+;; **** Textmind checklist funcs
+;; ***** create new sprinting
 
-;; *** Store link and hide the PROPERTIES drawer
-
-(defun ts-store-link-hide-drawer ()
-    (interactive)
-
-(save-excursion
-  (org-store-link nil t)
-  (org-narrow-to-subtree)
-  (outline-previous-visible-heading 1)
-  (next-line)
-  (org-cycle)))
+(defun ts-create-new-sprinting ()
+    "Make new sprinting heading in '1sprinting.org"
+  (set-buffer "'1sprinting.org")
+  (widen)
+  (goto-char (point-max))
+  (insert "Creating new sprinting heading via elisp func.\n")
+  (insert (concat "\n\n* Sprinting " (ts-org-time-and-date-stamp-inactive) "\n\n** proc sprinted\n\n*** deletion pass from bottom up\n\n")))
 
 ;; ** provide
 
