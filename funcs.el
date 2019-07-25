@@ -421,12 +421,13 @@ Bounces point to target top visible heading & counts *'s."
   (interactive)
 
   (save-excursion
+    (save-restriction
     (org-store-link nil t)
     (org-narrow-to-subtree)
     (outline-previous-visible-heading 1)
     (next-line)
-    (org-cycle))
-  (widen)
+    (org-show-all)
+    (org-cycle)))
   )
 
 ;; *** proc sprinted
@@ -574,14 +575,15 @@ do setup to decompose a heading."
   (interactive)
 
   (save-excursion
-    (copy-region-as-kill (mwim-beginning-of-code-or-line) (mwim-end-of-code-or-line))
+    (org-narrow-to-subtree)
+    (copy-region-as-kill (goto-char (point-min)) (goto-char (point-max)))
+    (widen)
     (other-window 1)
     (goto-char (point-max))
     (newline)
     (yank)
-    (save-buffer))
-  (save-buffer)
   (org-next-visible-heading 1)
+  )
   )
 
 ;; ** provide
