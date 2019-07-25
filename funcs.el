@@ -166,8 +166,9 @@
 (defun ts-throw-up-text ()
   "Throw text to ../Inbox.org. Using immediately after a kill will append to kill ring item."
 
-  ;; Because this function does not ask for user input before killing, if the prior action was a kill, then the following kill will append to the current kill-ring entry, instead of starting a new entry. This behavior is annoying, but I don't know how to prevent this. User beware.
-  (ts-kill-line)
+  ;; Because this function does not ask for user input before killing, if the prior action was a kill, then the following kill will append to the current kill-ring entry, instead of starting a new entry."
+  (copy-region-as-kill (line-beginning-position) (line-end-position))
+  (delete-region (line-beginning-position) (line-end-position))
 
   ;; jump either two directories or one
   (if (ts-parent-equal-inbox)
@@ -474,6 +475,8 @@ do setup to decompose a heading."
 
 (defun ts-create-new-sprinting ()
     "Make new sprinting heading in '1sprinting.org"
+    (interactive)
+
   (set-buffer "'1sprinting.org")
   (widen)
   (goto-char (point-max))
@@ -488,7 +491,8 @@ do setup to decompose a heading."
   (set-buffer "'1sprinting.org")
   (widen)
   (goto-char (point-min))
-  (org-next-visible-heading)
+  (org-next-visible-heading 1)
+  (org-show-all '(headings))
   (org-cycle)
   (org-demote-subtree)
   (org-demote-subtree)
@@ -499,19 +503,24 @@ do setup to decompose a heading."
 (defun ts-double-file-prior-sprinting ()
   "File prior sprinting heading twice to '2sprinted.org"
 
-  (ts-cut-prior-sprinting)
-  (find-file "~/1-Mansort/1-Textmind/2-Linked/8-Hud/'2sprinted.org")
-  (goto-char (point-min))
-  (word-search-forward "Log")
-  (org-cycle)
-  (org-forward-heading-same-level)
-  (org-yank)
-  (goto-char (point-max))
-  (org-yank)
-  (org-previous-visible-heading)
-  (ts-throw-up)
-  )
+    (ts-cut-prior-sprinting)
+    (find-file "~/1-Mansort/1-Textmind/2-Linked/8-Hud/'2sprinted.org")
+    (goto-char (point-min))
+    (word-search-forward "Log")
+    (org-show-all '(headings))
+    (org-cycle)
+    (org-cycle)
+    (org-forward-heading-same-level 1)
+    (insert "\n")
+    (backward-char)
+    (org-yank)
+    (newline)
 
+    (ts-create-file-or-switch-to-buffer "../Inbox.org")
+    (ts-create-inbox-offset)
+    (ts-yank-to-bottom-of-buffer)
+    (switch-to-buffer "'Meta.org")
+  )
 ;; ***** deletion pass
 
 (defun ts-proc-sprinted-deletion-pass ()
