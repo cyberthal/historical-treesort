@@ -481,7 +481,8 @@ do setup to decompose a heading."
   (widen)
   (goto-char (point-max))
   (insert "Creating new sprinting heading via elisp func.\n")
-  (insert (concat "\n\n* Sprinting " (ts-org-time-and-date-stamp-inactive) "\n\n** proc sprinted\n\n*** deletion pass from bottom up\n\n")))
+  (insert (concat "\n\n* Sprinting " (ts-org-time-and-date-stamp-inactive) "\n\n** proc sprinted\n\n*** deletion pass from bottom up\n\n"))
+  (save-buffer))
 
 ;; ***** double-file prior sprinting log
 
@@ -515,10 +516,12 @@ do setup to decompose a heading."
     (backward-char)
     (org-yank)
     (newline)
+    (save-buffer)
 
     (ts-create-file-or-switch-to-buffer "../Inbox.org")
     (ts-create-inbox-offset)
     (ts-yank-to-bottom-of-buffer)
+    (save-buffer)
     (switch-to-buffer "'Meta.org")
   )
 ;; ***** deletion pass
@@ -537,13 +540,15 @@ do setup to decompose a heading."
 
 (defun ts-headingfy ()
   "Create a heading and advance 2 paragraphs."
+  (interactive)
 
   (org-open-line 2)
   (org-ctrl-c-ret)
   (insert "?")
   (org-forward-paragraph)
   (org-forward-paragraph)
-  (recenter-top-bottom)
+  (recenter-top-bottom 10)
+  (save-buffer)
   )
 
 ;; ***** lazy-title
@@ -559,6 +564,7 @@ do setup to decompose a heading."
   (org-next-visible-heading 1)
   (org-narrow-to-subtree)
   (mwim-end-of-line-or-code)
+  (save-buffer)
   )
 
 ;; ***** duplicate line to other window
