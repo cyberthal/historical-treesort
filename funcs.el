@@ -31,11 +31,11 @@
 
 ;; **** throw file DONE
 
-;; ***** throw file DONE
+;; ***** throw file TODO
 
 (defun ts-throw-file ()
 
-  (select-window ts-window-other 1)
+  (other-window 1)
 
   (let ((ts-buffer-search (buffer-name))
         )
@@ -47,14 +47,16 @@
       (mkdir ts-destination-file-path 1)
       (find-file ts-destination-file-path)
 
-      (select-window ts-window-home)
-      (dired-do-rename)
+      (other-window -1) ; select-window might not work here cuz DEFER
+      (dired-do-rename) ; this func is interactive with user input
 
-      (select-window ts-window-home)
-      (switch-to-buffer ts-buffer-search 1)
+      (select-window ts-window-other 1)
+      (switch-to-buffer ts-buffer-search 1) ; interactive func steals window back.
+      (other-window -1) ; returns user to his original window
       )
     )
   )
+
 ;; ***** to dired TODO
 ;; **** throw text
 ;; ***** snort type
@@ -95,7 +97,7 @@
         (ts-searched-file-path (ts-searched-file-path))
         )
     (other-window -1)
-    
+
 
     (if (file-directory-p ts-searched-file-path)
         (ts-throw-text-to-dir)
