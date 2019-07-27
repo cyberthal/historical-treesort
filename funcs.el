@@ -2,225 +2,117 @@
 ;; * code
 ;; ** throw
 
-;; *** config
+;; *** config DONE
 
-;; **** don't search invisible text in dired
+;; **** don't search invisible text in dired DONE
 
 (add-hook 'dired-mode-hook
           (lambda ()
             (make-local-variable 'search-invisible)
             (setq search-invisible nil)))
-
-;; *** main defun
+;; *** main defun DONE
 
 (defun ts-throw ()
   "Throw text or dired item to a target."
-
-  (interactive)
-  (ts-throw-q-is-source-buffer-dired))
-
-;; *** batch throw
-
-(defun ts-batch-throw ()
-  "Loop ts-throw infinitely. C-g to quit."
   (interactive)
 
-  (condition-case nil
-      (let ((count 0))
-        (while (< count 100)
-          (ts-throw)
-          (setq count (1+ count))))
-    (error "%s" "Done running batch throw"))
-  (other-window 1))
+  (let ((ts-window-home (selected-window))
+        (ts-mode-home major-mode)
+        (ts-window-other (next-window))
+        )
 
-;; *** flow control dispatcher
+    ;; Determines whether object is file or text.
+    (if (eq ts-mode-home 'dired-mode)
+        (ts-throw-file)
+      (ts-throw-text))
+    )
+  )
+;; *** flow control dispatcher TODO
 
-;; **** Is source buffer dired?
+;; **** throw file DONE
 
-(defun ts-throw-q-is-source-buffer-dired ()
-  "Determines whether throwing text or files."
-
-(if (eq major-mode 'dired-mode)
-    (ts-throw-file)
-  (ts-throw-text)))
-
-;; **** throw file
+;; ***** throw file DONE
 
 (defun ts-throw-file ()
-  "If target buffer not dired, return error."
 
-(other-window 1)
+  (select-window ts-window-other 1)
 
-(if (eq major-mode 'dired-mode)
-    (progn (other-window 1) (ts-throw-file-to-dired))
-  (print "Target buffer type must be dired")))
+  (let ((ts-buffer-search (buffer-name))
+        )
 
+    (let* ((ts-searched-file-path (ts-searched-file-path))
+          (ts-destination-file-path (concat ts-searched-file-path "/0-Inbox"))
+          )
+
+      (mkdir ts-destination-file-path 1)
+      (find-file ts-destination-file-path)
+
+      (select-window ts-window-home)
+      (dired-do-rename)
+
+      (select-window ts-window-home)
+      (switch-to-buffer ts-buffer-search 1)
+      )
+    )
+  )
+;; ***** to dired TODO
 ;; **** throw text
+;; ***** snort type
+;; ******  flow control dispatcher TODO
 
+(defun ts-snort-text-org ()
+     ""
+     (if (org-at-heading-p) (ts-snort-org-heading)
+            (ts-snort-line))
+     )
+
+(defun ts-snort-text-outshine ()
+     ""
+     (if (outline-on-heading-p) (ts-snort-outshine-heading)
+            (ts-snort-line))
+     )
+
+(defun ts-snort-text-outline ()
+     ""
+     (if (outline-on-heading-p) (ts-snort-outline-heading)
+            (ts-snort-line))
+     )
+;; ******  snort org heading DONE
+
+(defun ts-snort-org-heading ()
+     ""
+     (org-save-outline-visibility
+                (org-narrow-to-subtree)
+              (ts-snort-visible)
+
+;; ***** destination = file or directory?
 
 (defun ts-throw-text ()
-  "Throwing text. Is target buffer type dired or text?"
-
+  ""
   (other-window 1)
+  (let ((ts-mode-minor minor-mode-list)
+        (ts-searched-file-path (ts-searched-file-path))
+        )
+    (other-window -1)
+    
 
-  (if (eq major-mode 'dired-mode)
-      (progn (other-window 1) (ts-throw-text-to-dired))
-    (progn (other-window 1) (call-interactively 'ts-throw-text-to-outline))))
-
-;; *** library
-;; **** kill a line
-
-(defun ts-kill-line ()
-
-  (goto-char (line-beginning-position))
-
-  ;; avoids error when killing from end of buffer
-  (condition-case nil
-      (kill-line)(kill-line)
-      (error nil)))
-
-;; **** Find the target directory in other window
-
-(defun ts-find-target-dir ()
-  "Finds targeted directory in other window"
-
-  (other-window 1)
-  (goto-char (point-min))
-  (forward-line)
-  (isearch-forward))
-
-;; **** create a file or switch to the buffer if it's open
-
-;; avoids warnings that underlying file has changed, and/or losing unsaved changes.
-(defun ts-create-file-or-switch-to-buffer (filename)
-  (if (f-exists? filename)
-      (find-file filename)
-    (progn (f-touch filename) (find-file filename))))
-
-;; **** check whether immediate parent dir is "0-Inbox"
-
-(defun ts-parent-equal-inbox ()
-  "return t if immediate parent dir is 0-Inbox"
-
-  (equal
-   ;; return immediate parent directory
-   (file-name-nondirectory (directory-file-name default-directory))
-   "0-Inbox" ))
-
-;; **** Inbox.org creation
-;; **** for Inbox.org, if *** offset exists, nil, else create it
-
-(defun ts-create-inbox-offset ()
-  "Creates *** offset at top of Inbox.org"
-  (interactive)
-
-  (widen)
-  (goto-char (point-min))
-
-  ; do nothing unless buffer is new and empty
-  (if (thing-at-point 'line)
-      ()
-    (progn (insert "*** offset") (newline))))
-
-;; **** find or create Inbox.org in dired
-
-(defun ts-find-or-create-inbox-org ()
-  "In a dired buffer, find or create Inbox.org"
-
-  (condition-case nil
-      (progn (re-search-forward "Inbox\.org$") (dired-find-file))
-    (error (progn (find-file "Inbox.org") (ts-create-inbox-offset)))))
-
-;; **** yank to bottom of buffer
-
-(defun ts-yank-to-bottom-of-buffer ()
-  "Yank to bottom of buffer"
-
-  (end-of-buffer)
-  (newline)
-  (yank)
-  (save-buffer))
-
-;; **** return to original buffer, advance to next heading
-
-(defun ts-prev-buffer-next-heading ()
-  "Return to prior buffer and move point to next heading."
-
-  (previous-buffer)
-  (outline-next-visible-heading 1))
-
-;; *** throw up
-;; **** main defun
-
-(defun ts-throw-up()
-  "Throw file or text one directory upwards"
-
-  (interactive)
-
-  (if (eq major-mode 'dired-mode)
-      (ts-throw-up-file)
-    (ts-throw-up-text)))
-
-;; **** target = text
-
-(defun ts-throw-up-text ()
-  "Throw text to ../Inbox.org. Using immediately after a kill will append to kill ring item."
-
-  ;; Because this function does not ask for user input before killing, if the prior action was a kill, then the following kill will append to the current kill-ring entry, instead of starting a new entry."
-  (copy-region-as-kill (line-beginning-position) (line-end-position))
-  (delete-region (line-beginning-position) (line-end-position))
-
-  ;; jump either two directories or one
-  (if (ts-parent-equal-inbox)
-      (ts-create-file-or-switch-to-buffer "../../Inbox.org")
-    (ts-create-file-or-switch-to-buffer "../Inbox.org"))
-
-  (ts-create-inbox-offset)
-  (ts-yank-to-bottom-of-buffer)
-  (ts-prev-buffer-next-heading))
-
-;; **** target = file
-
-(defun ts-throw-up-file ()
-  "Throw file upwards in the dir tree to the next /0-Inbox"
-
-  (if (ts-parent-equal-inbox)
-      (progn (make-directory "../../0-Inbox" t)
-        (rename-file (dired-get-filename "no-dir") "../../0-Inbox/"))
-    (progn (make-directory "../0-Inbox" t)
-      (rename-file (dired-get-filename "no-dir") "../0-Inbox/")))
-  (revert-buffer) ; refresh dired buffer. necessary?
+    (if (file-directory-p ts-searched-file-path)
+        (ts-throw-text-to-dir)
+      (ts-throw-text-to-file))
+    )
   )
+;; ****** throw text, destination = dir DONE
 
-;; *** throw text to dired
-;; **** main defun
+(defun ts-throw-text-to-dir ()
+  "Insert text to Inbox.org"
 
-(defun ts-throw-text-to-dired ()
-
-  ;; check validity of user's isearch input before making destructive changes
-  (ts-find-target-dir)
-  (other-window 1)
-
-  (ts-kill-line)
-  (other-window 1)
-  (ts-dir-drill-deliver-text)
-  (outline-next-visible-heading 1))
-
-;; **** drill deliver text
-
-;; ***** main defun
-
-(defun ts-dir-drill-deliver-text ()
-  "Open target file or directory, then yank text"
-
-  (dired-find-file)
-  (goto-char (point-min))
-
-  (if (eq major-mode 'dired-mode)
-      (ts-throw-text-to-dir)
-    (ts-throw-text-to-file)))
-
-;; ***** final target is a file
+  (select-window ts-window-home)
+  (ts-create-inbox-org)
+  (ts-insert-to-end-of-buffer)
+  (switch-to-buffer ts-buffer-target-1)
+  (select-window ts-window-home)
+  )
+;; ****** throw text, destination = file DONE
 
 (defun ts-throw-text-to-file ()
   "Yank text to target file."
@@ -234,75 +126,23 @@
 
   (condition-case nil
       (progn
-        (re-search-forward "^* ") ; yank right before first heading
-        (beginning-of-line) (open-line 1))
-    (error (progn (goto-char (point-max)) (newline))))
+        (re-search-forward "^* ") ; set point before first 1*heading
 
-  (yank)
+        (if (eq (buffer-substring-no-properties (- (point) 2) (point)) "\n\n")
+            (progn (backward-char) (insert ts-object-text))
+          (insert ts-object-text)
+          )
+        )
+    (error (ts-insert-to-end-of-buffer)))
+
   (save-buffer)
 
   ;; Sloppy imperative programming method of returning to the original perspective.
-  (previous-buffer)
-  (other-window 1))
-
-;; ***** final target is a dir
-
-(defun ts-throw-text-to-dir ()
-  "Yank text to Inbox.org"
-
-  (ts-find-or-create-inbox-org)
-  (goto-char (point-max))
-  (newline)
-  (yank)
-  (save-buffer)
-
-  ;; Sloppy imperative programming method of returning to original perspective.
-  (dired (file-name-directory buffer-file-name))
-  (dired-up-directory)
-  (other-window 1))
-
-;; *** throw file to dired
-;; **** main defun
-
-(defun ts-throw-file-to-dired ()
-  "Throw file(s) or directories to an isearch'd dired target."
-  (interactive)
-
-  (ts-find-target-dir)
-  (ts-dir-drill-deliver-file)
-  (ts-dired-upstairs))
-
-;; **** Drill down and deliver the file to the inbox
-
-(defun ts-dir-drill-deliver-file ()
-  "Open dir, open /0-Inbox, and yank."
-
-  (dired-find-file) ; Open target dir.
-  (goto-char (point-min)) ;  Jump to top left for search.
-
-  ;; Detect whether or not search for Inbox directory succeeds.
-  ;; If fails, mkdir.
-  (condition-case nil (re-search-forward "0-Inbox$")
-    (error ((dired-create-directory "0-Inbox"))))
-
-  (dired-find-file) ; Open Inbox.
-  (other-window 1)
-  (dired-do-rename) ; Move files into inbox.
+  (switch-to-buffer ts-buffer-target-1)
+  (select-window ts-window-home)
   )
-
-;; **** Return to original perspective
-
-(defun ts-dired-upstairs ()
-  "Move dired buffer ../../, return point."
-
-  (other-window 1)
-  (dired-up-directory)
-  (dired-up-directory)
-  (other-window 1)
-  (revert-buffer))
-
-;; *** throw text to outline
-;; **** main defun
+;; **** outline TODO
+;; ***** main defun
 
 (defun ts-throw-text-to-outline (x)
   "Appends current line to the body of a selected child heading.  Assumes parent heading is at the top of the visible region.
@@ -340,9 +180,9 @@ If no match found, fails with an error, and does not kill the line."
   (org-narrow-to-subtree)
   (other-window 1))
 
-;; **** goto target heading
+;; ***** goto target heading
 
-;; ***** main defun
+;; *****  main defun
 
 (defun ts-goto-target-heading ()
   "Finds a heading in the other window."
@@ -352,9 +192,9 @@ If no match found, fails with an error, and does not kill the line."
            (message "%s" x) ; user-entered text
            )))
 
-;; ***** print starry string
+;; *****  print starry string
 
-;; ****** main defun
+;; *****   main defun
 
 (defun ts-print-starry-string ()
   "Print the n* prefix of the target heading
@@ -365,7 +205,7 @@ for the search string."
    (make-string (+ (ts-top-heading-stars) 1) ?*) ; makes n *'s
    " "))
 
-;; ****** target max heading level
+;; *****   target max heading level
 
 (defun ts-top-heading-stars ()
   "Returns target window's top outline heading level.
@@ -375,6 +215,150 @@ Bounces point to target top visible heading & counts *'s."
   (goto-char (point-min))
   (skip-chars-forward "*"))
 
+
+;; *** throw up
+;; **** main defun
+
+(defun ts-throw-up()
+  "Throw file or text one directory upwards"
+  (interactive)
+
+  (let ((ts-destination-dir (ts-jump-destination)))
+
+    (if (eq major-mode 'dired-mode)
+        (ts-throw-up-file)
+      (ts-throw-up-text))
+    )
+  )
+;; **** jump height
+
+(defun ts-jump-destination ()
+  "How high should ts-throw-up jump?"
+
+  (let ((ts-home-path default-directory)
+        )
+    ;; jump either two directories or one
+    (if (ts-parent-equal-inbox)
+        (setq ts-jump "../../")
+      (setq ts-jump "../"))
+    (concat ts-home-path ts-jump)
+    )
+  )
+
+;; **** object = text TODO
+
+(defun ts-throw-up-text ()
+  "Throw text to ../Inbox.org."
+
+  (ts-snort-visible)
+  (ts-open-target-buffer)
+  (ts-throw-text-to-file)
+  (set-buffer ts-buffer-home)
+  )
+;; **** target = file
+
+(defun ts-throw-up-file ()
+  "Throw file upwards in the dir tree to the next /0-Inbox"
+
+  (mkdir ts-destination-dir t)
+  (rename-file (dired-get-filename "no-dir") ts-destination-dir)
+  (revert-buffer) ; refresh screen. necessary?
+  )
+
+;; *** batch TODO
+;; **** batch throw TODO
+
+(defun ts-batch-throw ()
+  "Loop ts-throw infinitely. C-g to quit."
+  (interactive)
+
+  (condition-case nil
+      (let ((count 0))
+        (while (< count 100)
+          (ts-throw)
+          (setq count (1+ count))))
+    (error "%s" "Done running batch throw"))
+  (other-window 1)
+  )
+;; **** batch throw up TODO
+
+(defun ts-batch-throw-up ()
+  "Loop ts-throw-up infinitely. C-g to quit."
+  (interactive)
+
+  (condition-case nil
+      (let ((count 0))
+        (while (< count 100)
+          (ts-throw-up)
+          (setq count (1+ count))))
+    (error "%s" "Done running batch throw"))
+  (other-window 1)
+  )
+;; *** library DONE
+;; **** snort a line DONE
+
+(defun ts-snort-line ()
+  ""
+  ;; avoids error when snorting line from end of buffer
+  (condition-case nil
+      (setq ts-object-text
+            (delete-and-extract-region (line-beginning-position)
+                                       (+ 1 (line-end-position))))
+    (error (setq ts-object-text
+                 (delete-and-extract-region (line-beginning-position) (buffer-end 1))))
+    )
+  )
+;; **** files DONE
+;; ***** Find the searched dired entry DONE
+
+(defun ts-searched-file-path ()
+  "Finds the isearched dired entry"
+
+    (goto-char (point-min))
+    (forward-line)
+    (isearch-forward)
+    (dired-get-filename)
+  )
+
+;; ***** create an Inbox.org or switch to the buffer if it's open DONE
+
+;; avoids warnings that underlying file has changed, and/or losing unsaved changes.
+(defun ts-create-open-inbox-org (filename)
+  ""
+  (if (f-exists? filename)
+      (switch-to-buffer (find-file-noselect filename))
+    (progn (set-buffer (find-file-noselect filename)) ; TODO should just navigate to correct dired buffer
+           (ts-create-inbox-org)))
+  )
+;; ***** check whether immediate parent dir is "0-Inbox" DONE
+
+(defun ts-parent-equal-inbox ()
+  "return t if parent dir is 0-Inbox"
+
+  (equal
+   (file-name-nondirectory (directory-file-name default-directory)) ; returns parent directory
+   "0-Inbox")
+  )
+;; ***** Inbox.org creation DONE
+;; ****** Create Inbox.org DONE
+
+(defun ts-create-inbox-org ()
+  "If Inbox.org doesn't already exist, creates it with *** offset."
+
+  (setq ts-inbox-file-path
+        (concat ts-searched-file-path "/Inbox\.org"))
+
+  (setq ts-destination-buffer (find-buffer-visiting ts-inbox-file-path))
+
+  (cond (ts-destination-buffer (set-buffer ts-destination-buffer)) ; select buffer
+        ((file-exists-p ts-inbox-file-path) (find-file ts-inbox-file-path)) ; open file
+        ;; or create and open file
+        (t (progn (f-touch ts-inbox-file-path)
+                  (write-region "*** offset\n" nil ts-inbox-file-path)
+                  (find-file ts-inbox-file-path))
+           )
+        )
+  )
 ;; ** minor utilities
 ;; *** C-c k QUICK KILL
 
@@ -393,8 +377,8 @@ Bounces point to target top visible heading & counts *'s."
         (when (yes-or-no-p "Are you sure you want to remove this file? ")
           (delete-file filename)
           (kill-buffer buffer)
-          (message "File '%s' successfully removed" filename))))))
-
+          (message "File '%s' successfully removed" filename)))))
+  )
 ;; *** org links
 ;; **** create Zinks.org
 
@@ -485,7 +469,7 @@ do setup to decompose a heading."
   (insert (concat "\n\n* Sprinting " (ts-org-time-and-date-stamp-inactive) "\n\n** proc sprinted\n\n*** deletion pass from bottom up\n\n"))
   (save-buffer))
 
-;; ***** double-file prior sprinting log
+;; ***** double-file prior sprinting log TODO
 
 (defun ts-cut-prior-sprinting ()
   "File prior sprinting heading twice to '2sprinted.org"
@@ -499,7 +483,7 @@ do setup to decompose a heading."
   (org-demote-subtree)
   (org-demote-subtree)
   (org-demote-subtree)
-  (ts-kill-line)
+  (ts-snort-line)
   )
 
 (defun ts-double-file-prior-sprinting ()
@@ -519,9 +503,9 @@ do setup to decompose a heading."
     (newline)
     (save-buffer)
 
-    (ts-create-file-or-switch-to-buffer "../Inbox.org")
-    (ts-create-inbox-offset)
-    (ts-yank-to-bottom-of-buffer)
+    (ts-create-open-inbox-org "../Inbox.org")
+    (ts-create-inbox-org)
+    (ts-insert-to-end-of-buffer)
     (save-buffer)
     (switch-to-buffer "'Meta.org")
   )
@@ -568,8 +552,9 @@ do setup to decompose a heading."
   (save-buffer)
   )
 
-;; ***** duplicate line to other window
+;; ***** duplicate line to other window TODO
 
+;; this is probably obsolete
 (defun ts-duplicate-line-to-other-window ()
   "Copy line and yank to the bottom of the other window, then save."
   (interactive)
@@ -586,6 +571,50 @@ do setup to decompose a heading."
   )
   )
 
+;; ** library
+
+;; *** text
+;; **** snort visible region DONE
+
+(defun ts-snort-visible ()
+  ""
+  (setq ts-object-text
+        (concat
+         (delete-and-extract-region (point-min) (point-max)) "\n"))
+  (widen)
+
+  (unless (eobp)
+    (delete-char 1))
+  )
+;; **** insert at bottom of buffer DONE
+
+(defun ts-insert-to-end-of-buffer ()
+  "Adds object text to bottom of target file."
+
+  (widen)
+  (goto-char (point-max))
+  (ts-empty-line-check)
+
+  (insert ts-object-text)
+  )
+;; **** if line isn't empty, make newline
+
+(defun ts-empty-line-check ()
+  (unless (and (bolp) (eolp))
+    (insert "\n"))
+  )
+;; *** open destination buffer from filename
+
+(defun ts-open-destination-buffer-from-filename (filename)
+  "Open target buffer, if it exists."
+
+  (let ((ts-destination-buffer) (find-buffer-visiting filename))
+
+    (if ts-destination-buffer
+        ()
+      (find-file filename))
+    )
+  )
 ;; ** provide
 
 (provide 'treesort)
