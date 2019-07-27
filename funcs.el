@@ -84,7 +84,8 @@
      (org-save-outline-visibility
                 (org-narrow-to-subtree)
               (ts-snort-visible)
-
+              )
+     )
 ;; ***** destination = file or directory?
 
 (defun ts-throw-text ()
