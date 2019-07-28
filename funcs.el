@@ -94,7 +94,7 @@
 
 (defun ts-snort-org-heading ()
      ""
-     (org-save-outline-visibility
+     (org-save-outline-visibility 1
                 (org-narrow-to-subtree)
               (ts-snort-visible)
               )
@@ -107,11 +107,11 @@
   ""
   (let ((ts-mode-minor-home minor-mode-list)))
 
-  (other-window 1)
   (let ((ts-searched-file-path (ts-searched-file-path))
-        (ts-text-object (ts-snort-text))) ; snort text-object var goes here TODO
+        (ts-buffer-search (buffer-name))
+        (ts-foo     (other-window -1))
+        (ts-text-object (ts-snort-text)))
 
-    (other-window -1)
     (if (file-directory-p ts-searched-file-path)
         (ts-throw-text-to-dir)
       (ts-throw-text-to-file))
@@ -125,7 +125,7 @@
   (select-window ts-window-other)
   (ts-create-inbox-org)
   (ts-insert-to-end-of-buffer)
-  (switch-to-buffer ts-buffer-target-1)
+  (switch-to-buffer ts-buffer-search)
   (select-window ts-window-home)
   )
 ;; ****** throw text, destination = file DONE
@@ -330,10 +330,11 @@ Bounces point to target top visible heading & counts *'s."
 (defun ts-searched-file-path ()
   "Finds the isearched dired entry"
 
-    (goto-char (point-min))
-    (forward-line)
-    (isearch-forward)
-    (dired-get-filename)
+  (other-window 1) ; function will always be called from home window, intended for other window
+  (goto-char (point-min))
+  (forward-line)
+  (isearch-forward)
+  (dired-get-filename)
   )
 
 ;; ***** create an Inbox.org or switch to the buffer if it's open DONE
