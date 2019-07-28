@@ -17,12 +17,11 @@
   (interactive)
 
   (let ((ts-window-home (selected-window))
-        (ts-mode-home major-mode)
         (ts-window-other (next-window))
         )
 
     ;; Determines whether object is file or text.
-    (if (eq ts-mode-home 'dired-mode)
+    (if (eq major-mode 'dired-mode)
         (ts-throw-file)
       (ts-throw-text))
     )
@@ -64,14 +63,15 @@
 
 (defun ts-snort-text ()
   ""
-  (cond ((eq ts-mode-home 'org-mode) (ts-snort-text-org))
-        ((eq ts-minor-mode-home 'outshine) (ts-snort-text-outshine)) ; correct varname for outshine? TODO
-        ((eq ts-minor-mode-home 'outline) (ts-snort-text-outline)) ; correct varname for outline? TODO
-        (t (ts-snort-line)) ; correct func name? TODO
+  (cond ((eq major-mode 'org-mode) (ts-snort-text-org))
+        ((-contains-p minor-mode-list 'outshine-mode) (ts-snort-text-outshine))
+        ((-contains-p minor-mode-list 'outline-minor-mode) (ts-snort-text-outline))
+        (t (ts-snort-line))
         )
   )
+;; ****** snort heading or line
 
-;; ****** at headline?
+;; ******* at heading?
 
 (defun ts-snort-text-org ()
      ""
@@ -90,7 +90,7 @@
      (if (outline-on-heading-p) (ts-snort-outline-heading)
             (ts-snort-line))
      )
-;; ******  snort org heading DONE
+;; ******* snort heading
 
 (defun ts-snort-org-heading ()
      ""
@@ -99,22 +99,34 @@
               (ts-snort-visible)
               )
      )
+
+(defun ts-snort-outshine-heading ()
+  ""
+    (outshine-narrow-to-subtree)
+    (ts-snort-visible)
+    (widen)
+  )
+
+(defun ts-snort-outline-heading ()
+  ""
+    (org-narrow-to-subtree)
+    (ts-snort-visible)
+    (widen)
+  )
 ;; ***** destination = file or directory?
 
 ;; ****** main defun
 
 (defun ts-throw-text ()
   ""
-  (let ((ts-mode-minor-home minor-mode-list)))
-
-  (let ((ts-searched-file-path (ts-searched-file-path))
+  (let* ((ts-searched-file-path (ts-searched-file-path))
         (ts-buffer-search (buffer-name))
         (ts-foo     (other-window -1))
         (ts-text-object (ts-snort-text)))
 
     (if (file-directory-p ts-searched-file-path)
         (ts-throw-text-to-dir)
-      (ts-throw-text-to-file))
+      (ts-throw-text-to-buffer))
     )
   )
 ;; ****** throw text, destination = dir DONE
@@ -130,7 +142,7 @@
   )
 ;; ****** throw text, destination = file DONE
 
-(defun ts-throw-text-to-file ()
+(defun ts-throw-text-to-buffer ()
   "Yank text to target file."
 
   (goto-char (point-min))
@@ -152,10 +164,6 @@
     (error (ts-insert-to-end-of-buffer)))
 
   (save-buffer)
-
-  ;; Sloppy imperative programming method of returning to the original perspective.
-  (switch-to-buffer ts-buffer-target-1)
-  (select-window ts-window-home)
   )
 ;; **** outline TODO
 ;; ***** main defun
@@ -239,7 +247,7 @@ Bounces point to target top visible heading & counts *'s."
   "Throw file or text one directory upwards"
   (interactive)
 
-  (let ((ts-destination-dir (ts-jump-destination)))
+  (let ((ts-searched-file-path (ts-jump-destination)))
 
     (if (eq major-mode 'dired-mode)
         (ts-throw-up-file)
@@ -266,18 +274,21 @@ Bounces point to target top visible heading & counts *'s."
 (defun ts-throw-up-text ()
   "Throw text to ../Inbox.org."
 
-  (ts-snort-visible)
-  (ts-open-target-buffer)
-  (ts-throw-text-to-file)
-  (set-buffer ts-buffer-home)
+  (let ((ts-text-object (ts-snort-text)))
+
+    (ts-create-open-inbox-org
+     (concat ts-searched-file-path "/Inbox\.org"))
+    (ts-throw-text-to-buffer)
+    )
   )
+
 ;; **** target = file
 
 (defun ts-throw-up-file ()
   "Throw file upwards in the dir tree to the next /0-Inbox"
 
-  (mkdir ts-destination-dir t)
-  (rename-file (dired-get-filename "no-dir") ts-destination-dir)
+  (mkdir ts-searched-file-path t)
+  (rename-file (dired-get-filename "no-dir") ts-searched-file-path)
   (revert-buffer) ; refresh screen. necessary?
   )
 
@@ -337,16 +348,6 @@ Bounces point to target top visible heading & counts *'s."
   (dired-get-filename)
   )
 
-;; ***** create an Inbox.org or switch to the buffer if it's open DONE
-
-;; avoids warnings that underlying file has changed, and/or losing unsaved changes.
-(defun ts-create-open-inbox-org (filename)
-  ""
-  (if (f-exists? filename)
-      (switch-to-buffer (find-file-noselect filename))
-    (progn (set-buffer (find-file-noselect filename)) ; TODO should just navigate to correct dired buffer
-           (ts-create-inbox-org)))
-  )
 ;; ***** check whether immediate parent dir is "0-Inbox" DONE
 
 (defun ts-parent-equal-inbox ()
