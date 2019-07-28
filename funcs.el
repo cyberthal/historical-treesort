@@ -60,7 +60,18 @@
 ;; ***** to dired TODO
 ;; **** throw text
 ;; ***** snort type
-;; ******  flow control dispatcher TODO
+;; ****** which text mode?
+
+(defun ts-snort-text ()
+  ""
+  (cond ((eq ts-mode-home 'org-mode) (ts-snort-text-org))
+        ((eq ts-minor-mode-home 'outshine) (ts-snort-text-outshine)) ; correct varname for outshine? TODO
+        ((eq ts-minor-mode-home 'outline) (ts-snort-text-outline)) ; correct varname for outline? TODO
+        (t (ts-snort-line)) ; correct func name? TODO
+        )
+  )
+
+;; ****** at headline?
 
 (defun ts-snort-text-org ()
      ""
@@ -90,15 +101,17 @@
      )
 ;; ***** destination = file or directory?
 
+;; ****** main defun
+
 (defun ts-throw-text ()
   ""
+  (let ((ts-mode-minor-home minor-mode-list)))
+
   (other-window 1)
-  (let ((ts-mode-minor minor-mode-list)
-        (ts-searched-file-path (ts-searched-file-path))
-        )
+  (let ((ts-searched-file-path (ts-searched-file-path))
+        (ts-text-object (ts-snort-text))) ; snort text-object var goes here TODO
+
     (other-window -1)
-
-
     (if (file-directory-p ts-searched-file-path)
         (ts-throw-text-to-dir)
       (ts-throw-text-to-file))
@@ -109,7 +122,7 @@
 (defun ts-throw-text-to-dir ()
   "Insert text to Inbox.org"
 
-  (select-window ts-window-home)
+  (select-window ts-window-other)
   (ts-create-inbox-org)
   (ts-insert-to-end-of-buffer)
   (switch-to-buffer ts-buffer-target-1)
@@ -348,19 +361,18 @@ Bounces point to target top visible heading & counts *'s."
 (defun ts-create-inbox-org ()
   "If Inbox.org doesn't already exist, creates it with *** offset."
 
-  (setq ts-inbox-file-path
-        (concat ts-searched-file-path "/Inbox\.org"))
+  (let* ((ts-inbox-file-path (concat ts-searched-file-path "/Inbox\.org"))
+        (ts-destination-buffer (find-buffer-visiting ts-inbox-file-path)))
 
-  (setq ts-destination-buffer (find-buffer-visiting ts-inbox-file-path))
-
-  (cond (ts-destination-buffer (set-buffer ts-destination-buffer)) ; select buffer
-        ((file-exists-p ts-inbox-file-path) (find-file ts-inbox-file-path)) ; open file
-        ;; or create and open file
-        (t (progn (f-touch ts-inbox-file-path)
-                  (write-region "*** offset\n" nil ts-inbox-file-path)
-                  (find-file ts-inbox-file-path))
-           )
-        )
+    (cond (ts-destination-buffer (set-buffer ts-destination-buffer)) ; select buffer
+          ((file-exists-p ts-inbox-file-path) (find-file ts-inbox-file-path)) ; open file
+          ;; or create and open file
+          (t (progn (f-touch ts-inbox-file-path)
+                    (write-region "*** offset\n" nil ts-inbox-file-path)
+                    (find-file ts-inbox-file-path))
+             )
+          )
+    )
   )
 ;; ** minor utilities
 ;; *** C-c k QUICK KILL
