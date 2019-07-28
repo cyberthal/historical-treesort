@@ -154,12 +154,9 @@
 
   (condition-case nil
       (progn
-        (re-search-forward "^* ") ; set point before first 1*heading
-
-        (if (eq (buffer-substring-no-properties (- (point) 2) (point)) "\n\n")
-            (progn (backward-char) (insert ts-object-text))
-          (insert ts-object-text)
-          )
+        (re-search-forward "^* ")
+        (goto-char (point-at-bol))
+        (insert ts-object-text)
         )
     (error (ts-insert-to-end-of-buffer)))
 
