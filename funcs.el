@@ -128,6 +128,7 @@
         (ts-throw-text-to-dir)
       (ts-throw-text-to-buffer))
     )
+  (save-buffer)
   )
 ;; ****** throw text, destination = dir DONE
 
@@ -151,16 +152,16 @@
   ;; Normally one wants to yank to the end of the buffer.
   ;; But if it's a polished document rather than a list of 4*headings,
   ;; then one wants the 4*headings at the top, where they're noticeable.
+  ;; It is assumed a polished document will have a 1*heading at the top.
 
   (condition-case nil
       (progn
         (re-search-forward "^* ")
         (goto-char (point-at-bol))
         (insert ts-object-text)
+        (save-buffer)
         )
     (error (ts-insert-to-end-of-buffer)))
-
-  (save-buffer)
   )
 ;; **** outline TODO
 ;; ***** main defun
@@ -610,6 +611,7 @@ do setup to decompose a heading."
   (ts-empty-line-check)
 
   (insert ts-object-text)
+  (save-buffer)
   )
 ;; **** if line isn't empty, make newline
 
