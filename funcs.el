@@ -29,7 +29,7 @@
       )
     )
   )
-;; *** flow control dispatcher TODO
+;; *** flow control dispatcher DONE
 
 ;; **** main defun DONE
 
@@ -40,13 +40,11 @@
       (ts-throw-text-to-dired)
     (call-interactively 'ts-throw-text-to-outline))
   )
-;; **** throw file TODO
+;; **** throw file DONE
 
 ;; the other pieces of this step are in the library.
 
 (defun ts-throw-file ()
-
-  (other-window 1)
 
   (let* ((ts-buffer-search (buffer-name))
          (ts-searched-file-path (ts-searched-file-path))
@@ -56,12 +54,12 @@
     (mkdir ts-destination-file-path 1)
     (find-file ts-destination-file-path)
 
-    (other-window -1) ; select-window might not work here cuz TODO
+    (other-window -1) ; select-window won't work here cuz
     (dired-do-rename) ; this func is interactive with user input
 
     (select-window ts-window-other 1)
     (switch-to-buffer ts-buffer-search 1)
-    (other-window -1) ; returns user to his original window TODO
+    (other-window -1)
     )
   )
 ;; **** throw text DONE
@@ -187,7 +185,7 @@ Bounces point to target top visible heading & counts *'s."
   (skip-chars-forward "*")
   )
 ;; *** throw up TODO
-;; **** main defun
+;; **** main defun DONE
 
 (defun ts-throw-up (arg)
   "Throw file or text one directory upwards"
@@ -202,7 +200,7 @@ Bounces point to target top visible heading & counts *'s."
       )
     )
   )
-;; **** jump height
+;; **** jump height DONE
 
 (defun ts-jump-destination ()
   "How high should ts-throw-up jump?"
@@ -216,7 +214,6 @@ Bounces point to target top visible heading & counts *'s."
     (concat ts-home-path ts-jump)
     )
   )
-
 ;; **** object = text TODO
 
 (defun ts-throw-up-text ()
@@ -551,7 +548,7 @@ do setup to decompose a heading."
   )
   )
 
-;; ** library
+;; ** library DONE
 
 ;; *** text DONE
 ;; **** snort visible region DONE
