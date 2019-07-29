@@ -26,9 +26,20 @@
       (ts-throw-text))
     )
   )
-;; *** flow control dispatcher
+;; *** flow control dispatcher DONE
 
-;; **** throw file
+;; **** main defun
+
+(defun ts-throw-text ()
+
+  (select-window ts-window-other)
+  (if (eq major-mode 'dired-mode)
+      (ts-throw-text-to-dired)
+    (call-interactively 'ts-throw-text-to-outline))
+  )
+;; **** throw file TODO
+
+;; ***** main defun
 
 (defun ts-throw-file ()
 
@@ -109,17 +120,7 @@
     (ts-snort-visible)
     (widen)
   )
-;; ***** destination = dired or text?
-
-(defun ts-throw-text ()
-
-  (select-window ts-window-other)
-  (if (eq major-mode 'dired-mode)
-      (ts-throw-text-to-dired)
-    (call-interactively 'ts-throw-text-to-outline))
-)
-
-;; ***** destination = file or directory?
+;; ***** destination = dired
 
 ;; ****** main defun
 
@@ -136,7 +137,7 @@
     )
   (save-buffer)
   )
-;; ****** throw text, destination = dir
+;; ****** destination = dir
 
 (defun ts-throw-text-to-dir ()
   "Insert text to Inbox.org"
@@ -147,7 +148,7 @@
   (switch-to-buffer ts-buffer-search)
   (select-window ts-window-home)
   )
-;; ****** throw text, destination = file
+;; ****** destination = file
 
 (defun ts-throw-text-to-buffer ()
   "Put point either before first top-level heading or at end of buffer.
@@ -166,13 +167,13 @@ It is assumed a polished document will have a 1*heading at the top."
         )
     (error (ts-insert-to-end-of-buffer)))
   )
-;; **** outline TODO
-;; ***** main defun
+;; ***** destination = text
+;; ****** main defun TODO
 
 (defun ts-throw-text-to-outline (x)
   "Appends current line to the body of a selected child heading.  Assumes parent heading is at the top of the visible region.
 
-Prompts user for input.  Asks for enough letters from the beginning of the target child heading to distinguish it from the other immediate children of the parent heading.  Searches for a simple string.  Takes the first match.  Does not take any other arguments.
+Prompts user for input.  Asks for enough letters from the beginning of the target child heading to distinguish it from the other immediate children of the parent heading.  Searches for a simple string.  Takes the first match.
 
 If no match found, fails with an error, and does not kill the line."
 
@@ -192,7 +193,7 @@ If no match found, fails with an error, and does not kill the line."
   (select-window ts-window-other)
   (ts-goto-target-heading)
 
-  ;; go to end of target heading, add a blank line, and yank.
+  ;; go to end of target heading and insert text.
   (org-narrow-to-subtree)
   (goto-char (point-max))
   (ts-empty-line-check)
@@ -207,9 +208,9 @@ If no match found, fails with an error, and does not kill the line."
   (org-narrow-to-subtree)
   (other-window 1))
 
-;; ***** goto target heading
+;; ****** goto target heading
 
-;; *****  main defun DONE
+;; *******  main defun
 
 (defun ts-goto-target-heading ()
 
@@ -220,9 +221,7 @@ If no match found, fails with an error, and does not kill the line."
            )
    )
   )
-;; *****  print starry string
-
-;; ****** main defun DONE
+;; *******  print starry string
 
 (defun ts-print-starry-string ()
   "Print the n* prefix of the target heading
@@ -233,7 +232,7 @@ for the search string."
    (make-string (+ (ts-top-heading-stars) 1) ?*) ; makes n *'s
    " ")
   )
-;; ****** target max heading level DONE
+;; *******  top heading stars
 
 (defun ts-top-heading-stars ()
   "Returns target window's top outline heading level.
