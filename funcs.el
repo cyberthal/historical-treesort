@@ -28,7 +28,7 @@
   )
 ;; *** flow control dispatcher DONE
 
-;; **** main defun
+;; **** main defun DONE
 
 (defun ts-throw-text ()
 
@@ -64,7 +64,7 @@
       )
     )
   )
-;; **** throw text
+;; **** throw text DONE
 ;; ***** snort type
 ;; ****** which text mode?
 
@@ -168,7 +168,7 @@ It is assumed a polished document will have a 1*heading at the top."
     (error (ts-insert-to-end-of-buffer)))
   )
 ;; ***** destination = text
-;; ****** main defun TODO
+;; ****** main defun
 
 (defun ts-throw-text-to-outline (x)
   "Appends current line to the body of a selected child heading.  Assumes parent heading is at the top of the visible region.
@@ -199,15 +199,14 @@ If no match found, fails with an error, and does not kill the line."
   (ts-empty-line-check)
   (insert ts-object-text)
   (save-buffer)
-  (goto-char (point-max)) ; prevents edge case where yank into empty category causes failure to restore perspective. TODO still necessary? 
 
-  ;; restore original perspective. TODO still necessary?
+  ;; restore original perspective.
   (goto-char (point-min))
   (widen)
   (outline-up-heading 1)
   (org-narrow-to-subtree)
-  (other-window 1))
-
+  (other-window 1)
+  )
 ;; ****** goto target heading
 
 ;; *******  main defun
