@@ -1,6 +1,6 @@
 ;; * treesort.el
-;; * code
-;; ** throw
+;; * offset
+;; ** throw TODO
 
 ;; *** config DONE
 
@@ -12,18 +12,21 @@
             (setq search-invisible nil)))
 ;; *** main defun DONE
 
-(defun ts-throw ()
+(defun ts-throw (arg)
   "Throw text or dired item to a target."
-  (interactive)
+  (interactive "p")
 
-  (let ((ts-window-home (selected-window))
-        (ts-window-other (next-window))
-        )
+  (dotimes (number arg)
 
-    ;; Determines whether object is file or text.
-    (if (eq major-mode 'dired-mode)
-        (ts-throw-file)
-      (ts-throw-text))
+    (let ((ts-window-home (selected-window))
+          (ts-window-other (next-window))
+          )
+
+      ;; Determines whether object is file or text.
+      (if (eq major-mode 'dired-mode)
+          (ts-throw-file)
+        (ts-throw-text))
+      )
     )
   )
 ;; *** flow control dispatcher TODO
@@ -419,13 +422,13 @@ Bounces point to target top visible heading & counts *'s."
     (org-cycle)))
   )
 ;; *** proc sprinted
-;; **** pipify word list
+;; **** pipify word list DONE
 
 (defun ts-pipify-word-list (arg)
   "Converts multi-line word list into one line separated by pipes."
   (interactive "p")
 
-  (dotimes (ts-var arg)
+  (dotimes (number arg)
     (end-of-line)
     (insert " | ")
     (delete-char 1)
