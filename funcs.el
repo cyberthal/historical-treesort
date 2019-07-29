@@ -26,7 +26,7 @@
       (ts-throw-text))
     )
   )
-;; *** flow control dispatcher DONE
+;; *** flow control dispatcher TODO
 
 ;; **** main defun DONE
 
@@ -39,87 +39,29 @@
   )
 ;; **** throw file TODO
 
-;; ***** main defun
+;; the other pieces of this step are in the library.
 
 (defun ts-throw-file ()
 
   (other-window 1)
 
-  (let ((ts-buffer-search (buffer-name))
-        )
+  (let* ((ts-buffer-search (buffer-name))
+         (ts-searched-file-path (ts-searched-file-path))
+         (ts-destination-file-path (concat ts-searched-file-path "/0-Inbox"))
+         )
 
-    (let* ((ts-searched-file-path (ts-searched-file-path))
-          (ts-destination-file-path (concat ts-searched-file-path "/0-Inbox"))
-          )
+    (mkdir ts-destination-file-path 1)
+    (find-file ts-destination-file-path)
 
-      (mkdir ts-destination-file-path 1)
-      (find-file ts-destination-file-path)
+    (other-window -1) ; select-window might not work here cuz TODO
+    (dired-do-rename) ; this func is interactive with user input
 
-      (other-window -1) ; select-window might not work here cuz
-      (dired-do-rename) ; this func is interactive with user input
-
-      (select-window ts-window-other 1)
-      (switch-to-buffer ts-buffer-search 1) ; interactive func steals window back.
-      (other-window -1) ; returns user to his original window
-      )
+    (select-window ts-window-other 1)
+    (switch-to-buffer ts-buffer-search 1)
+    (other-window -1) ; returns user to his original window TODO
     )
   )
 ;; **** throw text DONE
-;; ***** snort type
-;; ****** which text mode?
-
-(defun ts-snort-text ()
-  ""
-  (cond ((eq major-mode 'org-mode) (ts-snort-text-org))
-        ((-contains-p minor-mode-list 'outshine-mode) (ts-snort-text-outshine))
-        ((-contains-p minor-mode-list 'outline-minor-mode) (ts-snort-text-outline))
-        (t (ts-snort-line))
-        )
-  )
-;; ****** snort heading or line
-
-;; ******* at heading?
-
-(defun ts-snort-text-org ()
-     ""
-     (if (org-at-heading-p) (ts-snort-org-heading)
-            (ts-snort-line))
-     )
-
-(defun ts-snort-text-outshine ()
-     ""
-     (if (outline-on-heading-p) (ts-snort-outshine-heading)
-            (ts-snort-line))
-     )
-
-(defun ts-snort-text-outline ()
-     ""
-     (if (outline-on-heading-p) (ts-snort-outline-heading)
-            (ts-snort-line))
-     )
-;; ******* snort heading
-
-(defun ts-snort-org-heading ()
-     ""
-     (org-save-outline-visibility 1
-                (org-narrow-to-subtree)
-              (ts-snort-visible)
-              )
-     )
-
-(defun ts-snort-outshine-heading ()
-  ""
-    (outshine-narrow-to-subtree)
-    (ts-snort-visible)
-    (widen)
-  )
-
-(defun ts-snort-outline-heading ()
-  ""
-    (org-narrow-to-subtree)
-    (ts-snort-visible)
-    (widen)
-  )
 ;; ***** destination = dired
 
 ;; ****** main defun
@@ -323,7 +265,60 @@ Bounces point to target top visible heading & counts *'s."
   (other-window 1)
   )
 ;; *** library DONE
-;; **** snort a line DONE
+;; **** snort type DONE
+;; ***** text mode?
+
+(defun ts-snort-text ()
+  ""
+  (cond ((eq major-mode 'org-mode) (ts-snort-text-org))
+        ((-contains-p minor-mode-list 'outshine-mode) (ts-snort-text-outshine))
+        ((-contains-p minor-mode-list 'outline-minor-mode) (ts-snort-text-outline))
+        (t (ts-snort-line))
+        )
+  )
+;; ***** at heading?
+
+(defun ts-snort-text-org ()
+     ""
+     (if (org-at-heading-p) (ts-snort-org-heading)
+            (ts-snort-line))
+     )
+
+(defun ts-snort-text-outshine ()
+     ""
+     (if (outline-on-heading-p) (ts-snort-outshine-heading)
+            (ts-snort-line))
+     )
+
+(defun ts-snort-text-outline ()
+     ""
+     (if (outline-on-heading-p) (ts-snort-outline-heading)
+            (ts-snort-line))
+     )
+;; ***** heading type?
+
+(defun ts-snort-org-heading ()
+     ""
+     (org-save-outline-visibility 1
+                (org-narrow-to-subtree)
+              (ts-snort-visible)
+              )
+     )
+
+(defun ts-snort-outshine-heading ()
+  ""
+    (outshine-narrow-to-subtree)
+    (ts-snort-visible)
+    (widen)
+  )
+
+(defun ts-snort-outline-heading ()
+  ""
+    (org-narrow-to-subtree)
+    (ts-snort-visible)
+    (widen)
+  )
+;; ***** line
 
 (defun ts-snort-line ()
   ""
@@ -377,8 +372,8 @@ Bounces point to target top visible heading & counts *'s."
           )
     )
   )
-;; ** minor utilities
-;; *** C-c k QUICK KILL
+;; ** minor utilities TODO
+;; *** C-c k QUICK KILL DONE
 
 (defun ts-delete-this-buffer-and-file ()
   "Removes file connected to current buffer and kills buffer."
@@ -397,27 +392,19 @@ Bounces point to target top visible heading & counts *'s."
           (kill-buffer buffer)
           (message "File '%s' successfully removed" filename)))))
   )
-;; *** org links
-;; **** create Zinks.org
+;; *** org links DONE
+;; **** create Zinks.org DONE
 
-(defun ts-dired-zinks
-    ()
-  "From Dired, creates a 'Zinks' file with anchor org-id link."
+(defun ts-dired-zinks ()
+  "From Dired, creates a 'Zinks' file with an anchor org-id link."
   (interactive)
 
   (find-file "Zinks.org")
-
   (insert (concat "*** " (file-name-directory buffer-file-name)))
-  (save-buffer)
-  (org-id-store-link)
-
-  ;; superfluous if I configure org-mode to create these drawers closed
-  (forward-line)
-  (org-cycle)
-
-  (goto-char (point-max)))
-
-;; **** Store link and hide the PROPERTIES drawer
+  (ts-store-link-hide-drawer)
+  (goto-char (point-max))
+  )
+;; **** Store link and hide the PROPERTIES drawer DONE
 
 (defun ts-store-link-hide-drawer ()
   (interactive)
@@ -431,20 +418,20 @@ Bounces point to target top visible heading & counts *'s."
     (org-show-all)
     (org-cycle)))
   )
-
 ;; *** proc sprinted
 ;; **** pipify word list
 
-(defun ts-pipify-word-list
-    ()
+(defun ts-pipify-word-list (arg)
   "Converts multi-line word list into one line separated by pipes."
-  (interactive)
+  (interactive "p")
 
-  (end-of-line)
-  (insert " | ")
-  (delete-char 1)
-  (end-of-line))
-
+  (dotimes (ts-var arg)
+    (end-of-line)
+    (insert " | ")
+    (delete-char 1)
+    (end-of-line)
+    )
+  )
 ;; **** decompose a heading, after saving a mummy of it
 
 (defun ts-decomposing-mummy ()
@@ -591,7 +578,7 @@ do setup to decompose a heading."
 
 ;; ** library
 
-;; *** text
+;; *** text DONE
 ;; **** snort visible region DONE
 
 (defun ts-snort-visible ()
@@ -614,14 +601,13 @@ do setup to decompose a heading."
   (insert ts-object-text)
   (save-buffer)
   )
-;; **** if line isn't empty, make newline
+;; **** if line isn't empty, make newline DONE
 
 (defun ts-empty-line-check ()
   (unless (and (bolp) (eolp))
     (insert "\n"))
 )
-
-;; **** visible region ends in two blank lines
+;; **** visible region ends in two blank lines DONE
 
 (defun ts-visible-region-ends-two-blank-lines ()
 
@@ -634,7 +620,7 @@ do setup to decompose a heading."
         (t (insert "\n\n"))
         )
   )
-;; *** open destination buffer from filename
+;; *** open destination buffer from filename DONE
 
 (defun ts-open-destination-buffer-from-filename (filename)
   "Open target buffer, if it exists."
