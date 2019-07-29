@@ -109,11 +109,21 @@
     (ts-snort-visible)
     (widen)
   )
+;; ***** destination = dired or text?
+
+(defun ts-throw-text ()
+
+  (select-window ts-window-other)
+  (if (eq major-mode 'dired-mode)
+      (ts-throw-text-to-dired)
+    (call-interactively 'ts-throw-text-to-outline))
+)
+
 ;; ***** destination = file or directory?
 
 ;; ****** main defun
 
-(defun ts-throw-text ()
+(defun ts-throw-text-to-dired ()
   ""
   (let* ((ts-searched-file-path (ts-searched-file-path))
         (ts-buffer-search (buffer-name))
@@ -168,27 +178,29 @@ If no match found, fails with an error, and does not kill the line."
 
   (interactive "sEnter target heading's unique prefix: ")
 
+  ;; interactive window focus is ts-window-other
+
   ;; fail with an error if user passes a bad heading prefix BEFORE deleting the line to be thrown.  To avoid data loss
   (save-excursion
     (ts-goto-target-heading))
-  (other-window 1)
-
   ;; safe to proceed.  commence throwing the line.
 
   ;; cut the object line
-  (beginning-of-line)
-  (kill-line 1)
+  (select-window ts-window-home)
+  (ts-snort-text)
 
+  (select-window ts-window-other)
   (ts-goto-target-heading)
 
   ;; go to end of target heading, add a blank line, and yank.
   (org-narrow-to-subtree)
   (goto-char (point-max))
-  (newline)
-  (yank)
-  (goto-char (point-max)) ; prevents edge case where yank into empty category causes failure to restore perspective
+  (ts-empty-line-check)
+  (insert ts-object-text)
+  (save-buffer)
+  (goto-char (point-max)) ; prevents edge case where yank into empty category causes failure to restore perspective. TODO still necessary? 
 
-  ;; restore original perspective
+  ;; restore original perspective. TODO still necessary?
   (goto-char (point-min))
   (widen)
   (outline-up-heading 1)
@@ -197,19 +209,20 @@ If no match found, fails with an error, and does not kill the line."
 
 ;; ***** goto target heading
 
-;; *****  main defun
+;; *****  main defun DONE
 
 (defun ts-goto-target-heading ()
-  "Finds a heading in the other window."
 
+  (goto-char (point-min))
   (search-forward
    (concat (ts-print-starry-string)
            (message "%s" x) ; user-entered text
-           )))
-
+           )
+   )
+  )
 ;; *****  print starry string
 
-;; ****** main defun
+;; ****** main defun DONE
 
 (defun ts-print-starry-string ()
   "Print the n* prefix of the target heading
@@ -220,13 +233,13 @@ for the search string."
    (make-string (+ (ts-top-heading-stars) 1) ?*) ; makes n *'s
    " ")
   )
-;; ****** target max heading level
+;; ****** target max heading level DONE
 
 (defun ts-top-heading-stars ()
   "Returns target window's top outline heading level.
 Bounces point to target top visible heading & counts *'s."
 
-  (other-window 1)
+  (select-window ts-window-other)
   (goto-char (point-min))
   (skip-chars-forward "*")
   )
@@ -584,12 +597,10 @@ do setup to decompose a heading."
 ;; **** snort visible region DONE
 
 (defun ts-snort-visible ()
-  ""
-  (setq ts-object-text
-        (concat
-         (delete-and-extract-region (point-min) (point-max)) "\n"))
-  (widen)
 
+  (ts-visible-region-ends-two-blank-lines)
+  (setq ts-object-text (delete-and-extract-region (point-min) (point-max)))
+  (widen)
   (unless (eobp)
     (delete-char 1))
   )
@@ -610,6 +621,20 @@ do setup to decompose a heading."
 (defun ts-empty-line-check ()
   (unless (and (bolp) (eolp))
     (insert "\n"))
+)
+
+;; **** visible region ends in two blank lines
+
+(defun ts-visible-region-ends-two-blank-lines ()
+
+  (goto-char (point-max))
+  (cond ((string-equal "\n\n\n" (buffer-substring-no-properties (- (point-max) 3) (point-max)))
+         (progn (delete-char -1) (ts-visible-region-ends-two-blank-lines)))
+        ((string-equal "\n\n" (buffer-substring-no-properties (- (point-max) 2) (point-max))) ())
+        ((string-equal "\n" (buffer-substring-no-properties (- (point-max) 1) (point-max)))
+         (insert "\n"))
+        (t (insert "\n\n"))
+        )
   )
 ;; *** open destination buffer from filename
 
