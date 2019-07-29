@@ -26,11 +26,9 @@
       (ts-throw-text))
     )
   )
-;; *** flow control dispatcher TODO
+;; *** flow control dispatcher
 
-;; **** throw file DONE
-
-;; ***** throw file TODO
+;; **** throw file
 
 (defun ts-throw-file ()
 
@@ -46,7 +44,7 @@
       (mkdir ts-destination-file-path 1)
       (find-file ts-destination-file-path)
 
-      (other-window -1) ; select-window might not work here cuz DEFER
+      (other-window -1) ; select-window might not work here cuz
       (dired-do-rename) ; this func is interactive with user input
 
       (select-window ts-window-other 1)
@@ -55,8 +53,6 @@
       )
     )
   )
-
-;; ***** to dired TODO
 ;; **** throw text
 ;; ***** snort type
 ;; ****** which text mode?
@@ -130,7 +126,7 @@
     )
   (save-buffer)
   )
-;; ****** throw text, destination = dir DONE
+;; ****** throw text, destination = dir
 
 (defun ts-throw-text-to-dir ()
   "Insert text to Inbox.org"
@@ -141,19 +137,16 @@
   (switch-to-buffer ts-buffer-search)
   (select-window ts-window-home)
   )
-;; ****** throw text, destination = file DONE
+;; ****** throw text, destination = file
 
 (defun ts-throw-text-to-buffer ()
-  "Yank text to target file."
+  "Put point either before first top-level heading or at end of buffer.
+Normally one wants to yank to the end of the buffer.
+But if it's a polished document rather than a list of 4*headings,
+then one wants the 4*headings at the top, where they're noticeable.
+It is assumed a polished document will have a 1*heading at the top."
 
   (goto-char (point-min))
-
-  ;; Put point either before first top-level heading or at end of buffer.
-  ;; Normally one wants to yank to the end of the buffer.
-  ;; But if it's a polished document rather than a list of 4*headings,
-  ;; then one wants the 4*headings at the top, where they're noticeable.
-  ;; It is assumed a polished document will have a 1*heading at the top.
-
   (condition-case nil
       (progn
         (re-search-forward "^* ")
@@ -216,7 +209,7 @@ If no match found, fails with an error, and does not kill the line."
 
 ;; *****  print starry string
 
-;; *****   main defun
+;; ****** main defun
 
 (defun ts-print-starry-string ()
   "Print the n* prefix of the target heading
@@ -225,9 +218,9 @@ for the search string."
   ;; side effect: switches to other window, top heading
   (concat "\n" ; newline avoids grabbing subheading matches
    (make-string (+ (ts-top-heading-stars) 1) ?*) ; makes n *'s
-   " "))
-
-;; *****   target max heading level
+   " ")
+  )
+;; ****** target max heading level
 
 (defun ts-top-heading-stars ()
   "Returns target window's top outline heading level.
@@ -235,9 +228,8 @@ Bounces point to target top visible heading & counts *'s."
 
   (other-window 1)
   (goto-char (point-min))
-  (skip-chars-forward "*"))
-
-
+  (skip-chars-forward "*")
+  )
 ;; *** throw up
 ;; **** main defun
 
