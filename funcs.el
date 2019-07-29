@@ -186,18 +186,20 @@ Bounces point to target top visible heading & counts *'s."
   (goto-char (point-min))
   (skip-chars-forward "*")
   )
-;; *** throw up
+;; *** throw up TODO
 ;; **** main defun
 
-(defun ts-throw-up()
+(defun ts-throw-up (arg)
   "Throw file or text one directory upwards"
-  (interactive)
+  (interactive "p")
 
-  (let ((ts-searched-file-path (ts-jump-destination)))
+  (dotimes (number arg)
+    (let ((ts-searched-file-path (ts-jump-destination)))
 
-    (if (eq major-mode 'dired-mode)
-        (ts-throw-up-file)
-      (ts-throw-up-text))
+      (if (eq major-mode 'dired-mode)
+          (ts-throw-up-file)
+        (ts-throw-up-text))
+      )
     )
   )
 ;; **** jump height
@@ -227,7 +229,6 @@ Bounces point to target top visible heading & counts *'s."
     (ts-throw-text-to-buffer)
     )
   )
-
 ;; **** target = file
 
 (defun ts-throw-up-file ()
@@ -238,35 +239,6 @@ Bounces point to target top visible heading & counts *'s."
   (revert-buffer) ; refresh screen. necessary?
   )
 
-;; *** batch TODO
-;; **** batch throw TODO
-
-(defun ts-batch-throw ()
-  "Loop ts-throw infinitely. C-g to quit."
-  (interactive)
-
-  (condition-case nil
-      (let ((count 0))
-        (while (< count 100)
-          (ts-throw)
-          (setq count (1+ count))))
-    (error "%s" "Done running batch throw"))
-  (other-window 1)
-  )
-;; **** batch throw up TODO
-
-(defun ts-batch-throw-up ()
-  "Loop ts-throw-up infinitely. C-g to quit."
-  (interactive)
-
-  (condition-case nil
-      (let ((count 0))
-        (while (< count 100)
-          (ts-throw-up)
-          (setq count (1+ count))))
-    (error "%s" "Done running batch throw"))
-  (other-window 1)
-  )
 ;; *** library DONE
 ;; **** snort type DONE
 ;; ***** text mode?
@@ -421,7 +393,7 @@ Bounces point to target top visible heading & counts *'s."
     (org-show-all)
     (org-cycle)))
   )
-;; *** proc sprinted
+;; *** proc sprinted TODO
 ;; **** pipify word list DONE
 
 (defun ts-pipify-word-list (arg)
@@ -435,7 +407,7 @@ Bounces point to target top visible heading & counts *'s."
     (end-of-line)
     )
   )
-;; **** decompose a heading, after saving a mummy of it
+;; **** decompose a heading, after saving a mummy of it TODO
 
 (defun ts-decomposing-mummy ()
   "From a single-window frame in org-mode,
@@ -463,7 +435,7 @@ do setup to decompose a heading."
   (org-previous-visible-heading 1)
   (org-cycle)
   (org-narrow-to-subtree))
-;; **** Textmind checklist funcs
+;; **** Textmind checklist funcs TODO
 ;; ***** create new sprinting
 
 (defun ts-create-new-sprinting ()
