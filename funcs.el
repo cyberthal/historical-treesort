@@ -63,12 +63,13 @@
     )
   )
 ;; **** throw text DONE
-;; ***** destination = dired
+;; ***** destination = dired DONE
 
-;; ****** main defun
+;; ****** main defun DONE
 
 (defun ts-throw-text-to-dired ()
-  ""
+
+  (other-window 1)
   (let* ((ts-searched-file-path (ts-searched-file-path))
         (ts-buffer-search (buffer-name))
         (ts-foo     (other-window -1))
