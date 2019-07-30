@@ -1,6 +1,6 @@
 ;; * treesort.el
 ;; * offset
-;; ** throw TODO
+;; ** throw DONE
 
 ;; *** config DONE
 
@@ -185,7 +185,7 @@ Bounces point to target top visible heading & counts *'s."
   (goto-char (point-min))
   (skip-chars-forward "*")
   )
-;; *** throw up TODO
+;; *** throw up DONE
 ;; **** main defun DONE
 
 (defun ts-throw-up (arg)
@@ -215,7 +215,7 @@ Bounces point to target top visible heading & counts *'s."
     (concat ts-home-path ts-jump)
     )
   )
-;; **** object = text TODO
+;; **** object = text DONE
 
 (defun ts-throw-up-text ()
   "Throw text to ../Inbox.org."
@@ -227,7 +227,7 @@ Bounces point to target top visible heading & counts *'s."
     (ts-throw-text-to-buffer)
     )
   )
-;; **** target = file
+;; **** target = file DONE
 
 (defun ts-throw-up-file ()
   "Throw file upwards in the dir tree to the next /0-Inbox"
@@ -405,34 +405,47 @@ Bounces point to target top visible heading & counts *'s."
     (end-of-line)
     )
   )
-;; **** decompose a heading, after saving a mummy of it TODO
+;; **** decompose a heading, after saving a mummy of it DONE
 
 (defun ts-decomposing-mummy ()
-  "From a single-window frame in org-mode,
-do setup to decompose a heading."
+  "From a single-window frame in org-mode, do setup to decompose a heading."
   (interactive)
 
-  (mwim-beginning-of-code-or-line)
-  (kill-new "")
-  (kill-whole-line)
-  (org-yank)
-  (org-yank)
-  (org-previous-visible-heading 2)
-  (org-cycle)
-  (mwim-end-of-line-or-code)
-  (insert " | MUMMY")
-  (org-cycle)
-  (org-next-visible-heading 2)
-  (org-ctrl-c-ret)
+  (cond ((unless (string-equal major-mode 'org-mode) t) (user-error "%s" "Error, must be in org-mode"))
+        ((unless (eq 1 (length (window-list))) t) (user-error "%s" "Error, must have only one window open in frame"))
+        ((unless (progn
+                   (org-narrow-to-subtree)
+                   (outline-previous-visible-heading 1)
+                   (org-at-heading-p)) t) (user-error "%s" "Error, point must be inside a heading"))
+        (t (progn
 
-  (let ((position (point)))
-    (clone-indirect-buffer-other-window "'Temporary" t)
-    (goto-char position))
-  (org-narrow-to-subtree)
-  (other-window 1)
-  (org-previous-visible-heading 1)
-  (org-cycle)
-  (org-narrow-to-subtree))
+             (ts-visible-region-ends-two-blank-lines)
+             (delete-char -1)
+             (goto-char (point-max))
+             (insert (buffer-substring (point-min) (point-max))) ; double the heading
+             (goto-char (point-min))
+             (goto-char (line-end-position))
+             (insert " | MUMMY")
+             (org-global-cycle)
+             (org-next-visible-heading 1)
+             (insert "\n")
+             (org-global-cycle)
+             (widen)
+             (org-next-visible-heading 1)
+             (org-insert-heading)
+             (insert "?")
+             (org-tree-to-indirect-buffer)
+             (select-window (next-window))
+             (goto-char (point-max))
+             (insert "\n")
+             (select-window (next-window))
+             (org-previous-visible-heading 1)
+             (org-cycle)
+             (org-narrow-to-subtree)
+             )
+           )
+        )
+  )
 ;; **** Textmind checklist funcs TODO
 ;; ***** create new sprinting
 
@@ -549,9 +562,9 @@ do setup to decompose a heading."
   )
   )
 
-;; ** library DONE
+;; ** library TODO
 
-;; *** text DONE
+;; *** text TODO
 ;; **** snort visible region DONE
 
 (defun ts-snort-visible ()
@@ -580,7 +593,7 @@ do setup to decompose a heading."
   (unless (and (bolp) (eolp))
     (insert "\n"))
 )
-;; **** visible region ends in two blank lines DONE
+;; **** visible region ends in two blank lines TODO
 
 (defun ts-visible-region-ends-two-blank-lines ()
 
