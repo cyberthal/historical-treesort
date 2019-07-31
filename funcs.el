@@ -560,17 +560,14 @@ Bounces point to target top visible heading & counts *'s."
   "Insert heading at point to the bottom of the other window."
   (interactive)
 
-  (assert (string-equal major-mode 'org-mode) "%s" "Error, must be in org-mode")
-  (assert (eq 2 (length (window-list))) "%s" "Error, must have only two windows open in frame")
-
   (save-restriction
     (org-narrow-to-subtree)
     (ts-ends-n-newlines 1)
-    (let ((buffer (current-buffer)))
+    (let ((home-buffer (current-buffer)))
       (select-window (next-window)) ; target
       (ts-ends-n-newlines 2)
       (goto-char (point-max))
-      (insert-buffer-substring buffer))
+      (insert-buffer-substring home-buffer))
     (select-window (previous-window)) ; home
     (widen)
     )
