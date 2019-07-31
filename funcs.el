@@ -345,7 +345,7 @@ Bounces point to target top visible heading & counts *'s."
           )
     )
   )
-;; ** minor utilities DONE
+;; ** utilities DONE
 ;; *** ts-delete-this-buffer-and-file DONE
 
 (defun ts-delete-this-buffer-and-file ()
@@ -364,32 +364,35 @@ Bounces point to target top visible heading & counts *'s."
       )
     )
   )
-;; *** org links DONE
-;; **** create Zinks.org DONE
+;; *** org links TODO
+;; **** Store link and fold the PROPERTIES drawer DONE
+
+(defun ts-store-link-fold-drawer ()
+  "Store an org link to a heading, and fold the drawer."
+  (interactive)
+
+  (save-excursion
+    (save-restriction
+      (org-store-link nil t) ; without interactive=t arg, no org link gets created
+      (org-narrow-to-subtree)
+      (org-previous-visible-heading 1)
+      (widen)
+      (forward-line)
+      )
+    (org-cycle-hide-drawers 1)
+    )
+  )
+;; rename hide drawer to fold
+;; **** create Zinks.org TODO
 
 (defun ts-dired-zinks ()
   "From Dired, creates a 'Zinks' file with an anchor org-id link."
   (interactive)
 
   (find-file "Zinks.org")
-  (insert (concat "*** " (file-name-directory buffer-file-name)))
-  (ts-store-link-hide-drawer)
+  (insert (concat "*** " (file-name-directory buffer-file-name))) ; this should check whether file is empty first TODO
+  (ts-store-link-fold-drawer)
   (goto-char (point-max))
-  )
-;; **** Store link and hide the PROPERTIES drawer DONE
-
-(defun ts-store-link-hide-drawer ()
-  (interactive)
-
-  (save-excursion
-    (save-restriction
-        (org-store-link nil t)
-      (org-narrow-to-subtree)
-      (org-previous-visible-heading 1)
-      (forward-line)
-      )
-    (org-cycle-hide-drawers 1)
-    )
   )
 ;; *** proc sprinted DONE
 ;; **** pipify word list DONE
