@@ -364,7 +364,7 @@ Bounces point to target top visible heading & counts *'s."
       )
     )
   )
-;; *** org links TODO
+;; *** org links DONE
 ;; **** Store link and fold the PROPERTIES drawer DONE
 
 (defun ts-store-link-fold-drawer ()
@@ -382,17 +382,25 @@ Bounces point to target top visible heading & counts *'s."
     (org-cycle-hide-drawers 1)
     )
   )
-;; rename hide drawer to fold
-;; **** create Zinks.org TODO
+;; **** create Zinks.org DONE
 
 (defun ts-dired-zinks ()
-  "From Dired, creates a 'Zinks' file with an anchor org-id link."
+  "Create Zinks.org with an anchor org-id link."
   (interactive)
 
-  (find-file "Zinks.org")
-  (insert (concat "*** " (file-name-directory buffer-file-name))) ; this should check whether file is empty first TODO
-  (ts-store-link-fold-drawer)
-  (goto-char (point-max))
+  (let ((target-filename (concat default-directory "Zinks.org"))
+        )
+    (if (file-exists-p target-filename)
+          (user-error "%s" "Zinks.org already exists")
+      (progn (find-file target-filename)
+               (insert (concat "*** "
+                               (file-name-directory buffer-file-name))) ; would prefer a relative file path instead, e.g. ~/foo DEFER
+               (ts-store-link-fold-drawer)
+               (ts-ends-n-newlines 2)
+               (goto-char (point-max))
+               )
+        )
+    )
   )
 ;; *** proc sprinted DONE
 ;; **** pipify word list DONE
