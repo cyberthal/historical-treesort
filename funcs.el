@@ -365,7 +365,7 @@ Bounces point to target top visible heading & counts *'s."
           (kill-buffer buffer)
           (message "File '%s' successfully removed" filename)))))
   )
-;; *** org links DONE
+;; *** org links TODO
 ;; **** create Zinks.org DONE
 
 (defun ts-dired-zinks ()
@@ -377,7 +377,7 @@ Bounces point to target top visible heading & counts *'s."
   (ts-store-link-hide-drawer)
   (goto-char (point-max))
   )
-;; **** Store link and hide the PROPERTIES drawer DONE
+;; **** Store link and hide the PROPERTIES drawer TODO
 
 (defun ts-store-link-hide-drawer ()
   (interactive)
@@ -419,8 +419,7 @@ Bounces point to target top visible heading & counts *'s."
                    (org-at-heading-p)) t) (user-error "%s" "Error, point must be inside a heading"))
         (t (progn
 
-             (ts-visible-region-ends-two-blank-lines)
-             (delete-char -1)
+             (ts-ends-n-newlines)
              (goto-char (point-max))
              (insert (buffer-substring (point-min) (point-max))) ; double the heading
              (goto-char (point-min))
@@ -447,7 +446,7 @@ Bounces point to target top visible heading & counts *'s."
         )
   )
 ;; **** Textmind checklist funcs TODO
-;; ***** create new sprinting
+;; ***** create new sprinting DONE
 
 (defun ts-create-new-sprinting ()
     "Make new sprinting heading in '1sprinting.org"
@@ -456,11 +455,13 @@ Bounces point to target top visible heading & counts *'s."
   (set-buffer "'1sprinting.org")
   (widen)
   (goto-char (point-max))
-  (insert "Creating new sprinting heading via elisp func.\n")
+  (insert "Created new sprinting heading via ts-create-new-sprinting\n")
   (insert (concat "\n\n* Sprinting " (ts-org-time-and-date-stamp-inactive) "\n\n** proc sprinted\n\n*** deletion pass from bottom up\n\n"))
   (save-buffer))
 
-;; ***** double-file prior sprinting log TODO
+;; ***** double-file prior sprinting log DONE
+
+;; ****** cut DONE
 
 (defun ts-cut-prior-sprinting ()
   "File prior sprinting heading twice to '2sprinted.org"
@@ -468,20 +469,34 @@ Bounces point to target top visible heading & counts *'s."
   (set-buffer "'1sprinting.org")
   (widen)
   (goto-char (point-min))
-  (org-next-visible-heading 1)
-  (org-show-all '(headings))
-  (org-cycle)
+  (if (org-at-heading-p)
+      ()
+    (org-next-visible-heading 1))
+  (assert (string-equal "* "
+           (buffer-substring (point) (+ (point) 2)))
+          nil "Buffer should begin with a one-star headline")
+
+  (org-narrow-to-subtree)
+  (org-global-cycle)
   (org-demote-subtree)
   (org-demote-subtree)
   (org-demote-subtree)
-  (ts-snort-line)
+  (ts-snort-visible)
+
+  ;; is this necessary?
+  (goto-char (point-max))
   )
+
+;; ****** paste DONE
 
 (defun ts-double-file-prior-sprinting ()
   "File prior sprinting heading twice to '2sprinted.org"
 
     (ts-cut-prior-sprinting)
+
+    (assert (file-exists-p "~/1-Mansort/1-Textmind/2-Linked/8-Hud/'2sprinted.org"))
     (find-file "~/1-Mansort/1-Textmind/2-Linked/8-Hud/'2sprinted.org")
+
     (goto-char (point-min))
     (word-search-forward "Log")
     (org-show-all '(headings))
@@ -490,44 +505,42 @@ Bounces point to target top visible heading & counts *'s."
     (org-forward-heading-same-level 1)
     (insert "\n")
     (backward-char)
-    (org-yank)
-    (newline)
+    (insert ts-object-text)
+    (insert "\n")
     (save-buffer)
-
-    (ts-create-open-inbox-org "../Inbox.org")
-    (ts-create-inbox-org)
+    (let ((ts-searched-file-path (concat default-directory "../Inbox.org")))
+      (ts-create-inbox-org)
+        )
     (ts-insert-to-end-of-buffer)
     (save-buffer)
     (switch-to-buffer "'Meta.org")
   )
-;; ***** deletion pass
+;; ***** deletion pass DONE
 
 (defun ts-proc-sprinted-deletion-pass ()
     "Setup other frame to begin deletion pass for proc sprinted checklist."
 
   (other-frame 1)
   (delete-other-windows)
+  (assert (file-exists-p "~/1-Mansort/1-Textmind/2-Linked/Inbox.org"))
   (find-file "~/1-Mansort/1-Textmind/2-Linked/Inbox.org")
   (org-show-all)
   (goto-char (point-max))
   )
-
-;; ***** headingfy
+;; ***** headingfy DONE
 
 (defun ts-headingfy ()
   "Create a heading and advance 2 paragraphs."
   (interactive)
 
   (org-open-line 2)
-  (org-ctrl-c-ret)
+  (org-insert-heading)
   (insert "?")
   (org-forward-paragraph)
   (org-forward-paragraph)
   (recenter-top-bottom 10)
-  (save-buffer)
   )
-
-;; ***** lazy-title
+;; ***** lazy-title DONE
 
 (defun ts-lazy-title ()
   "Advance to next heading while lazy-titling proc sprinted."
@@ -539,22 +552,20 @@ Bounces point to target top visible heading & counts *'s."
   (org-cycle)
   (org-next-visible-heading 1)
   (org-narrow-to-subtree)
-  (mwim-end-of-line-or-code)
-  (save-buffer)
+  (goto-char (line-end-position))
   )
+;; ***** duplicate heading to other window TODO
 
-;; ***** duplicate line to other window TODO
-
-;; this is probably obsolete
-(defun ts-duplicate-line-to-other-window ()
-  "Copy line and yank to the bottom of the other window, then save."
+(defun ts-duplicate-heading-to-other-window ()
+  "Insert heading at point to the bottom of the other window."
   (interactive)
 
   (save-excursion
     (org-narrow-to-subtree)
+    ;; ensure region ends in a blank line TODO
     (copy-region-as-kill (goto-char (point-min)) (goto-char (point-max)))
     (widen)
-    (other-window 1)
+    (select-window (next-window))
     (goto-char (point-max))
     (newline)
     (yank)
@@ -569,7 +580,7 @@ Bounces point to target top visible heading & counts *'s."
 
 (defun ts-snort-visible ()
 
-  (ts-visible-region-ends-two-blank-lines)
+  (ts-ends-n-newlines 2)
   (setq ts-object-text (delete-and-extract-region (point-min) (point-max)))
   (widen)
   (unless (eobp)
@@ -593,18 +604,21 @@ Bounces point to target top visible heading & counts *'s."
   (unless (and (bolp) (eolp))
     (insert "\n"))
 )
-;; **** visible region ends in two blank lines TODO
+;; **** visible region ends in two blank lines DONE
 
-(defun ts-visible-region-ends-two-blank-lines ()
+(defun ts-ends-n-newlines (&optional arg)
+    "Make visible region terminate in one newline, or n newlines with prefix."
+  (interactive "p")
 
   (goto-char (point-max))
-  (cond ((string-equal "\n\n\n" (buffer-substring-no-properties (- (point-max) 3) (point-max)))
-         (progn (delete-char -1) (ts-visible-region-ends-two-blank-lines)))
-        ((string-equal "\n\n" (buffer-substring-no-properties (- (point-max) 2) (point-max))) ())
-        ((string-equal "\n" (buffer-substring-no-properties (- (point-max) 1) (point-max)))
-         (insert "\n"))
-        (t (insert "\n\n"))
+
+  (let* ((arg (if arg arg 1)) ; default newlines = 1
+         (number (+ arg (skip-chars-backward "\n")))
         )
+    (if (> number 0)
+        (insert (make-string number ?\n))
+      (delete-char (* -1 number)))
+    )
   )
 ;; *** open destination buffer from filename DONE
 
