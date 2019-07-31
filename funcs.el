@@ -345,25 +345,24 @@ Bounces point to target top visible heading & counts *'s."
           )
     )
   )
-;; ** minor utilities TODO
-;; *** C-c k QUICK KILL DONE
+;; ** minor utilities DONE
+;; *** ts-delete-this-buffer-and-file DONE
 
 (defun ts-delete-this-buffer-and-file ()
-  "Removes file connected to current buffer and kills buffer."
+  "Delete file visited by current buffer and kills buffer."
   (interactive)
 
   (let ((filename (buffer-file-name))
-        (buffer (current-buffer))
-        (name (buffer-name)))
-
-    (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" name)
-      (if (buffer-narrowed-p)
-          (error "Buffer is narrowed!")
-        (when (yes-or-no-p "Are you sure you want to remove this file? ")
-          (delete-file filename)
-          (kill-buffer buffer)
-          (message "File '%s' successfully removed" filename)))))
+        )
+    (if (buffer-narrowed-p)
+        (user-error "%s" "Buffer is narrowed")
+      (when (yes-or-no-p "Are you sure you want to remove this file? ")
+        (delete-file filename)
+        (kill-buffer (current-buffer))
+        (message "File '%s' successfully removed" filename)
+        )
+      )
+    )
   )
 ;; *** org links DONE
 ;; **** create Zinks.org DONE
@@ -392,7 +391,7 @@ Bounces point to target top visible heading & counts *'s."
     (org-cycle-hide-drawers 1)
     )
   )
-;; *** proc sprinted TODO
+;; *** proc sprinted DONE
 ;; **** pipify word list DONE
 
 (defun ts-pipify-word-list (arg)
@@ -446,7 +445,7 @@ Bounces point to target top visible heading & counts *'s."
            )
         )
   )
-;; **** Textmind checklist funcs TODO
+;; **** Textmind checklist funcs DONE
 ;; ***** create new sprinting DONE
 
 (defun ts-create-new-sprinting ()
@@ -555,25 +554,27 @@ Bounces point to target top visible heading & counts *'s."
   (org-narrow-to-subtree)
   (goto-char (line-end-position))
   )
-;; ***** duplicate heading to other window TODO
+;; ***** duplicate heading to other window DONE
 
 (defun ts-duplicate-heading-to-other-window ()
   "Insert heading at point to the bottom of the other window."
   (interactive)
 
-  (save-excursion
-    (org-narrow-to-subtree)
-    ;; ensure region ends in a blank line TODO
-    (copy-region-as-kill (goto-char (point-min)) (goto-char (point-max)))
-    (widen)
-    (select-window (next-window))
-    (goto-char (point-max))
-    (newline)
-    (yank)
-  (org-next-visible-heading 1)
-  )
-  )
+  (assert (string-equal major-mode 'org-mode) "%s" "Error, must be in org-mode")
+  (assert (eq 2 (length (window-list))) "%s" "Error, must have only two windows open in frame")
 
+  (save-restriction
+    (org-narrow-to-subtree)
+    (ts-ends-n-newlines 1)
+    (let ((buffer (current-buffer)))
+      (select-window (next-window)) ; target
+      (ts-ends-n-newlines 2)
+      (goto-char (point-max))
+      (insert-buffer-substring buffer))
+    (select-window (previous-window)) ; home
+    (widen)
+    )
+  )
 ;; ** library DONE
 
 ;; *** text DONE
