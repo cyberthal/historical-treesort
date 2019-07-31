@@ -365,7 +365,7 @@ Bounces point to target top visible heading & counts *'s."
           (kill-buffer buffer)
           (message "File '%s' successfully removed" filename)))))
   )
-;; *** org links TODO
+;; *** org links DONE
 ;; **** create Zinks.org DONE
 
 (defun ts-dired-zinks ()
@@ -377,19 +377,20 @@ Bounces point to target top visible heading & counts *'s."
   (ts-store-link-hide-drawer)
   (goto-char (point-max))
   )
-;; **** Store link and hide the PROPERTIES drawer TODO
+;; **** Store link and hide the PROPERTIES drawer DONE
 
 (defun ts-store-link-hide-drawer ()
   (interactive)
 
   (save-excursion
     (save-restriction
-    (org-store-link nil t)
-    (org-narrow-to-subtree)
-    (outline-previous-visible-heading 1)
-    (next-line)
-    (org-show-all)
-    (org-cycle)))
+        (org-store-link nil t)
+      (org-narrow-to-subtree)
+      (org-previous-visible-heading 1)
+      (forward-line)
+      )
+    (org-cycle-hide-drawers 1)
+    )
   )
 ;; *** proc sprinted TODO
 ;; **** pipify word list DONE
@@ -573,9 +574,9 @@ Bounces point to target top visible heading & counts *'s."
   )
   )
 
-;; ** library TODO
+;; ** library DONE
 
-;; *** text TODO
+;; *** text DONE
 ;; **** snort visible region DONE
 
 (defun ts-snort-visible ()
