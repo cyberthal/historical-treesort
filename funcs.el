@@ -1,5 +1,10 @@
 ;; * treesort.el
 ;; * offset
+;; ** require
+
+(require 'cl)
+(require 'dired+)
+
 ;; ** throw DONE
 
 ;; *** config DONE
