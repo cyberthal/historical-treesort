@@ -3,7 +3,6 @@
 ;; ** require
 
 (require 'cl)
-(require 'dired+)
 
 ;; ** throw DONE
 
@@ -57,8 +56,8 @@
     (dired-do-rename)
 
     (select-window (next-window))
-    (diredp-up-directory) ; restores original dired buffer.
-    (diredp-up-directory) ; necessary because save-current-buffer won't restore after dired-do-rename.
+    (dired-up-directory) ; restores original dired buffer.
+    (dired-up-directory) ; necessary because save-current-buffer won't restore after dired-do-rename.
     )
   )
 ;; **** throw text DONE
