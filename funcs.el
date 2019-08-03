@@ -70,15 +70,14 @@
 
   (save-selected-window
     (select-window (next-window))
-    (ts-search-dired-open))
-
-  (let ((ts-text-object (ts-snort-text)))
-
-    (save-selected-window
-      (select-window (next-window))
-      (if (file-directory-p buffer-file-name)
-          (ts-insert-text-to-directory)
-        (ts-insert-text-to-file-blind))
+    (ts-search-dired-open)
+    )
+  (ts-snort-text)
+  (save-selected-window
+    (select-window (next-window))
+    (if buffer-file-name
+        (ts-insert-text-to-file-blind)
+      (ts-insert-text-to-directory)
       )
     )
   )
@@ -304,13 +303,13 @@ If no match found, fails with an error, and does not delete the line."
 (defun ts-create-open-inbox-org ()
   "If Inbox.org doesn't already exist, creates it with *** offset."
 
-  (let* ((ts-inbox-org-path (concat default-directory "/Inbox\.org"))
+  (let* ((ts-inbox-org-path (concat default-directory "Inbox.org"))
          (ts-inbox-org-buffer (find-buffer-visiting ts-inbox-org-path)))
 
     (cond (ts-inbox-org-buffer (set-buffer ts-inbox-org-buffer)) ; select buffer if exists
           ((file-exists-p ts-inbox-org-path) (find-file ts-inbox-org-path)) ; open file if exists
           ;; else create and open file
-          (t (progn (f-touch ts-inbox-org-path)
+          (t (progn (f-touch "Inbox.org")
                     (find-file ts-inbox-org-path)
                     (insert "*** offset\n\n")
                     )
