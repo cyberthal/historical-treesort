@@ -70,27 +70,29 @@
 (defun ts-throw-text-to-dired ()
   "Throw text to a searched target in an adjacent Dired buffer."
 
-  (save-selected-window
-    (select-window (next-window))
-    (ts-search-dired-open)
-    )
+  (select-window (next-window))
+
+  (let ((ts-dired-starting-buffer (current-buffer)))
+  (ts-search-dired-open)
+  (select-window (previous-window))
   (ts-snort-text)
-  (save-selected-window
-    (select-window (next-window))
-    (if buffer-file-name
-        (ts-insert-text-to-file-blind)
-      (ts-insert-text-to-directory)
-      )
+  (select-window (next-window))
+  (if buffer-file-name
+      (ts-insert-text-to-file-blind)
+    (ts-insert-text-to-directory)
     )
+  (switch-to-buffer ts-dired-starting-buffer) ; save-current-buffer bugged, must use instead
+  )
+  (select-window (previous-window))
   )
 ;; ****** destination = dir
 
 (defun ts-insert-text-to-directory ()
   "Insert ts-object-text to Inbox.org"
 
-  (ts-create-open-inbox-org)
-  (ts-insert-to-end-of-buffer)
-  (ts-text-inserted-to-buffer-path-message)
+    (ts-create-open-inbox-org)
+    (ts-insert-to-end-of-buffer)
+    (ts-text-inserted-to-buffer-path-message)
   )
 ;; ****** destination = file
 
