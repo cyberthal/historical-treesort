@@ -35,11 +35,13 @@
   "Throw text to either Dired or an outline."
 
   (select-window (next-window))
-  (if (and (eq major-mode 'dired-mode)
-           (select-window (previous-window)) ; funcs below expect to start from home window
-           )
-      (ts-throw-text-to-dired)
-    (call-interactively 'ts-throw-text-to-outline)
+  (let ((ts-in-dired-p (string-equal major-mode 'dired-mode)))
+    (select-window (previous-window))
+
+    (if ts-in-dired-p
+        (ts-throw-text-to-dired)
+      (call-interactively 'ts-throw-text-to-outline)
+      )
     )
   )
 ;; **** throw file DONE
@@ -130,8 +132,8 @@ If no match found, fails with an error, and does not delete the line."
     (search-forward
      (concat "\n"
              (make-string (+ 1 (skip-chars-forward "*")) ?*)
-             " ")
-     (message "%s" arg) ; inserts user-entered text
+             " "
+             arg)
      )
 
     (unless (outline-on-heading-p) (user-error "%s" "Search did not find a valid heading"))
