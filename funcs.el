@@ -35,11 +35,13 @@
   "Throw text to either Dired or an outline."
 
   (select-window (next-window))
-  (if (and (eq major-mode 'dired-mode)
-           (select-window (previous-window)) ; funcs below expect to start from home window
-           )
-      (ts-throw-text-to-dired)
-    (call-interactively 'ts-throw-text-to-outline)
+  (let ((ts-in-dired-p (string-equal major-mode 'dired-mode)))
+    (select-window (previous-window))
+
+    (if ts-in-dired-p
+        (ts-throw-text-to-dired)
+      (call-interactively 'ts-throw-text-to-outline)
+      )
     )
   )
 ;; **** throw file DONE
@@ -70,15 +72,14 @@
 
   (save-selected-window
     (select-window (next-window))
-    (ts-search-dired-open))
-
-  (let ((ts-text-object (ts-snort-text)))
-
-    (save-selected-window
-      (select-window (next-window))
-      (if (file-directory-p buffer-file-name)
-          (ts-insert-text-to-directory)
-        (ts-insert-text-to-file-blind))
+    (ts-search-dired-open)
+    )
+  (ts-snort-text)
+  (save-selected-window
+    (select-window (next-window))
+    (if buffer-file-name
+        (ts-insert-text-to-file-blind)
+      (ts-insert-text-to-directory)
       )
     )
   )
@@ -131,8 +132,8 @@ If no match found, fails with an error, and does not delete the line."
     (search-forward
      (concat "\n"
              (make-string (+ 1 (skip-chars-forward "*")) ?*)
-             " ")
-     (message "%s" arg) ; inserts user-entered text
+             " "
+             arg)
      )
 
     (unless (outline-on-heading-p) (user-error "%s" "Search did not find a valid heading"))
@@ -185,13 +186,13 @@ If no match found, fails with an error, and does not delete the line."
 (defun ts-throw-up-text ()
   "Throw text to ../Inbox.org."
 
-  (let ((ts-text-object (ts-snort-text))
+  (save-current-buffer
+    (let ((ts-text-object (ts-snort-text))
+          (default-directory (ts-jump-destination))
         )
-    (save-current-buffer
-      (ts-create-open-inbox-org (concat (ts-jump-destination)
-                                        "Inbox\.org"))
-     (ts-insert-text-to-file-blind)
-     )
+    (ts-create-open-inbox-org)
+    (ts-insert-text-to-file-blind)
+      )
     )
   )
 ;; **** target = file DONE
@@ -262,12 +263,16 @@ If no match found, fails with an error, and does not delete the line."
 
 (defun ts-snort-line ()
   "Delete a line and save it to ts-object-text"
-  (setq ts-object-text
-        (concat (delete-and-extract-region (line-beginning-position) (line-end-position))
-                "\n"
-                )
-        )
-  (ts-delete-leftover-empty-line)
+
+  (if (eq (point-min) (point-max))
+      (user-error "%s" "Selected line is empty")
+    (setq ts-object-text
+          (concat (delete-and-extract-region (line-beginning-position) (line-end-position))
+                  "\n"
+                  )
+          )
+    (ts-delete-leftover-empty-line)
+    )
   )
 ;; **** files DONE
 ;; ***** Find the searched dired entry DONE
@@ -300,13 +305,13 @@ If no match found, fails with an error, and does not delete the line."
 (defun ts-create-open-inbox-org ()
   "If Inbox.org doesn't already exist, creates it with *** offset."
 
-  (let* ((ts-inbox-org-path (concat default-directory "/Inbox\.org"))
+  (let* ((ts-inbox-org-path (concat default-directory "Inbox.org"))
          (ts-inbox-org-buffer (find-buffer-visiting ts-inbox-org-path)))
 
     (cond (ts-inbox-org-buffer (set-buffer ts-inbox-org-buffer)) ; select buffer if exists
           ((file-exists-p ts-inbox-org-path) (find-file ts-inbox-org-path)) ; open file if exists
           ;; else create and open file
-          (t (progn (f-touch ts-inbox-org-path)
+          (t (progn (f-touch "Inbox.org")
                     (find-file ts-inbox-org-path)
                     (insert "*** offset\n\n")
                     )
@@ -418,7 +423,8 @@ If no match found, fails with an error, and does not delete the line."
     (if (bobp)
         (delete-char 1)
       (delete-char -1)
-      )
+      (unless (eobp) (forward-char 1))
+    )
     )
   )
 ;; **** insert at bottom of buffer DONE
