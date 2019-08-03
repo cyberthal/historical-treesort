@@ -442,15 +442,18 @@ If no match found, fails with an error, and does not delete the line."
 ;; **** visible region ends in two blank lines DONE
 
 (defun ts-ends-n-newlines (&optional arg)
-  "Make visible region terminate in n newlines, default 2."
+  "Make visible region terminate in n newlines, default 1."
   (interactive "p")
 
-  (unless (>= arg 0) (user-error "Requested number of newlines `%s' is not greater than or equal to zero" arg))
   (goto-char (point-max))
-  (let* ((arg (if arg arg 2)) ; default newlines = 2
+  (let* ((arg (if arg arg 1)) ; default newlines = 1
          (newlines-to-add (+ arg
                              (skip-chars-backward "\n") ; moves point as well.
-                             )))
+                             )
+                          )
+         )
+    (unless (>= arg 0) (user-error "Requested number of newlines `%s' is not greater than or equal to zero" arg))
+
     (if (> newlines-to-add 0)
         (insert (make-string newlines-to-add ?\n))
       (delete-char (* -1 newlines-to-add)
