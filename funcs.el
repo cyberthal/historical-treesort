@@ -25,6 +25,7 @@
     (if (eq major-mode 'dired-mode)
         (ts-throw-file)
       (ts-throw-text))
+    (other-window -1) ; save-selected-window fails for throw-text
     )
   )
 ;; *** flow control dispatcher DONE
@@ -49,18 +50,16 @@
 (defun ts-throw-file ()
   "Throw file(s) from one Dired buffer to a searched target in an adjacent Dired buffer."
 
-  (save-selected-window
-    (select-window (next-window))
-    (ts-search-dired-open)
-    (mkdir (concat default-directory "0-Inbox/") 1)
-    (find-file (concat default-directory "0-Inbox/"))
-    (select-window (previous-window))
-    (dired-do-rename)
+  (select-window (next-window))
+  (ts-search-dired-open)
+  (mkdir (concat default-directory "0-Inbox/") 1)
+  (find-file (concat default-directory "0-Inbox/"))
+  (select-window (previous-window))
+  (dired-do-rename)
 
-    (select-window (next-window))
-    (dired-up-directory) ; restores original dired buffer.
-    (dired-up-directory) ; necessary because save-current-buffer won't restore after dired-do-rename.
-    )
+  (select-window (next-window))
+  (dired-up-directory) ; restores original dired buffer.
+  (dired-up-directory) ; necessary because save-current-buffer won't restore after dired-do-rename.
   )
 ;; **** throw text DONE
 ;; ***** destination = dired DONE
@@ -83,7 +82,6 @@
     )
   (switch-to-buffer ts-dired-starting-buffer) ; save-current-buffer bugged, must use instead
   )
-  (select-window (previous-window))
   )
 ;; ****** destination = dir
 
