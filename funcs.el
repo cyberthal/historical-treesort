@@ -185,13 +185,13 @@ If no match found, fails with an error, and does not delete the line."
 (defun ts-throw-up-text ()
   "Throw text to ../Inbox.org."
 
-  (let ((ts-text-object (ts-snort-text))
+  (save-current-buffer
+    (let ((ts-text-object (ts-snort-text))
+          (default-directory (ts-jump-destination))
         )
-    (save-current-buffer
-      (ts-create-open-inbox-org (concat (ts-jump-destination)
-                                        "Inbox\.org"))
-     (ts-insert-text-to-file-blind)
-     )
+    (ts-create-open-inbox-org)
+    (ts-insert-text-to-file-blind)
+      )
     )
   )
 ;; **** target = file DONE
@@ -262,12 +262,16 @@ If no match found, fails with an error, and does not delete the line."
 
 (defun ts-snort-line ()
   "Delete a line and save it to ts-object-text"
-  (setq ts-object-text
-        (concat (delete-and-extract-region (line-beginning-position) (line-end-position))
-                "\n"
-                )
-        )
-  (ts-delete-leftover-empty-line)
+
+  (if (eq (point-min) (point-max))
+      (user-error "%s" "Selected line is empty")
+    (setq ts-object-text
+          (concat (delete-and-extract-region (line-beginning-position) (line-end-position))
+                  "\n"
+                  )
+          )
+    (ts-delete-leftover-empty-line)
+    )
   )
 ;; **** files DONE
 ;; ***** Find the searched dired entry DONE
@@ -418,7 +422,8 @@ If no match found, fails with an error, and does not delete the line."
     (if (bobp)
         (delete-char 1)
       (delete-char -1)
-      )
+      (unless (eobp) (forward-char 1))
+    )
     )
   )
 ;; **** insert at bottom of buffer DONE
