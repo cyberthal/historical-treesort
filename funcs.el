@@ -186,13 +186,13 @@ If no match found, fails with an error, and does not delete the line."
 (defun ts-throw-up-text ()
   "Throw text to ../Inbox.org."
 
-  (save-current-buffer
-    (let ((ts-text-object (ts-snort-text))
-          (default-directory (ts-jump-destination))
+  (let ((ts-buffer-home (current-buffer))
+        (ts-text-object (ts-snort-text))
+        (default-directory (ts-jump-destination))
         )
     (ts-create-open-inbox-org)
     (ts-insert-text-to-file-blind)
-      )
+    (switch-to-buffer ts-buffer-home) ; because save-current-buffer failed here
     )
   )
 ;; **** target = file DONE
