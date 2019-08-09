@@ -423,16 +423,17 @@ If no match found, fails with an error, and does not delete the line."
 ;; **** safely delete empty line
 
 (defun ts-delete-leftover-empty-line ()
-  "Safely deletes empty line at point"
-
-  (assert (org--line-empty-p 1) "%s" "Expected line at point to be empty")
+  "Deletes empty line at point, if there is one"
 
   (unless (and (bobp) (eobp))
     (if (bobp)
         (delete-char 1)
-      (delete-char -1)
-      (unless (eobp) (forward-char 1))
-    )
+      (when
+          (org--line-empty-p 1) ; (not my) bug: this wrongly returns nil when point is on an empty line at top of buffer. hence the workaround
+        (delete-char -1)
+        (unless (eobp) (forward-char 1))
+        )
+      )
     )
   )
 ;; **** insert at bottom of buffer DONE
