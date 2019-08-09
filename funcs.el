@@ -200,7 +200,15 @@ If no match found, fails with an error, and does not delete the line."
 (defun ts-throw-up-file ()
   "Throw file upwards in the dir tree to the next /0-Inbox"
 
-  (rename-file (dired-get-filename "no-dir") (ts-jump-destination))
+  (let* ((ts-jump-destination (ts-jump-destination))
+         (ts-inbox-dir (concat ts-jump-destination "0-Inbox/"))
+         )
+    (if (file-exists-p ts-inbox-dir)
+        ()
+      (mkdir ts-inbox-dir)
+      )
+    (rename-file (dired-get-filename "no-dir") ts-inbox-dir)
+    )
   (revert-buffer) ; refreshes screen significantly faster than otherwise.
   )
 ;; *** library DONE
