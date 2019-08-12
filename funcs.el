@@ -6,10 +6,12 @@
 
 ;; **** don't search invisible text in dired DONE
 
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (make-local-variable 'search-invisible)
-            (setq search-invisible nil)))
+(defun ts-dired-dont-search-invisible ()
+  (make-local-variable 'search-invisible)
+  (setq search-invisible nil)
+  )
+
+(add-hook 'dired-mode-hook 'ts-dired-dont-search-invisible)
 ;; *** main defun DONE
 
 (defun ts-throw (&optional count)
@@ -407,8 +409,7 @@ If no match found, fails with an error, and does not delete the line."
   )
 ;; ** library DONE
 
-;; *** text DONE
-;; **** snort visible region DONE
+;; *** snort visible region DONE
 
 (defun ts-snort-visible ()
   "Cuts visible to ts-object-text, terminating in an empty line. Widens. Leaves no empty line behind."
@@ -418,7 +419,7 @@ If no match found, fails with an error, and does not delete the line."
   (widen)
   (ts-delete-leftover-empty-line)
   )
-;; **** safely delete empty line
+;; *** safely delete empty line
 
 (defun ts-delete-leftover-empty-line ()
   "Deletes empty line at point, if there is one"
@@ -434,7 +435,7 @@ If no match found, fails with an error, and does not delete the line."
       )
     )
   )
-;; **** insert at bottom of buffer DONE
+;; *** insert at bottom of buffer DONE
 
 (defun ts-insert-to-end-of-buffer ()
   "Adds object text to bottom of target buffer."
@@ -444,7 +445,7 @@ If no match found, fails with an error, and does not delete the line."
   (goto-char (point-max))
   (insert ts-object-text)
   )
-;; **** visible region ends in two blank lines DONE
+;; *** visible region ends in two blank lines DONE
 
 (defun ts-ends-n-newlines (&optional arg)
   "Make visible region terminate in n newlines, default 1."
@@ -466,7 +467,7 @@ If no match found, fails with an error, and does not delete the line."
       )
     )
   )
-;; **** text inserted message
+;; *** text inserted confirmation message
 
 (defun ts-text-inserted-to-buffer-path-message ()
     "Says inserted text into buffer file name, with path relative to vd-root-dir or ~/."
