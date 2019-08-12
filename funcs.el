@@ -60,6 +60,7 @@
   (select-window (next-window))
   (dired-up-directory) ; restores original dired buffer.
   (dired-up-directory) ; necessary because save-current-buffer won't restore after dired-do-rename.
+  (forward-char 1)
   )
 ;; **** throw text DONE
 ;; ***** destination = dired DONE
@@ -71,7 +72,8 @@
 
   (select-window (next-window))
 
-  (let ((ts-dired-starting-buffer (current-buffer)))
+  (let ((ts-dired-starting-buffer (current-buffer))
+        )
   (ts-search-dired-open)
   (select-window (previous-window))
   (ts-snort-text)
@@ -81,6 +83,7 @@
     (ts-insert-text-to-directory)
     )
   (switch-to-buffer ts-dired-starting-buffer) ; save-current-buffer bugged, must use instead
+  (forward-char 1)
   )
   )
 ;; ****** destination = dir
