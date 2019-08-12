@@ -18,10 +18,12 @@
 
   (dotimes (var count)
 
-    (if (eq major-mode 'dired-mode)
-        (ts-throw-file)
-      (ts-throw-text))
-    (other-window -1) ; save-selected-window fails for throw-text
+    (unwind-protect
+        (if (eq major-mode 'dired-mode)
+            (ts-throw-file)
+          (ts-throw-text))
+      (other-window -1) ; save-selected-window fails for throw-text
+      )
     )
   )
 ;; *** flow control dispatcher DONE
