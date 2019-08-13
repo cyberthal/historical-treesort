@@ -30,7 +30,7 @@
 
 ;; ts-throw assumes that most headings you file will have four or more stars. Why? Imagine you are throwing headings to an outline. The level-1 heading is the document title. The level-2 headings are categories. The level-3 headings are subcategories. The level-4 headings are topics. Outlines become unwieldy when they get too deep, at which point it's better to create more files and directories to spread the load.
 
-;; ts-throw only imposes this opinion on you in one way: it creates Inbox.org files with a "**** offset" at the top. You can still file level-5 headings, but they might "vanish" if you accidentally file a level-4 heading that folds appended level-5 headings beneath it. You can also file level-3 headings, although they won't be children of the "offset" heading, and might unexpectedly fold appended level-4 headings. I recommend that you convert headings to level 4 for transport, and then resize them at their destination.
+;; ts-throw only imposes this opinion on you in one way: it creates Inbox.org files with a "*** offset" at the top. You can still file level-5 headings, but they might "vanish" if you accidentally file a level-4 heading that folds appended level-5 headings beneath it. You can also file level-3 headings, although they won't be children of the "offset" heading, and might unexpectedly fold appended level-4 headings. I recommend that you convert headings to level 4 for transport, and then resize them at their destination.
 
 ;; The last text thrown is saved in the variable ts-object-text until the Emacs session ends. Text is not saved to the kill ring.
 
