@@ -24,13 +24,15 @@
 
 ;; ts-throw can throw text into existing files or outlines. You can duplicate a heading to another window with ts-duplicate-heading-to-other-window.
 
+;; When you throw text to an outline, ts-throw believes that the parent heading is at the top of the visible region. It will only throw to direct children of the parent. You should narrow appropriately before throwing.
+
 ;; When you throw text to a file, ts-throw puts the text at the bottom. EXCEPT when the file already has a level-1 heading. Then ts-throw assumes this is a polished document, not an inbox file. ts-throw worries you will forget about text appended to polished documents. So it prepends the text before the level-1 headline, where it will stick out like a sore thumb.
 
 ;; ts-throw assumes that most headings you file will have four or more stars. Why? Imagine you are throwing headings to an outline. The level-1 heading is the document title. The level-2 headings are categories. The level-3 headings are subcategories. The level-4 headings are topics. Outlines become unwieldy when they get too deep, at which point it's better to create more files and directories to spread the load.
 
 ;; ts-throw only imposes this opinion on you in one way: it creates Inbox.org files with a "**** offset" at the top. You can still file level-5 headings, but they might "vanish" if you accidentally file a level-4 heading that folds appended level-5 headings beneath it. You can also file level-3 headings, although they won't be children of the "offset" heading, and might unexpectedly fold appended level-4 headings. I recommend that you convert headings to level 4 for transport, and then resize them at their destination.
 
-;; The last text kill is saved in the variable ts-object-text until the Emacs session ends.
+;; The last text thrown is saved in the variable ts-object-text until the Emacs session ends. Text is not saved to the kill ring.
 
 ;;;; Installation
 
@@ -49,16 +51,43 @@
 
 ;; Run one of these commands:
 
-;; `ts-throw'
-;; `ts-throw-up'
-;; `ts-delete-this-buffer-and-file'
-;; `ts-store-link-fold-drawer'
-;; `ts-dired-zinks'
-;; `ts-duplicate-heading-to-other-window'
+;; `ts-throw' throw text/files to the next window
+;; `ts-throw-up' throw text/files one directory up
+;; `ts-delete-this-buffer-and-file' self-explanatory
+;; `ts-store-link-fold-drawer' store an org link and hide the drawer
+;; `ts-dired-zinks' store an org link in a file, titled with relative path
+;; `ts-duplicate-heading-to-other-window' self-explanatory
 
 ;;;; Tips
 
-;; + You can customize settings in the `package-name' group.
+;; Use org-id for global link IDs that are not path-dependent.
+
+;; Treesort encourages many org files in deeply nested directories. This can make it challenging to construct an org-agenda files list. See here to load org agenda files recursively: https://stackoverflow.com/questions/17215868/recursively-adding-org-files-in-a-top-level-directory-for-org-agenda-files-take
+
+;; It also helps to have a function that refreshes your org agenda file list, if you've altered paths in that directory.
+
+;; I recommend configuring Dired to sort directories before files. Where possible, capitalize files and directories. This makes it easy to target them with isearch in a few keystrokes. Omit extensions to reduce visual clutter.
+
+;; Treesort filing is fast. Think with your fingers, not your brain. You can always redo it later.
+
+;;; My keybindings
+
+;; By putting the following commands on convenient keys, you can file without thinking about it.
+
+;; (global-set-key (kbd "H-f") 'ts-throw)
+;; (global-set-key (kbd "H-g") 'ts-throw-up)
+;; (global-set-key (kbd "C-c k") 'ts-delete-this-buffer-and-file)
+;; (global-set-key (kbd "C-c l") 'ts-store-link-fold-drawer)
+;; (global-set-key (kbd "H-a") 'other-window)
+;; (global-set-key (kbd "H-w") 'outline-up-heading)
+;; (global-set-key (kbd "H-e") 'outline-previous-visible-heading)
+;; (global-set-key (kbd "H-r") 'outline-next-visible-heading)
+;; (global-set-key (kbd "H-d") 'org-narrow-to-subtree)
+;; (global-set-key (kbd "H-s") 'widen)
+;; (global-set-key (kbd "H-1") 'spacemacs/toggle-maximize-buffer)
+;; (global-set-key (kbd "H-2") 'delete-window)
+;; (global-set-key (kbd "H-3") 'split-window-right)
+;; (global-set-key (kbd "s-i") 'ido-dired)
 
 ;;; License:
 
@@ -73,7 +102,6 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Code:
 
