@@ -1,3 +1,17 @@
+;;; treesort.el --- move text/files around directory tree
+
+;; Copyright (C) 2019  Leo Buchignani III
+
+;; Author: Leo Buchignani III <texas.cyberthal@gmail.com>
+;; Keywords: outlines, files, convenience
+;; Version: 0.0.1
+
+;;; Commentary:
+
+
+
+;;; Code:
+
 ;; * treesort.el
 ;; * offset
 ;; ** throw DONE
@@ -14,7 +28,7 @@
 ;; *** main defun DONE
 
 (defun ts-throw (&optional count)
-  "Throw text or dired entry to a target in the next window."
+  "Throw text or dired entry to a target in the next window COUNT times."
   (interactive "p")
 
   (dotimes (var count)
@@ -88,7 +102,7 @@
 ;; ****** destination = dir
 
 (defun ts-insert-text-to-directory ()
-  "Insert ts-object-text to Inbox.org"
+  "Insert ts-object-text to Inbox.org."
 
     (ts-create-open-inbox-org)
     (ts-insert-to-end-of-buffer)
@@ -97,16 +111,16 @@
 ;; ****** destination = file
 
 (defun ts-insert-text-to-file-blind ()
-  "Put point either before first top-level heading or at end of buffer.
+  "Put point either before first level-1 heading or at end of buffer.
 Normally one wants to yank to the end of the buffer.
 But if it's a polished document rather than an inbox,
 then one wants the new text at the top, where its more noticeable.
-Function assumes a polished document will have a 1*heading near the top."
+Function assumes a polished document will have a level-1 near the top."
 
   (goto-char (point-min))
   (condition-case nil
       (progn
-        (re-search-forward "^* ") ; search for a top-level headline
+        (re-search-forward "^* ") ; search for a level-1 headline
         (goto-char (point-at-bol))
         (insert ts-object-text)
         )
@@ -117,10 +131,13 @@ Function assumes a polished document will have a 1*heading near the top."
 ;; ***** destination = text
 ;; ****** main defun DONE
 
-(defun ts-throw-text-to-outline (arg)
-  "Appends current heading or line to the body of a selected child heading.  Assumes parent heading is at the top of the visible region.
+(defun ts-throw-text-to-outline (PREFIX)
+  "Append text to next window's heading beginning with PREFIX.
+Assumes parent heading is at the top of the visible region.
 
-Prompts user for input.  Asks for enough letters from the beginning of the target child heading to distinguish it from the other immediate children of the parent heading.  Searches for a simple string.  Takes the first match.
+Prompts user for input. Asks for enough letters from the beginning of the target
+child heading to distinguish it from the other immediate children of the parent
+heading. Searches for a simple string. Takes the first match.
 
 If no match found, fails with an error, and does not delete the line."
 
@@ -135,12 +152,12 @@ If no match found, fails with an error, and does not delete the line."
      (concat "\n"
              (make-string (+ 1 (skip-chars-forward "*")) ?*)
              " "
-             arg)
+             PREFIX)
      )
 
     (unless (outline-on-heading-p) (user-error "%s" "Search did not find a valid heading"))
 
-    (org-save-outline-visibility 1 ; arg necessary else heading after body text unfolds body text
+    (org-save-outline-visibility 1 ; argument necessary, else heading after body text unfolds body text
       (save-restriction
         (org-narrow-to-subtree)
         (goto-char (point-max))
@@ -158,7 +175,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; **** main defun DONE
 
 (defun ts-throw-up (&optional count)
-  "Throw file or text one directory upwards, or N directories upwards with an argument."
+  "Throw file or text one directory upwards, or COUNT directories upwards."
   (interactive "p")
 
   (dotimes (var count)
@@ -171,7 +188,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; **** jump height DONE
 
 (defun ts-jump-destination ()
-  "Returns a directory either one above current, or two if parent is /0-Inbox"
+  "Return a directory either one above current, or two if parent is /0-Inbox."
 
   (concat default-directory
 
@@ -291,7 +308,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** check whether immediate parent dir is "0-Inbox" DONE
 
 (defun ts-parent-dir-inbox-p ()
-  "Return t if parent dir is 0-Inbox"
+  "Return t if parent dir is 0-Inbox."
 
   (equal
    (file-name-nondirectory (directory-file-name default-directory)) ; returns parent directory
@@ -321,7 +338,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** ts-delete-this-buffer-and-file DONE
 
 (defun ts-delete-this-buffer-and-file ()
-  "Delete file visited by current buffer and kills buffer."
+  "Delete file visited by current buffer and kill buffer."
   (interactive)
 
   (let ((filename (buffer-file-name))
@@ -357,7 +374,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; **** create Zinks.org DONE
 
 (defun ts-dired-zinks ()
-  "Create Zinks.org and inserts an anchor org-id link titled with its path relative to vc-root-dir if present, else user-home-directory."
+  "Create Zinks.org and insert an anchor org-id link titled with its path relative to `vc-root-dir' if present, else `user-home-directory'."
   (interactive)
 
   (let ((zinks-filename (concat default-directory "Zinks.org"))
@@ -403,7 +420,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** snort visible region DONE
 
 (defun ts-snort-visible ()
-  "Moves visible text to the var ts-object-text. Widens. Deletes the empty line."
+  "Move visible text to the variable ts-object-text. Widen. Delete the empty line."
 
   (goto-char (point-max))
   (org-N-empty-lines-before-current 1)
@@ -430,7 +447,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** insert at bottom of buffer DONE
 
 (defun ts-insert-to-end-of-buffer ()
-  "Adds object text to bottom of target buffer."
+  "Add `ts-object-text' text to bottom of target buffer."
 
   (widen)
   (goto-char (point-max))
@@ -451,3 +468,4 @@ If no match found, fails with an error, and does not delete the line."
 ;; ** provide
 
 (provide 'treesort)
+;;; treesort.el ends here
