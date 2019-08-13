@@ -10,12 +10,11 @@
   (make-local-variable 'search-invisible)
   (setq search-invisible nil)
   )
-
 (add-hook 'dired-mode-hook 'ts-dired-dont-search-invisible)
 ;; *** main defun DONE
 
 (defun ts-throw (&optional count)
-  "Throw text or dired entry to a tcountet."
+  "Throw text or dired entry to a target in the next window."
   (interactive "p")
 
   (dotimes (var count)
@@ -100,9 +99,9 @@
 (defun ts-insert-text-to-file-blind ()
   "Put point either before first top-level heading or at end of buffer.
 Normally one wants to yank to the end of the buffer.
-But if it's a polished document rather than a list of 4*headings,
-then one wants the 4*headings at the top, where they're noticeable.
-It is assumed a polished document will have a 1*heading at the top."
+But if it's a polished document rather than an inbox,
+then one wants the new text at the top, where its more noticeable.
+Function assumes a polished document will have a 1*heading near the top."
 
   (goto-char (point-min))
   (condition-case nil
@@ -159,7 +158,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; **** main defun DONE
 
 (defun ts-throw-up (&optional count)
-  "Throw file or text one directory upwards"
+  "Throw file or text one directory upwards, or N directories upwards with an argument."
   (interactive "p")
 
   (dotimes (var count)
@@ -185,7 +184,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; **** object = text DONE
 
 (defun ts-throw-up-text ()
-  "Throw text to ../Inbox.org."
+  "Throw text upwards in the directory tree to the next /0-Inbox."
 
   (let ((ts-buffer-home (current-buffer))
         (ts-text-object (ts-snort-text))
@@ -199,7 +198,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; **** target = file DONE
 
 (defun ts-throw-up-file ()
-  "Throw file upwards in the dir tree to the next /0-Inbox"
+  "Throw file upwards in the directory tree to the next /0-Inbox."
 
   (let* ((ts-jump-destination (ts-jump-destination))
          (ts-inbox-dir (concat ts-jump-destination "0-Inbox/"))
@@ -217,7 +216,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** text mode?
 
 (defun ts-snort-text ()
-  ""
+  "If heading or line of text to ts-snort-line variable."
   (cond ((eq major-mode 'org-mode) (ts-snort-text-org))
         ((-contains-p minor-mode-list 'outshine-mode) (ts-snort-text-outshine))
         ((-contains-p minor-mode-list 'outline-minor-mode) (ts-snort-text-outline))
@@ -227,42 +226,32 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** at heading?
 
 (defun ts-snort-text-org ()
-     ""
      (if (org-at-heading-p) (ts-snort-org-heading)
             (ts-snort-line))
      )
-
 (defun ts-snort-text-outshine ()
-     ""
      (if (outline-on-heading-p) (ts-snort-outshine-heading)
             (ts-snort-line))
      )
-
 (defun ts-snort-text-outline ()
-     ""
      (if (outline-on-heading-p) (ts-snort-outline-heading)
             (ts-snort-line))
      )
 ;; ***** heading type? DONE
 
 (defun ts-snort-org-heading ()
-
   (save-restriction
     (org-narrow-to-subtree)
     (ts-snort-visible)
     )
   )
-
 (defun ts-snort-outshine-heading ()
-
   (save-restriction
     (outshine-narrow-to-subtree)
     (ts-snort-visible)
     )
   )
-
 (defun ts-snort-outline-heading ()
-
   (save-restriction
     (org-narrow-to-subtree)
     (ts-snort-visible)
@@ -271,7 +260,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** line
 
 (defun ts-snort-line ()
-  "Delete a line and save it to ts-object-text"
+  "Move a line of text to var ts-object-text."
 
   (if (eq (point-min) (point-max))
       (user-error "%s" "Selected line is empty")
@@ -287,7 +276,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** Find the searched dired entry DONE
 
 (defun ts-search-dired-open ()
-  "Opens the isearched Dired entry"
+  "Opens the isearched Dired entry."
 
   (if (string-equal major-mode "dired-mode")
       nil
@@ -312,7 +301,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; ****** Create open Inbox.org DONE
 
 (defun ts-create-open-inbox-org ()
-  "If Inbox.org doesn't already exist, creates it with *** offset."
+  "If Inbox.org doesn't already exist, create it and insert *** offset."
 
   (let* ((ts-inbox-org-path (concat default-directory "Inbox.org"))
          (ts-inbox-org-buffer (find-buffer-visiting ts-inbox-org-path)))
@@ -379,7 +368,7 @@ If no match found, fails with an error, and does not delete the line."
       (insert (concat "*** "
                       (expand-file-name (file-name-directory buffer-file-name) (if (vc-root-dir)
                                                                                    (vc-root-dir)
-                                                                                 user-home-directory))
+                                                                                 user-home-directory)) ; this might cause an error if outside the user-home-directory and not in a repo. DEFER
                       "\n\n\n"
                       )
               )
@@ -391,7 +380,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** duplicate heading to other window DONE
 
 (defun ts-duplicate-heading-to-other-window ()
-  "Insert heading at point to the bottom of the other window."
+  "Insert heading at point to the bottom of the buffer in the next window."
   (interactive)
 
   (save-restriction
@@ -414,7 +403,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** snort visible region DONE
 
 (defun ts-snort-visible ()
-  "Cuts visible to ts-object-text, terminating in an empty line. Widens. Leaves no empty line behind."
+  "Moves visible text to the var ts-object-text. Widens. Deletes the empty line."
 
   (goto-char (point-max))
   (org-N-empty-lines-before-current 1)
@@ -425,7 +414,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** safely delete empty line
 
 (defun ts-delete-leftover-empty-line ()
-  "Deletes empty line at point, if there is one"
+  "Deletes empty line at point, if there is one."
 
   (unless (and (bobp) (eobp))
     (if (bobp)
@@ -451,7 +440,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** text inserted confirmation message
 
 (defun ts-text-inserted-to-buffer-path-message ()
-    "Says inserted text into buffer file name, with path relative to vd-root-dir or ~/."
+  "Reports the filename the text arrived at, with path relative to vd-root-dir or ~/."
 
   (message "Inserted text into `%s'" (if (vc-root-dir)
                                          (expand-file-name buffer-file-name (vc-root-dir))
