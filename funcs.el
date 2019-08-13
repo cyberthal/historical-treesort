@@ -144,15 +144,13 @@ If no match found, fails with an error, and does not delete the line."
     (org-save-outline-visibility 1 ; arg necessary else heading after body text unfolds body text
       (save-restriction
         (org-narrow-to-subtree)
-        (ts-ends-n-newlines 2)
         (goto-char (point-max))
+        (org-N-empty-lines-before-current 1)
 
         (save-selected-window (select-window (previous-window))
                               (ts-snort-text))
 
         (insert ts-object-text)
-        (ts-ends-n-newlines 1)
-        (goto-char (point-min))
         )
       )
     )
@@ -398,13 +396,14 @@ If no match found, fails with an error, and does not delete the line."
 
   (save-restriction
     (org-narrow-to-subtree)
-    (ts-ends-n-newlines 1)
+    (goto-char (point-max))
+    (org-N-empty-lines-before-current 1)
     (let ((home-buffer (current-buffer))
           )
       (save-selected-window
         (select-window (next-window))
-        (ts-ends-n-newlines 2)
         (goto-char (point-max))
+        (org-N-empty-lines-before-current 1)
         (insert-buffer-substring home-buffer)
         )
       )
@@ -417,7 +416,8 @@ If no match found, fails with an error, and does not delete the line."
 (defun ts-snort-visible ()
   "Cuts visible to ts-object-text, terminating in an empty line. Widens. Leaves no empty line behind."
 
-  (ts-ends-n-newlines 1)
+  (goto-char (point-max))
+  (org-N-empty-lines-before-current 1)
   (setq ts-object-text (delete-and-extract-region (point-min) (point-max)))
   (widen)
   (ts-delete-leftover-empty-line)
@@ -444,31 +444,9 @@ If no match found, fails with an error, and does not delete the line."
   "Adds object text to bottom of target buffer."
 
   (widen)
-  (ts-ends-n-newlines 2)
   (goto-char (point-max))
+  (org-N-empty-lines-before-current 1)
   (insert ts-object-text)
-  )
-;; *** visible region ends in two blank lines DONE
-
-(defun ts-ends-n-newlines (&optional arg)
-  "Make visible region terminate in n newlines, default 1."
-  (interactive "p")
-
-  (goto-char (point-max))
-  (let* ((arg (if arg arg 1)) ; default newlines = 1
-         (newlines-to-add (+ arg
-                             (skip-chars-backward "\n") ; moves point as well.
-                             )
-                          )
-         )
-    (unless (>= arg 0) (user-error "Requested number of newlines `%s' is not greater than or equal to zero" arg))
-
-    (if (> newlines-to-add 0)
-        (insert (make-string newlines-to-add ?\n))
-      (delete-char (* -1 newlines-to-add)
-                   )
-      )
-    )
   )
 ;; *** text inserted confirmation message
 
