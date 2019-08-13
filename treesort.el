@@ -49,16 +49,43 @@
 
 ;; Run one of these commands:
 
-;; `ts-throw'
-;; `ts-throw-up'
-;; `ts-delete-this-buffer-and-file'
-;; `ts-store-link-fold-drawer'
-;; `ts-dired-zinks'
-;; `ts-duplicate-heading-to-other-window'
+;; `ts-throw' throw text/files to the next window
+;; `ts-throw-up' throw text/files one directory up
+;; `ts-delete-this-buffer-and-file' self-explanatory
+;; `ts-store-link-fold-drawer' store an org link and hide the drawer
+;; `ts-dired-zinks' store an org link in a file, titled with relative path
+;; `ts-duplicate-heading-to-other-window' self-explanatory
 
 ;;;; Tips
 
-;; + You can customize settings in the `package-name' group.
+;; Use org-id for global link IDs that are not path-dependent.
+
+;; Treesort encourages many org files in deeply nested directories. This can make it challenging to construct an org-agenda files list. See here to load org agenda files recursively: https://stackoverflow.com/questions/17215868/recursively-adding-org-files-in-a-top-level-directory-for-org-agenda-files-take
+
+;; It also helps to have a function that refreshes your org agenda file list, if you've altered paths in that directory.
+
+;; I recommend configuring Dired to sort directories before files. Where possible, capitalize files and directories. This makes it easy to target them with isearch in a few keystrokes. Omit extensions to reduce visual clutter.
+
+;; Treesort filing is fast. Think with your fingers, not your brain. You can always redo it later.
+
+;;; My keybindings
+
+;; By putting the following commands on convenient keys, you can file without thinking about it.
+
+;; (global-set-key (kbd "H-f") 'ts-throw)
+;; (global-set-key (kbd "H-g") 'ts-throw-up)
+;; (global-set-key (kbd "C-c k") 'ts-delete-this-buffer-and-file)
+;; (global-set-key (kbd "C-c l") 'ts-store-link-fold-drawer)
+;; (global-set-key (kbd "H-a") 'other-window)
+;; (global-set-key (kbd "H-w") 'outline-up-heading)
+;; (global-set-key (kbd "H-e") 'outline-previous-visible-heading)
+;; (global-set-key (kbd "H-r") 'outline-next-visible-heading)
+;; (global-set-key (kbd "H-d") 'org-narrow-to-subtree)
+;; (global-set-key (kbd "H-s") 'widen)
+;; (global-set-key (kbd "H-1") 'spacemacs/toggle-maximize-buffer)
+;; (global-set-key (kbd "H-2") 'delete-window)
+;; (global-set-key (kbd "H-3") 'split-window-right)
+;; (global-set-key (kbd "s-i") 'ido-dired)
 
 ;;; License:
 
