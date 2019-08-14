@@ -14,31 +14,59 @@
 
 ;; Treesort moves text and files through a directory tree.
 
-;; Treesort's main command is trs-throw.  It moves text or files from the current window to a target in the next window.  A second function, trs-throw-up, moves text or files up one directory level.  You can throw directories the same as files.
+;; Treesort's main command is trs-throw. It moves text or files from the current
+;; window to a target in the next window. A second function, trs-throw-up, moves
+;; text or files up one directory level. You can throw directories the same as
+;; files.
 
-;; When you throw a file to a directory, trs-throw creates a child directory <target-directory>/0-Inbox/ and puts the file there.  This makes it easy to remember which files are new arrivals.
+;; When you throw a file to a directory, trs-throw creates a child directory
+;; <target-directory>/0-Inbox/ and puts the file there. This makes it easy to
+;; remember which files are new arrivals.
 
-;; When you throw text to a directory, trs-throw creates a file Inbox.org.  Lots of these files get created during a filing session.  You can quickly delete them with trs-delete-this-buffer-and-file.
+;; When you throw text to a directory, trs-throw creates a file Inbox.org. Lots
+;; of these files get created during a filing session. You can quickly delete
+;; them with trs-delete-this-buffer-and-file.
 
-;; Treesort can rapidly change the directory tree structure of your notes.  It helps to have some links that won't break when paths change.  Use trs-dired-zinks to create a file with an org-id link in it.
+;; Treesort can rapidly change the directory tree structure of your notes. It
+;; helps to have some links that won't break when paths change. Use
+;; trs-dired-zinks to create a file with an org-id link in it.
 
-;; trs-throw can throw text into existing files or outlines.  You can duplicate a heading to another window with trs-duplicate-heading-to-other-window.
+;; trs-throw can throw text into existing files or outlines. You can duplicate a
+;; heading to another window with trs-duplicate-heading-to-other-window.
 
-;; When you throw text to an outline, trs-throw believes that the parent heading is at the top of the visible region.  It will only throw to direct children of the parent.  You should narrow appropriately before throwing.
+;; When you throw text to an outline, trs-throw believes that the parent heading
+;; is at the top of the visible region. It will only throw to direct children of
+;; the parent. You should narrow appropriately before throwing.
 
-;; When you throw text to a file, trs-throw puts the text at the bottom.  EXCEPT when the file already has a level-1 heading.  Then trs-throw assumes this is a polished document, not an inbox file.  trs-throw worries you will forget about text appended to polished documents.  So it prepends the text before the level-1 headline, where it will stick out like a sore thumb.
+;; When you throw text to a file, trs-throw puts the text at the bottom. EXCEPT
+;; when the file already has a level-1 heading. Then trs-throw assumes this is a
+;; polished document, not an inbox file. trs-throw worries you will forget about
+;; text appended to polished documents. So it prepends the text before the
+;; level-1 headline, where it will stick out like a sore thumb.
 
-;; trs-throw assumes that most headings you file will have four or more stars.  Why?  Imagine you are throwing headings to an outline.  The level-1 heading is the document title.  The level-2 headings are categories.  The level-3 headings are subcategories.  The level-4 headings are topics.  Outlines become unwieldy when they get too deep, at which point it's better to create more files and directories to spread the load.
+;; trs-throw assumes that most headings you file will have four or more stars.
+;; Why? Imagine you are throwing headings to an outline. The level-1 heading is
+;; the document title. The level-2 headings are categories. The level-3 headings
+;; are sub-categories. The level-4 headings are topics. Outlines become unwieldy
+;; when they get too deep, at which point it's better to create more files and
+;; directories to spread the load.
 
-;; trs-throw only imposes this opinion on you in one way: it creates Inbox.org files with a "*** offset" at the top.  You can still file level-5 headings, but they might "vanish" if you accidentally file a level-4 heading that folds appended level-5 headings beneath it.  You can also file level-3 headings, although they won't be children of the "offset" heading, and might unexpectedly fold appended level-4 headings.  I recommend that you convert headings to level 4 for transport, and then resize them at their destination.
+;; trs-throw only imposes this opinion on you in one way: it creates Inbox.org
+;; files with a "*** offset" at the top. You can still file level-5 headings,
+;; but they might "vanish" if you accidentally file a level-4 heading that folds
+;; appended level-5 headings beneath it. You can also file level-3 headings,
+;; although they won't be children of the "offset" heading, and might
+;; unexpectedly fold appended level-4 headings. I recommend that you convert
+;; headings to level 4 for transport, and then resize them at their destination.
 
-;; The last text thrown is saved in the variable trs-object-text until the Emacs session ends.  Text is not saved to the kill ring.
+;; The last text thrown is saved in the variable trs-object-text until the Emacs
+;; session ends. Text is not saved to the kill ring.
 
 ;;;; Installation
 
 ;;;;; MELPA
 
-;; If you installed from MELPA, you're done.
+;; If you installed from MELPA, you're done. This package is not yet on MELPA.
 
 ;;;;; Manual
 
@@ -62,13 +90,20 @@
 
 ;; Use org-id for global link IDs that are not path-dependent.
 
-;; Treesort encourages many org files in deeply nested directories.  This can make it challenging to construct an org-agenda files list.  See here to load org agenda files recursively: https://stackoverflow.com/questions/17215868/recursively-adding-org-files-in-a-top-level-directory-for-org-agenda-files-take
+;; Treesort encourages many org files in deeply nested directories. This can
+;; make it challenging to construct an org-agenda files list. See here to load
+;; org agenda files recursively:
+;; https://stackoverflow.com/questions/17215868/recursively-adding-org-files-in-a-top-level-directory-for-org-agenda-files-take
 
-;; It also helps to have a function that refreshes your org agenda file list, if you've altered paths in that directory.
+;; It also helps to have a function that refreshes your org agenda file list, if
+;; you've altered paths in that directory.
 
-;; I recommend configuring Dired to sort directories before files.  Where possible, capitalize files and directories.  This makes it easy to target them with isearch in a few keystrokes.  Omit extensions to reduce visual clutter.
+;; I recommend configuring Dired to sort directories before files. Where
+;; possible, capitalize files and directories. This makes it easy to target them
+;; with isearch in a few keystrokes. Omit extensions to reduce visual clutter.
 
-;; Treesort filing is fast.  Think with your fingers, not your brain.  You can always redo it later.
+;; Treesort filing is fast. Think with your fingers, not your brain. You can
+;; always redo it later.
 
 ;;; My keybindings
 
@@ -91,9 +126,19 @@
 
 ;;; Comments and whitespace
 
-;; Treesort departs from https://www.gnu.org/software/emacs/manual/html_node/elisp/Coding-Conventions.html by placing close-parentheses on lines by themselves where it enhances readability.  I find it much easier to keep track of parenthetical nesting with indentation than only by counting and font color.  Ruby does something similar by placing end-braces on lines by themselves when they embrace multiple lines.
+;; Treesort departs from
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Coding-Conventions.html
+;; by placing close-parentheses on lines by themselves where it enhances
+;; readability. I find it much easier to keep track of parenthetical nesting
+;; with indentation than only by counting and font color. Ruby does something
+;; similar by placing end-braces on lines by themselves when they embrace
+;; multiple lines.
 
-;; Treesort uses an Outshine-style outline to structure its code.  Outline navigation, narrowing and folding negates the disadvantage of using extra lines to show end-parentheses indentation.  Outshine supports todo tags.  There are two level-1 headings at the beginning of the code due to Outshine's visibility-cycling behavior.
+;; Treesort uses an Outshine-style outline to structure its code. Outline
+;; navigation, narrowing and folding negates the disadvantage of using extra
+;; lines to show end-parentheses indentation. Outshine supports todo tags. There
+;; are two level-1 headings at the beginning of the code due to Outshine's
+;; visibility-cycling behavior.
 
 ;;; License:
 
@@ -182,7 +227,8 @@
 
   (select-window (next-window))
   (dired-up-directory) ; restores original dired buffer.
-  (dired-up-directory) ; necessary because save-current-buffer won't restore after dired-do-rename.
+  (dired-up-directory) ; necessary because save-current-buffer won't restore
+                       ; after dired-do-rename.
   (forward-char 1)
   )
 ;; **** throw text
@@ -205,7 +251,8 @@
       (trs-insert-text-to-file-blind)
     (trs-insert-text-to-directory)
     )
-  (switch-to-buffer trs-dired-starting-buffer) ; save-current-buffer bugged, must use instead
+  (switch-to-buffer trs-dired-starting-buffer) ; Save-current-buffer bugged,
+                                               ; must use instead.
   (forward-char 1)
   )
   )
@@ -230,7 +277,7 @@ Function assumes a polished document will have a level-1 near the top."
   (goto-char (point-min))
   (condition-case nil
       (progn
-        (re-search-forward "^* ") ; search for a level-1 headline
+        (re-search-forward "^* ") ; Search for a level-1 headline.
         (goto-char (point-at-bol))
         (insert trs-object-text)
         )
@@ -265,9 +312,11 @@ If no match found, fails with an error, and does not delete the line."
              PREFIX)
      )
 
-    (unless (outline-on-heading-p) (user-error "%s" "Search did not find a valid heading"))
+    (unless (outline-on-heading-p)
+      (user-error "%s" "Search did not find a valid heading"))
 
-    (org-save-outline-visibility 1 ; argument necessary, else heading after body text unfolds body text
+    (org-save-outline-visibility 1 ; argument necessary, else heading after body
+                                   ; text unfolds body text
       (save-restriction
         (org-narrow-to-subtree)
         (goto-char (point-max))
@@ -423,7 +472,7 @@ If no match found, fails with an error, and does not delete the line."
   "Return t if parent dir is 0-Inbox."
 
   (equal
-   (file-name-nondirectory (directory-file-name default-directory)) ; returns parent directory
+   (file-name-nondirectory (directory-file-name default-directory)) ; Return parent directory.
    "0-Inbox")
   )
 ;; ***** Inbox.org creation
@@ -476,7 +525,7 @@ If no match found, fails with an error, and does not delete the line."
 
   (save-excursion
     (save-restriction
-      (org-store-link nil t) ; without interactive=t arg, no org link gets created
+      (org-store-link nil t) ; Without interactive=t arg, no org link gets created.
       (org-narrow-to-subtree)
       (org-previous-visible-heading 1)
       (widen)
@@ -503,7 +552,7 @@ else `user-home-directory'."
       (insert (concat "*** "
                       (expand-file-name (file-name-directory buffer-file-name) (if (vc-root-dir)
                                                                                    (vc-root-dir)
-                                                                                 user-home-directory)) ; this might cause an error if outside the user-home-directory and not in a repo. DEFER
+                                                                                 user-home-directory)) ; This might cause an error if outside the user-home-directory and not in a repo. DEFER
                       "\n\n\n"
                       )
               )
