@@ -1,4 +1,4 @@
-;;; treesort.el --- move text/files thru directory tree
+;;; treesort.el --- move text/files thru directory tree      -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019 Leo Buchignani III
 
