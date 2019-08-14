@@ -1,11 +1,11 @@
-;;; treesort.el --- move text/files around directory tree
+;;; treesort.el --- move text/files thru directory tree
 
-;; Copyright (C) 2019  Leo Buchignani III
+;; Copyright (C) 2019 Leo Buchignani III
 
 ;; Author: Leo Buchignani III <texas.cyberthal@gmail.com>
 ;; Keywords: outlines, files, convenience
 ;; Package-Requires: ((org) (dired))
-;; URL:
+;; URL: https://github.com/cyberthal/treesort
 ;; Version: 1.0.0
 
 ;; This file is not part of GNU Emacs.
@@ -131,6 +131,7 @@
 (add-hook 'dired-mode-hook 'trs-dired-dont-search-invisible)
 ;; *** main defun
 
+;;;###autoload
 (defun trs-throw (&optional count)
   "Throw text or dired entry to a target in the next window COUNT times."
   (interactive "p")
@@ -278,6 +279,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** throw up
 ;; **** main defun
 
+;;;###autoload
 (defun trs-throw-up (&optional count)
   "Throw file or text one directory upwards, COUNT times."
   (interactive "p")
@@ -442,6 +444,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; ** utilities
 ;; *** trs-delete-this-buffer-and-file
 
+;;;###autoload
 (defun trs-delete-this-buffer-and-file ()
   "Delete file visited by current buffer and kill buffer."
   (interactive)
@@ -461,6 +464,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** org links
 ;; **** Store link and fold the PROPERTIES drawer
 
+;;;###autoload
 (defun trs-store-link-fold-drawer ()
   "Store an org link to a heading, and fold the drawer."
   (interactive)
@@ -478,6 +482,7 @@ If no match found, fails with an error, and does not delete the line."
   )
 ;; **** create Zinks.org
 
+;;;###autoload
 (defun trs-dired-zinks ()
   "Create Zinks.org and insert an anchor org-id link titled with its path relative to `vc-root-dir' if present, else `user-home-directory'."
   (interactive)
@@ -501,6 +506,7 @@ If no match found, fails with an error, and does not delete the line."
   )
 ;; *** duplicate heading to other window
 
+;;;###autoload
 (defun trs-duplicate-heading-to-other-window ()
   "Insert heading at point to the bottom of the buffer in the next window."
   (interactive)
