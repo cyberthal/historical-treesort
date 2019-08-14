@@ -137,7 +137,7 @@
 
 ;;;###autoload
 (defun trs-throw (&optional count)
-  "Throw text or dired entry to a target in the next window COUNT times."
+  "Throw text/file to target in next window COUNT times."
   (interactive "p")
 
   (dotimes (var count)
@@ -170,7 +170,7 @@
 ;; **** throw file
 
 (defun trs-throw-file ()
-  "Throw file(s) from one Dired buffer to a searched target in an adjacent Dired buffer."
+  "Throw file(s) from Dired to searched target in next window."
 
   (select-window (next-window))
   (trs-search-dired-open)
@@ -298,7 +298,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; **** jump height
 
 (defun trs-jump-destination ()
-  "Return a directory either one above current, or two if parent is /0-Inbox."
+  "Return directory 1-2 above current, depending on ../0-Inbox."
 
   (concat default-directory
 
@@ -388,7 +388,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** line
 
 (defun trs-snort-line ()
-  "Move a line of text to var trs-object-text."
+  "Move a line of text to variable `trs-object-text'."
 
   (if (eq (point-min) (point-max))
       (user-error "%s" "Selected line is empty")
@@ -429,7 +429,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; ****** Create open Inbox.org
 
 (defun trs-create-open-inbox-org ()
-  "If Inbox.org doesn't already exist, create it and insert *** offset."
+  "If no Inbox.org, make it and insert *** offset."
 
   (let* ((trs-inbox-org-path (concat default-directory "Inbox.org"))
          (trs-inbox-org-buffer (find-buffer-visiting trs-inbox-org-path)))
@@ -488,7 +488,10 @@ If no match found, fails with an error, and does not delete the line."
 
 ;;;###autoload
 (defun trs-dired-zinks ()
-  "Create Zinks.org and insert an anchor org-id link titled with its path relative to `vc-root-dir' if present, else `user-home-directory'."
+  "Make Zinks.org. Insert org-id link.
+
+Link title's path is relative to `vc-root-dir' if present,
+else `user-home-directory'."
   (interactive)
 
   (let ((zinks-filename (concat default-directory "Zinks.org"))
@@ -512,7 +515,7 @@ If no match found, fails with an error, and does not delete the line."
 
 ;;;###autoload
 (defun trs-duplicate-heading-to-other-window ()
-  "Insert heading at point to the bottom of the buffer in the next window."
+  "Append heading at point to end of next window's buffer."
   (interactive)
 
   (save-restriction
@@ -535,7 +538,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** snort visible region
 
 (defun trs-snort-visible ()
-  "Move visible text to the variable trs-object-text. Widen. Delete the empty line."
+  "Move region to `trs-object-text'. Widen. Delete empty line."
 
   (goto-char (point-max))
   (org-N-empty-lines-before-current 1)
@@ -572,7 +575,9 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** text inserted confirmation message
 
 (defun trs-text-inserted-to-buffer-path-message ()
-  "Reports the filename the text arrived at, with path relative to vd-root-dir or ~/."
+  "Report filename that text was inserted to.
+
+Reported path is relative to vd-root-dir or ~/."
 
   (message "Inserted text into `%s'" (if (vc-root-dir)
                                          (expand-file-name buffer-file-name (vc-root-dir))
