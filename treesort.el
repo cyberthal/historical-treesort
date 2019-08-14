@@ -1,14 +1,14 @@
-;;; treesort.el --- move text/files thru directory tree      -*- lexical-binding: t; -*-
+;;; treesort.el --- move text/files thru directory tree -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019 Leo Buchignani III
 
 ;; Author: Leo Buchignani III <texas.cyberthal@gmail.com>
 ;; Keywords: outlines, files, convenience
-;; Package-Requires: ((org) (dired))
+;; Package-Requires: ((org) (dired) (dash) (f))
 ;; URL: https://github.com/cyberthal/treesort
 ;; Version: 1.0.0
 
-;; This file is not part of GNU Emacs.
+;; This file is NOT part of GNU Emacs.
 
 ;;; Commentary:
 
@@ -162,7 +162,8 @@
 
 (require 'org)
 (require 'dired)
-
+(require 'dash)
+(require 'f)
 ;; ** throw
 
 ;; *** config
@@ -193,6 +194,7 @@
             (trs-throw-file)
           (trs-throw-text))
       (other-window -1) ; save-selected-window fails for throw-text
+      (message "Threw %s times." var)
       )
     )
   )
@@ -292,9 +294,10 @@ Function assumes a polished document will have a level-1 near the top."
   "Append text to next window's heading beginning with PREFIX.
 Assumes parent heading is at the top of the visible region.
 
-Prompts user for input.  Asks for enough letters from the beginning of the target
-child heading to distinguish it from the other immediate children of the parent
-heading.  Searches for a simple string.  Takes the first match.
+Prompts user for input. Asks for enough letters from the
+beginning of the target child heading to distinguish it from the
+other immediate children of the parent heading. Searches for a
+simple string. Takes the first match.
 
 If no match found, fails with an error, and does not delete the line."
 
@@ -343,6 +346,7 @@ If no match found, fails with an error, and does not delete the line."
     (if (eq major-mode 'dired-mode)
         (trs-throw-up-file)
       (trs-throw-up-text))
+    (message "Threw up %s times" var)
     )
   )
 ;; **** jump height
@@ -509,7 +513,7 @@ If no match found, fails with an error, and does not delete the line."
         (user-error "%s" "Buffer is narrowed")
       (when (yes-or-no-p "Are you sure you want to remove this file? ")
         (kill-buffer (current-buffer))
-        (deletrs-file filename)
+        (delete-file filename)
         (message "File `%s' successfully removed" filename)
         )
       )
