@@ -93,7 +93,7 @@
 
 ;; Treesort departs from https://www.gnu.org/software/emacs/manual/html_node/elisp/Coding-Conventions.html by placing close-parentheses on lines by themselves where it enhances readability. I find it much easier to keep track of parenthetical nesting with indentation than only by counting and font color. Ruby does something similar by placing end-braces on lines by themselves when they embrace multiple lines.
 
-;; Treesort uses an Outshine-style outline to structure its code. Outline navigation, narrowing and folding negates the disadvantage of using extra lines to show end-parentheses indentation. Outshine supports TODO tags. There are two level-1 headings at the beginning of the code due to Outshine's visibility-cycling behavior.
+;; Treesort uses an Outshine-style outline to structure its code. Outline navigation, narrowing and folding negates the disadvantage of using extra lines to show end-parentheses indentation. Outshine supports todo tags. There are two level-1 headings at the beginning of the code due to Outshine's visibility-cycling behavior.
 
 ;;; License:
 
