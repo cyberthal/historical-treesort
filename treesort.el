@@ -260,7 +260,7 @@ If no match found, fails with an error, and does not delete the line."
     (goto-char (point-min))
     (search-forward
      (concat "\n"
-             (make-string (+ 1 (skip-chars-forward "*")) ?*)
+             (make-string (1+ (skip-chars-forward "*")) ?*)
              " "
              PREFIX)
      )
