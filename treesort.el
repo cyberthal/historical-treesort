@@ -4,9 +4,9 @@
 
 ;; Author: Leo Buchignani III <texas.cyberthal@gmail.com>
 ;; Keywords: outlines, files, convenience
-;; Package-Requires:
+;; Package-Requires: ((org) (dired))
 ;; URL:
-;; Version: 0.0.1
+;; Version: 1.0.0
 
 ;; This file is not part of GNU Emacs.
 
@@ -89,6 +89,12 @@
 ;; (global-set-key (kbd "H-3") 'split-window-right)
 ;; (global-set-key (kbd "s-i") 'ido-dired)
 
+;;; Comments and whitespace
+
+;; Treesort departs from https://www.gnu.org/software/emacs/manual/html_node/elisp/Coding-Conventions.html by placing close-parentheses on lines by themselves where it enhances readability. I find it much easier to keep track of parenthetical nesting with indentation than only by counting and font color. Ruby does something similar by placing end-braces on lines by themselves when they embrace multiple lines.
+
+;; Treesort uses an Outshine-style outline to structure its code. Outline navigation, narrowing and folding negates the disadvantage of using extra lines to show end-parentheses indentation. Outshine supports TODO tags. There are two level-1 headings at the beginning of the code due to Outshine's visibility-cycling behavior.
+
 ;;; License:
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -107,18 +113,23 @@
 
 ;; * treesort.el
 ;; * offset
-;; ** throw DONE
+;; ** require
 
-;; *** config DONE
+(require 'org)
+(require 'dired)
 
-;; **** don't search invisible text in dired DONE
+;; ** throw
+
+;; *** config
+
+;; **** don't search invisible text in dired
 
 (defun trs-dired-dont-search-invisible ()
   (make-local-variable 'search-invisible)
   (setq search-invisible nil)
   )
 (add-hook 'dired-mode-hook 'trs-dired-dont-search-invisible)
-;; *** main defun DONE
+;; *** main defun
 
 (defun trs-throw (&optional count)
   "Throw text or dired entry to a target in the next window COUNT times."
@@ -134,9 +145,9 @@
       )
     )
   )
-;; *** flow control dispatcher DONE
+;; *** flow control dispatcher
 
-;; **** main defun DONE
+;; **** main defun
 
 (defun trs-throw-text ()
   "Throw text to either Dired or an outline."
@@ -151,7 +162,7 @@
       )
     )
   )
-;; **** throw file DONE
+;; **** throw file
 
 (defun trs-throw-file ()
   "Throw file(s) from one Dired buffer to a searched target in an adjacent Dired buffer."
@@ -168,10 +179,10 @@
   (dired-up-directory) ; necessary because save-current-buffer won't restore after dired-do-rename.
   (forward-char 1)
   )
-;; **** throw text DONE
-;; ***** destination = dired DONE
+;; **** throw text
+;; ***** destination = dired
 
-;; ****** main defun DONE
+;; ****** main defun
 
 (defun trs-throw-text-to-dired ()
   "Throw text to a searched target in an adjacent Dired buffer."
@@ -222,7 +233,7 @@ Function assumes a polished document will have a level-1 near the top."
   (trs-text-inserted-to-buffer-path-message)
   )
 ;; ***** destination = text
-;; ****** main defun DONE
+;; ****** main defun
 
 (defun trs-throw-text-to-outline (PREFIX)
   "Append text to next window's heading beginning with PREFIX.
@@ -264,8 +275,8 @@ If no match found, fails with an error, and does not delete the line."
       )
     )
   )
-;; *** throw up DONE
-;; **** main defun DONE
+;; *** throw up
+;; **** main defun
 
 (defun trs-throw-up (&optional count)
   "Throw file or text one directory upwards, COUNT times."
@@ -278,7 +289,7 @@ If no match found, fails with an error, and does not delete the line."
       (trs-throw-up-text))
     )
   )
-;; **** jump height DONE
+;; **** jump height
 
 (defun trs-jump-destination ()
   "Return a directory either one above current, or two if parent is /0-Inbox."
@@ -291,7 +302,7 @@ If no match found, fails with an error, and does not delete the line."
             "../")
           )
   )
-;; **** object = text DONE
+;; **** object = text
 
 (defun trs-throw-up-text ()
   "Throw text upwards in the directory tree to the next /0-Inbox."
@@ -305,7 +316,7 @@ If no match found, fails with an error, and does not delete the line."
     (switch-to-buffer trs-buffer-home) ; because save-current-buffer failed here
     )
   )
-;; **** target = file DONE
+;; **** target = file
 
 (defun trs-throw-up-file ()
   "Throw file upwards in the directory tree to the next /0-Inbox."
@@ -322,8 +333,8 @@ If no match found, fails with an error, and does not delete the line."
     )
   (revert-buffer) ; refreshes screen significantly faster than otherwise.
   )
-;; *** library DONE
-;; **** snort type DONE
+;; *** library
+;; **** snort type
 ;; ***** text mode?
 
 (defun trs-snort-text ()
@@ -348,7 +359,7 @@ If no match found, fails with an error, and does not delete the line."
      (if (outline-on-heading-p) (trs-snort-outline-heading)
             (trs-snort-line))
      )
-;; ***** heading type? DONE
+;; ***** heading type?
 
 (defun trs-snort-org-heading ()
   (save-restriction
@@ -383,8 +394,8 @@ If no match found, fails with an error, and does not delete the line."
     (trs-delete-leftover-empty-line)
     )
   )
-;; **** files DONE
-;; ***** Find the searched dired entry DONE
+;; **** files
+;; ***** Find the searched dired entry
 
 (defun trs-search-dired-open ()
   "Opens the isearched Dired entry."
@@ -399,7 +410,7 @@ If no match found, fails with an error, and does not delete the line."
   (isearch-forward)
   (dired-find-file)
   )
-;; ***** check whether immediate parent dir is "0-Inbox" DONE
+;; ***** check whether immediate parent dir is "0-Inbox"
 
 (defun trs-parent-dir-inbox-p ()
   "Return t if parent dir is 0-Inbox."
@@ -408,8 +419,8 @@ If no match found, fails with an error, and does not delete the line."
    (file-name-nondirectory (directory-file-name default-directory)) ; returns parent directory
    "0-Inbox")
   )
-;; ***** Inbox.org creation DONE
-;; ****** Create open Inbox.org DONE
+;; ***** Inbox.org creation
+;; ****** Create open Inbox.org
 
 (defun trs-create-open-inbox-org ()
   "If Inbox.org doesn't already exist, create it and insert *** offset."
@@ -428,8 +439,8 @@ If no match found, fails with an error, and does not delete the line."
           )
     )
   )
-;; ** utilities DONE
-;; *** trs-delete-this-buffer-and-file DONE
+;; ** utilities
+;; *** trs-delete-this-buffer-and-file
 
 (defun trs-delete-this-buffer-and-file ()
   "Delete file visited by current buffer and kill buffer."
@@ -447,8 +458,8 @@ If no match found, fails with an error, and does not delete the line."
       )
     )
   )
-;; *** org links DONE
-;; **** Store link and fold the PROPERTIES drawer DONE
+;; *** org links
+;; **** Store link and fold the PROPERTIES drawer
 
 (defun trs-store-link-fold-drawer ()
   "Store an org link to a heading, and fold the drawer."
@@ -465,7 +476,7 @@ If no match found, fails with an error, and does not delete the line."
     (org-cycle-hide-drawers 1)
     )
   )
-;; **** create Zinks.org DONE
+;; **** create Zinks.org
 
 (defun trs-dired-zinks ()
   "Create Zinks.org and insert an anchor org-id link titled with its path relative to `vc-root-dir' if present, else `user-home-directory'."
@@ -488,7 +499,7 @@ If no match found, fails with an error, and does not delete the line."
       )
     )
   )
-;; *** duplicate heading to other window DONE
+;; *** duplicate heading to other window
 
 (defun trs-duplicate-heading-to-other-window ()
   "Insert heading at point to the bottom of the buffer in the next window."
@@ -509,9 +520,9 @@ If no match found, fails with an error, and does not delete the line."
       )
     )
   )
-;; ** library DONE
+;; ** library
 
-;; *** snort visible region DONE
+;; *** snort visible region
 
 (defun trs-snort-visible ()
   "Move visible text to the variable trs-object-text. Widen. Delete the empty line."
@@ -538,7 +549,7 @@ If no match found, fails with an error, and does not delete the line."
       )
     )
   )
-;; *** insert at bottom of buffer DONE
+;; *** insert at bottom of buffer
 
 (defun trs-insert-to-end-of-buffer ()
   "Add `trs-object-text' text to bottom of target buffer."
