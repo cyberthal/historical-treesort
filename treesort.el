@@ -129,6 +129,10 @@
   (setq search-invisible nil)
   )
 (add-hook 'dired-mode-hook 'trs-dired-dont-search-invisible)
+
+;; **** define global variable
+
+(defvar trs-object-text)
 ;; *** main defun
 
 ;;;###autoload
