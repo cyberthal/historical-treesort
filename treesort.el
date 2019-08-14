@@ -132,7 +132,8 @@
 
 ;; **** define global variable
 
-(defvar trs-object-text)
+(defvar trs-object-text nil
+  "Stores the last text treesort killed or copied.")
 ;; *** main defun
 
 ;;;###autoload
@@ -211,7 +212,7 @@
 ;; ****** destination = dir
 
 (defun trs-insert-text-to-directory ()
-  "Insert trs-object-text to Inbox.org."
+  "Insert `trs-object-text' to Inbox.org."
 
     (trs-create-open-inbox-org)
     (trs-insert-to-end-of-buffer)
