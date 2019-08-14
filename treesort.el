@@ -14,25 +14,25 @@
 
 ;; Treesort moves text and files through a directory tree.
 
-;; Treesort's main command is te-throw. It moves text or files from the current window to a target in the next window. A second function, te-throw-up, moves text or files up one directory level. You can throw directories the same as files.
+;; Treesort's main command is trs-throw. It moves text or files from the current window to a target in the next window. A second function, trs-throw-up, moves text or files up one directory level. You can throw directories the same as files.
 
-;; When you throw a file to a directory, te-throw creates a child directory <target-directory>/0-Inbox/ and puts the file there. This makes it easy to remember which files are new arrivals.
+;; When you throw a file to a directory, trs-throw creates a child directory <target-directory>/0-Inbox/ and puts the file there. This makes it easy to remember which files are new arrivals.
 
-;; When you throw text to a directory, te-throw creates a file Inbox.org. Lots of these files get created during a filing session. You can quickly delete them with te-delete-this-buffer-and-file.
+;; When you throw text to a directory, trs-throw creates a file Inbox.org. Lots of these files get created during a filing session. You can quickly delete them with trs-delete-this-buffer-and-file.
 
-;; Treesort can rapidly change the directory tree structure of your notes. It helps to have some links that won't break when paths change. Use te-dired-zinks to create a file with an org-id link in it.
+;; Treesort can rapidly change the directory tree structure of your notes. It helps to have some links that won't break when paths change. Use trs-dired-zinks to create a file with an org-id link in it.
 
-;; te-throw can throw text into existing files or outlines. You can duplicate a heading to another window with te-duplicate-heading-to-other-window.
+;; trs-throw can throw text into existing files or outlines. You can duplicate a heading to another window with trs-duplicate-heading-to-other-window.
 
-;; When you throw text to an outline, te-throw believes that the parent heading is at the top of the visible region. It will only throw to direct children of the parent. You should narrow appropriately before throwing.
+;; When you throw text to an outline, trs-throw believes that the parent heading is at the top of the visible region. It will only throw to direct children of the parent. You should narrow appropriately before throwing.
 
-;; When you throw text to a file, te-throw puts the text at the bottom. EXCEPT when the file already has a level-1 heading. Then te-throw assumes this is a polished document, not an inbox file. te-throw worries you will forget about text appended to polished documents. So it prepends the text before the level-1 headline, where it will stick out like a sore thumb.
+;; When you throw text to a file, trs-throw puts the text at the bottom. EXCEPT when the file already has a level-1 heading. Then trs-throw assumes this is a polished document, not an inbox file. trs-throw worries you will forget about text appended to polished documents. So it prepends the text before the level-1 headline, where it will stick out like a sore thumb.
 
-;; te-throw assumes that most headings you file will have four or more stars. Why? Imagine you are throwing headings to an outline. The level-1 heading is the document title. The level-2 headings are categories. The level-3 headings are subcategories. The level-4 headings are topics. Outlines become unwieldy when they get too deep, at which point it's better to create more files and directories to spread the load.
+;; trs-throw assumes that most headings you file will have four or more stars. Why? Imagine you are throwing headings to an outline. The level-1 heading is the document title. The level-2 headings are categories. The level-3 headings are subcategories. The level-4 headings are topics. Outlines become unwieldy when they get too deep, at which point it's better to create more files and directories to spread the load.
 
-;; te-throw only imposes this opinion on you in one way: it creates Inbox.org files with a "*** offset" at the top. You can still file level-5 headings, but they might "vanish" if you accidentally file a level-4 heading that folds appended level-5 headings beneath it. You can also file level-3 headings, although they won't be children of the "offset" heading, and might unexpectedly fold appended level-4 headings. I recommend that you convert headings to level 4 for transport, and then resize them at their destination.
+;; trs-throw only imposes this opinion on you in one way: it creates Inbox.org files with a "*** offset" at the top. You can still file level-5 headings, but they might "vanish" if you accidentally file a level-4 heading that folds appended level-5 headings beneath it. You can also file level-3 headings, although they won't be children of the "offset" heading, and might unexpectedly fold appended level-4 headings. I recommend that you convert headings to level 4 for transport, and then resize them at their destination.
 
-;; The last text thrown is saved in the variable te-object-text until the Emacs session ends. Text is not saved to the kill ring.
+;; The last text thrown is saved in the variable trs-object-text until the Emacs session ends. Text is not saved to the kill ring.
 
 ;;;; Installation
 
@@ -51,12 +51,12 @@
 
 ;; Run one of these commands:
 
-;; `te-throw' throw text/files to the next window
-;; `te-throw-up' throw text/files one directory up
-;; `te-delete-this-buffer-and-file' self-explanatory
-;; `te-store-link-fold-drawer' store an org link and hide the drawer
-;; `te-dired-zinks' store an org link in a file, titled with relative path
-;; `te-duplicate-heading-to-other-window' self-explanatory
+;; `trs-throw' throw text/files to the next window
+;; `trs-throw-up' throw text/files one directory up
+;; `trs-delete-this-buffer-and-file' self-explanatory
+;; `trs-store-link-fold-drawer' store an org link and hide the drawer
+;; `trs-dired-zinks' store an org link in a file, titled with relative path
+;; `trs-duplicate-heading-to-other-window' self-explanatory
 
 ;;;; Tips
 
@@ -74,10 +74,10 @@
 
 ;; By putting the following commands on convenient keys, you can file without thinking about it.
 
-;; (global-set-key (kbd "H-f") 'te-throw)
-;; (global-set-key (kbd "H-g") 'te-throw-up)
-;; (global-set-key (kbd "C-c k") 'te-delete-this-buffer-and-file)
-;; (global-set-key (kbd "C-c l") 'te-store-link-fold-drawer)
+;; (global-set-key (kbd "H-f") 'trs-throw)
+;; (global-set-key (kbd "H-g") 'trs-throw-up)
+;; (global-set-key (kbd "C-c k") 'trs-delete-this-buffer-and-file)
+;; (global-set-key (kbd "C-c l") 'trs-store-link-fold-drawer)
 ;; (global-set-key (kbd "H-a") 'other-window)
 ;; (global-set-key (kbd "H-w") 'outline-up-heading)
 ;; (global-set-key (kbd "H-e") 'outline-previous-visible-heading)
@@ -113,14 +113,14 @@
 
 ;; **** don't search invisible text in dired DONE
 
-(defun te-dired-dont-search-invisible ()
+(defun trs-dired-dont-search-invisible ()
   (make-local-variable 'search-invisible)
   (setq search-invisible nil)
   )
-(add-hook 'dired-mode-hook 'te-dired-dont-search-invisible)
+(add-hook 'dired-mode-hook 'trs-dired-dont-search-invisible)
 ;; *** main defun DONE
 
-(defun te-throw (&optional count)
+(defun trs-throw (&optional count)
   "Throw text or dired entry to a target in the next window COUNT times."
   (interactive "p")
 
@@ -128,8 +128,8 @@
 
     (unwind-protect
         (if (eq major-mode 'dired-mode)
-            (te-throw-file)
-          (te-throw-text))
+            (trs-throw-file)
+          (trs-throw-text))
       (other-window -1) ; save-selected-window fails for throw-text
       )
     )
@@ -138,26 +138,26 @@
 
 ;; **** main defun DONE
 
-(defun te-throw-text ()
+(defun trs-throw-text ()
   "Throw text to either Dired or an outline."
 
   (select-window (next-window))
-  (let ((te-in-dired-p (string-equal major-mode 'dired-mode)))
+  (let ((trs-in-dired-p (string-equal major-mode 'dired-mode)))
     (select-window (previous-window))
 
-    (if te-in-dired-p
-        (te-throw-text-to-dired)
-      (call-interactively 'te-throw-text-to-outline)
+    (if trs-in-dired-p
+        (trs-throw-text-to-dired)
+      (call-interactively 'trs-throw-text-to-outline)
       )
     )
   )
 ;; **** throw file DONE
 
-(defun te-throw-file ()
+(defun trs-throw-file ()
   "Throw file(s) from one Dired buffer to a searched target in an adjacent Dired buffer."
 
   (select-window (next-window))
-  (te-search-dired-open)
+  (trs-search-dired-open)
   (mkdir (concat default-directory "0-Inbox/") 1)
   (find-file (concat default-directory "0-Inbox/"))
   (select-window (previous-window))
@@ -173,37 +173,37 @@
 
 ;; ****** main defun DONE
 
-(defun te-throw-text-to-dired ()
+(defun trs-throw-text-to-dired ()
   "Throw text to a searched target in an adjacent Dired buffer."
 
   (select-window (next-window))
 
-  (let ((te-dired-starting-buffer (current-buffer))
+  (let ((trs-dired-starting-buffer (current-buffer))
         )
-  (te-search-dired-open)
+  (trs-search-dired-open)
   (select-window (previous-window))
-  (te-snort-text)
+  (trs-snort-text)
   (select-window (next-window))
   (if buffer-file-name
-      (te-insert-text-to-file-blind)
-    (te-insert-text-to-directory)
+      (trs-insert-text-to-file-blind)
+    (trs-insert-text-to-directory)
     )
-  (switch-to-buffer te-dired-starting-buffer) ; save-current-buffer bugged, must use instead
+  (switch-to-buffer trs-dired-starting-buffer) ; save-current-buffer bugged, must use instead
   (forward-char 1)
   )
   )
 ;; ****** destination = dir
 
-(defun te-insert-text-to-directory ()
-  "Insert te-object-text to Inbox.org."
+(defun trs-insert-text-to-directory ()
+  "Insert trs-object-text to Inbox.org."
 
-    (te-create-open-inbox-org)
-    (te-insert-to-end-of-buffer)
-    (te-text-inserted-to-buffer-path-message)
+    (trs-create-open-inbox-org)
+    (trs-insert-to-end-of-buffer)
+    (trs-text-inserted-to-buffer-path-message)
   )
 ;; ****** destination = file
 
-(defun te-insert-text-to-file-blind ()
+(defun trs-insert-text-to-file-blind ()
   "Put point either before first level-1 heading or at end of buffer.
 Normally one wants to yank to the end of the buffer.
 But if it's a polished document rather than an inbox,
@@ -215,16 +215,16 @@ Function assumes a polished document will have a level-1 near the top."
       (progn
         (re-search-forward "^* ") ; search for a level-1 headline
         (goto-char (point-at-bol))
-        (insert te-object-text)
+        (insert trs-object-text)
         )
-    (error (te-insert-to-end-of-buffer))
+    (error (trs-insert-to-end-of-buffer))
     )
-  (te-text-inserted-to-buffer-path-message)
+  (trs-text-inserted-to-buffer-path-message)
   )
 ;; ***** destination = text
 ;; ****** main defun DONE
 
-(defun te-throw-text-to-outline (PREFIX)
+(defun trs-throw-text-to-outline (PREFIX)
   "Append text to next window's heading beginning with PREFIX.
 Assumes parent heading is at the top of the visible region.
 
@@ -257,9 +257,9 @@ If no match found, fails with an error, and does not delete the line."
         (org-N-empty-lines-before-current 1)
 
         (save-selected-window (select-window (previous-window))
-                              (te-snort-text))
+                              (trs-snort-text))
 
-        (insert te-object-text)
+        (insert trs-object-text)
         )
       )
     )
@@ -267,58 +267,58 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** throw up DONE
 ;; **** main defun DONE
 
-(defun te-throw-up (&optional count)
+(defun trs-throw-up (&optional count)
   "Throw file or text one directory upwards, COUNT times."
   (interactive "p")
 
   (dotimes (var count)
 
     (if (eq major-mode 'dired-mode)
-        (te-throw-up-file)
-      (te-throw-up-text))
+        (trs-throw-up-file)
+      (trs-throw-up-text))
     )
   )
 ;; **** jump height DONE
 
-(defun te-jump-destination ()
+(defun trs-jump-destination ()
   "Return a directory either one above current, or two if parent is /0-Inbox."
 
   (concat default-directory
 
           ;; "Returns ../ unless parent dir is 0-inbox, then ../../"
-          (if (te-parent-dir-inbox-p)
+          (if (trs-parent-dir-inbox-p)
               "../../"
             "../")
           )
   )
 ;; **** object = text DONE
 
-(defun te-throw-up-text ()
+(defun trs-throw-up-text ()
   "Throw text upwards in the directory tree to the next /0-Inbox."
 
-  (let ((te-buffer-home (current-buffer))
-        (te-text-object (te-snort-text))
-        (default-directory (te-jump-destination))
+  (let ((trs-buffer-home (current-buffer))
+        (trs-text-object (trs-snort-text))
+        (default-directory (trs-jump-destination))
         )
-    (te-create-open-inbox-org)
-    (te-insert-text-to-file-blind)
-    (switch-to-buffer te-buffer-home) ; because save-current-buffer failed here
+    (trs-create-open-inbox-org)
+    (trs-insert-text-to-file-blind)
+    (switch-to-buffer trs-buffer-home) ; because save-current-buffer failed here
     )
   )
 ;; **** target = file DONE
 
-(defun te-throw-up-file ()
+(defun trs-throw-up-file ()
   "Throw file upwards in the directory tree to the next /0-Inbox."
 
-  (let* ((te-jump-destination (te-jump-destination))
-         (te-inbox-dir (concat te-jump-destination "0-Inbox/"))
+  (let* ((trs-jump-destination (trs-jump-destination))
+         (trs-inbox-dir (concat trs-jump-destination "0-Inbox/"))
          )
-    (if (file-exists-p te-inbox-dir)
+    (if (file-exists-p trs-inbox-dir)
         ()
-      (mkdir te-inbox-dir)
+      (mkdir trs-inbox-dir)
       )
-    (rename-file (dired-get-filename "no-dir") te-inbox-dir)
-    (message "File thrown to %s" te-jump-destination)
+    (rename-file (dired-get-filename "no-dir") trs-inbox-dir)
+    (message "File thrown to %s" trs-jump-destination)
     )
   (revert-buffer) ; refreshes screen significantly faster than otherwise.
   )
@@ -326,67 +326,67 @@ If no match found, fails with an error, and does not delete the line."
 ;; **** snort type DONE
 ;; ***** text mode?
 
-(defun te-snort-text ()
-  "If heading or line of text to te-snort-line variable."
-  (cond ((eq major-mode 'org-mode) (te-snort-text-org))
-        ((-contains-p minor-mode-list 'outshine-mode) (te-snort-text-outshine))
-        ((-contains-p minor-mode-list 'outline-minor-mode) (te-snort-text-outline))
-        (t (te-snort-line))
+(defun trs-snort-text ()
+  "If heading or line of text to trs-snort-line variable."
+  (cond ((eq major-mode 'org-mode) (trs-snort-text-org))
+        ((-contains-p minor-mode-list 'outshine-mode) (trs-snort-text-outshine))
+        ((-contains-p minor-mode-list 'outline-minor-mode) (trs-snort-text-outline))
+        (t (trs-snort-line))
         )
   )
 ;; ***** at heading?
 
-(defun te-snort-text-org ()
-     (if (org-at-heading-p) (te-snort-org-heading)
-            (te-snort-line))
+(defun trs-snort-text-org ()
+     (if (org-at-heading-p) (trs-snort-org-heading)
+            (trs-snort-line))
      )
-(defun te-snort-text-outshine ()
-     (if (outline-on-heading-p) (te-snort-outshine-heading)
-            (te-snort-line))
+(defun trs-snort-text-outshine ()
+     (if (outline-on-heading-p) (trs-snort-outshine-heading)
+            (trs-snort-line))
      )
-(defun te-snort-text-outline ()
-     (if (outline-on-heading-p) (te-snort-outline-heading)
-            (te-snort-line))
+(defun trs-snort-text-outline ()
+     (if (outline-on-heading-p) (trs-snort-outline-heading)
+            (trs-snort-line))
      )
 ;; ***** heading type? DONE
 
-(defun te-snort-org-heading ()
+(defun trs-snort-org-heading ()
   (save-restriction
     (org-narrow-to-subtree)
-    (te-snort-visible)
+    (trs-snort-visible)
     )
   )
-(defun te-snort-outshine-heading ()
+(defun trs-snort-outshine-heading ()
   (save-restriction
     (outshine-narrow-to-subtree)
-    (te-snort-visible)
+    (trs-snort-visible)
     )
   )
-(defun te-snort-outline-heading ()
+(defun trs-snort-outline-heading ()
   (save-restriction
     (org-narrow-to-subtree)
-    (te-snort-visible)
+    (trs-snort-visible)
     )
   )
 ;; ***** line
 
-(defun te-snort-line ()
-  "Move a line of text to var te-object-text."
+(defun trs-snort-line ()
+  "Move a line of text to var trs-object-text."
 
   (if (eq (point-min) (point-max))
       (user-error "%s" "Selected line is empty")
-    (setq te-object-text
+    (setq trs-object-text
           (concat (delete-and-extract-region (line-beginning-position) (line-end-position))
                   "\n"
                   )
           )
-    (te-delete-leftover-empty-line)
+    (trs-delete-leftover-empty-line)
     )
   )
 ;; **** files DONE
 ;; ***** Find the searched dired entry DONE
 
-(defun te-search-dired-open ()
+(defun trs-search-dired-open ()
   "Opens the isearched Dired entry."
 
   (if (string-equal major-mode "dired-mode")
@@ -401,7 +401,7 @@ If no match found, fails with an error, and does not delete the line."
   )
 ;; ***** check whether immediate parent dir is "0-Inbox" DONE
 
-(defun te-parent-dir-inbox-p ()
+(defun trs-parent-dir-inbox-p ()
   "Return t if parent dir is 0-Inbox."
 
   (equal
@@ -411,17 +411,17 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** Inbox.org creation DONE
 ;; ****** Create open Inbox.org DONE
 
-(defun te-create-open-inbox-org ()
+(defun trs-create-open-inbox-org ()
   "If Inbox.org doesn't already exist, create it and insert *** offset."
 
-  (let* ((te-inbox-org-path (concat default-directory "Inbox.org"))
-         (te-inbox-org-buffer (find-buffer-visiting te-inbox-org-path)))
+  (let* ((trs-inbox-org-path (concat default-directory "Inbox.org"))
+         (trs-inbox-org-buffer (find-buffer-visiting trs-inbox-org-path)))
 
-    (cond (te-inbox-org-buffer (set-buffer te-inbox-org-buffer)) ; select buffer if exists
-          ((file-exists-p te-inbox-org-path) (find-file te-inbox-org-path)) ; open file if exists
+    (cond (trs-inbox-org-buffer (set-buffer trs-inbox-org-buffer)) ; select buffer if exists
+          ((file-exists-p trs-inbox-org-path) (find-file trs-inbox-org-path)) ; open file if exists
           ;; else create and open file
           (t (progn (f-touch "Inbox.org")
-                    (find-file te-inbox-org-path)
+                    (find-file trs-inbox-org-path)
                     (insert "*** offset\n\n")
                     )
              )
@@ -429,9 +429,9 @@ If no match found, fails with an error, and does not delete the line."
     )
   )
 ;; ** utilities DONE
-;; *** te-delete-this-buffer-and-file DONE
+;; *** trs-delete-this-buffer-and-file DONE
 
-(defun te-delete-this-buffer-and-file ()
+(defun trs-delete-this-buffer-and-file ()
   "Delete file visited by current buffer and kill buffer."
   (interactive)
 
@@ -441,7 +441,7 @@ If no match found, fails with an error, and does not delete the line."
         (user-error "%s" "Buffer is narrowed")
       (when (yes-or-no-p "Are you sure you want to remove this file? ")
         (kill-buffer (current-buffer))
-        (delete-file filename)
+        (deletrs-file filename)
         (message "File `%s' successfully removed" filename)
         )
       )
@@ -450,7 +450,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** org links DONE
 ;; **** Store link and fold the PROPERTIES drawer DONE
 
-(defun te-store-link-fold-drawer ()
+(defun trs-store-link-fold-drawer ()
   "Store an org link to a heading, and fold the drawer."
   (interactive)
 
@@ -467,7 +467,7 @@ If no match found, fails with an error, and does not delete the line."
   )
 ;; **** create Zinks.org DONE
 
-(defun te-dired-zinks ()
+(defun trs-dired-zinks ()
   "Create Zinks.org and insert an anchor org-id link titled with its path relative to `vc-root-dir' if present, else `user-home-directory'."
   (interactive)
 
@@ -483,14 +483,14 @@ If no match found, fails with an error, and does not delete the line."
                       "\n\n\n"
                       )
               )
-      (te-store-link-fold-drawer)
+      (trs-store-link-fold-drawer)
       (goto-char (point-max))
       )
     )
   )
 ;; *** duplicate heading to other window DONE
 
-(defun te-duplicate-heading-to-other-window ()
+(defun trs-duplicate-heading-to-other-window ()
   "Insert heading at point to the bottom of the buffer in the next window."
   (interactive)
 
@@ -513,18 +513,18 @@ If no match found, fails with an error, and does not delete the line."
 
 ;; *** snort visible region DONE
 
-(defun te-snort-visible ()
-  "Move visible text to the variable te-object-text. Widen. Delete the empty line."
+(defun trs-snort-visible ()
+  "Move visible text to the variable trs-object-text. Widen. Delete the empty line."
 
   (goto-char (point-max))
   (org-N-empty-lines-before-current 1)
-  (setq te-object-text (delete-and-extract-region (point-min) (point-max)))
+  (setq trs-object-text (delete-and-extract-region (point-min) (point-max)))
   (widen)
-  (te-delete-leftover-empty-line)
+  (trs-delete-leftover-empty-line)
   )
 ;; *** safely delete empty line
 
-(defun te-delete-leftover-empty-line ()
+(defun trs-delete-leftover-empty-line ()
   "Deletes empty line at point, if there is one."
 
   (unless (and (bobp) (eobp))
@@ -540,17 +540,17 @@ If no match found, fails with an error, and does not delete the line."
   )
 ;; *** insert at bottom of buffer DONE
 
-(defun te-insert-to-end-of-buffer ()
-  "Add `te-object-text' text to bottom of target buffer."
+(defun trs-insert-to-end-of-buffer ()
+  "Add `trs-object-text' text to bottom of target buffer."
 
   (widen)
   (goto-char (point-max))
   (org-N-empty-lines-before-current 1)
-  (insert te-object-text)
+  (insert trs-object-text)
   )
 ;; *** text inserted confirmation message
 
-(defun te-text-inserted-to-buffer-path-message ()
+(defun trs-text-inserted-to-buffer-path-message ()
   "Reports the filename the text arrived at, with path relative to vd-root-dir or ~/."
 
   (message "Inserted text into `%s'" (if (vc-root-dir)
