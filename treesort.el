@@ -44,10 +44,10 @@
 ;; text appended to polished documents. So it prepends the text before the
 ;; level-1 headline, where it will stick out like a sore thumb.
 
-;; trs-throw assumes that most headings you file will have four or more stars.
-;; Why? Imagine you are throwing headings to an outline. The level-1 heading is
-;; the document title. The level-2 headings are categories. The level-3 headings
-;; are sub-categories. The level-4 headings are topics. Outlines become unwieldy
+;; trs-throw assumes that most headings you file will have four stars. Why?
+;; Imagine you are throwing headings to an outline. The level-1 heading is the
+;; document title. The level-2 headings are categories. The level-3 headings are
+;; sub-categories. The level-4 headings are topics. Outlines become unwieldy
 ;; when they get too deep, at which point it's better to create more files and
 ;; directories to spread the load.
 
@@ -242,21 +242,20 @@
   "Throw text to a searched target in an adjacent Dired buffer."
 
   (select-window (next-window))
-
   (let ((trs-dired-starting-buffer (current-buffer))
         )
-  (trs-search-dired-open)
-  (select-window (previous-window))
-  (trs-snort-text)
-  (select-window (next-window))
-  (if buffer-file-name
-      (trs-insert-text-to-file-blind)
-    (trs-insert-text-to-directory)
+    (trs-search-dired-open)
+    (select-window (previous-window))
+    (trs-snort-text)
+    (select-window (next-window))
+    (if buffer-file-name
+        (trs-insert-text-to-file-blind)
+      (trs-insert-text-to-directory)
+      )
+    (switch-to-buffer trs-dired-starting-buffer) ; Save-current-buffer bugged,
+                                        ; must use instead.
+    (forward-char 1)
     )
-  (switch-to-buffer trs-dired-starting-buffer) ; Save-current-buffer bugged,
-                                               ; must use instead.
-  (forward-char 1)
-  )
   )
 ;; ****** destination = dir
 
