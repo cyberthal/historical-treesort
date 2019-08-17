@@ -588,6 +588,30 @@ else `user-home-directory'."
   )
 ;; ** library
 
+;; *** heading ends n newlines
+
+(defun trs-region-ends-n-newlines (n)
+  "Make region end in N newlines."
+
+  (if (>= n 0)
+      ()
+    (user-error "N is too small: %s" n)
+    )
+
+  (let ((m (- n 1)))
+    (save-excursion
+      (goto-char (point-max))
+      (if (bolp)
+          (if (= n 0)
+              (progn (org-N-empty-lines-before-current n)
+                     (delete-char -1))
+            (org-N-empty-lines-before-current m)
+            )
+        (insert (make-string n ?\n))
+        )
+      )
+    )
+  )
 ;; *** snort visible region
 
 (defun trs-snort-visible ()
