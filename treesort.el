@@ -1,44 +1,72 @@
-;;; treesort.el --- move text/files around directory tree
+;;; treesort.el --- move text/files thru directory tree -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019  Leo Buchignani III
+;; Copyright (C) 2019 Leo Buchignani III
 
 ;; Author: Leo Buchignani III <texas.cyberthal@gmail.com>
 ;; Keywords: outlines, files, convenience
-;; Package-Requires:
-;; URL:
-;; Version: 0.0.1
+;; Package-Requires: ((org) (dired) (dash) (f))
+;; URL: https://github.com/cyberthal/treesort
+;; Version: 1.0.0
 
-;; This file is not part of GNU Emacs.
+;; This file is NOT part of GNU Emacs.
 
 ;;; Commentary:
 
 ;; Treesort moves text and files through a directory tree.
 
-;; Treesort's main command is trs-throw. It moves text or files from the current window to a target in the next window. A second function, trs-throw-up, moves text or files up one directory level. You can throw directories the same as files.
+;; Treesort's main command is trs-throw. It moves text or files from the current
+;; window to a target in the next window. A second function, trs-throw-up, moves
+;; text or files up one directory level. You can throw directories the same as
+;; files.
 
-;; When you throw a file to a directory, trs-throw creates a child directory <target-directory>/0-Inbox/ and puts the file there. This makes it easy to remember which files are new arrivals.
+;; When you throw a file to a directory, trs-throw creates a child directory
+;; <target-directory>/0-Inbox/ and puts the file there. This makes it easy to
+;; remember which files are new arrivals.
 
-;; When you throw text to a directory, trs-throw creates a file Inbox.org. Lots of these files get created during a filing session. You can quickly delete them with trs-delete-this-buffer-and-file.
+;; When you throw text to a directory, trs-throw creates a file Inbox.org. Lots
+;; of these files get created during a filing session. You can quickly delete
+;; them with trs-delete-this-buffer-and-file.
 
-;; Treesort can rapidly change the directory tree structure of your notes. It helps to have some links that won't break when paths change. Use trs-dired-zinks to create a file with an org-id link in it.
+;; Treesort can rapidly change the directory tree structure of your notes. It
+;; helps to have some links that won't break when paths change. Use
+;; trs-dired-zinks to create a file with an org-id link in it.
 
-;; trs-throw can throw text into existing files or outlines. You can duplicate a heading to another window with trs-duplicate-heading-to-other-window.
+;; trs-throw can throw text into existing files or outlines. You can duplicate a
+;; heading to another window with trs-duplicate-heading-to-other-window.
 
-;; When you throw text to an outline, trs-throw believes that the parent heading is at the top of the visible region. It will only throw to direct children of the parent. You should narrow appropriately before throwing.
+;; When you throw text to an outline, trs-throw believes that the parent heading
+;; is at the top of the visible region. It will only throw to direct children of
+;; the parent. You should narrow appropriately before throwing.
 
-;; When you throw text to a file, trs-throw puts the text at the bottom. EXCEPT when the file already has a level-1 heading. Then trs-throw assumes this is a polished document, not an inbox file. trs-throw worries you will forget about text appended to polished documents. So it prepends the text before the level-1 headline, where it will stick out like a sore thumb.
+;; When you throw text to a file, trs-throw puts the text at the bottom. EXCEPT
+;; when the file already has a level-1 heading. Then trs-throw assumes this is a
+;; polished document, not an inbox file. trs-throw worries you will forget about
+;; text appended to polished documents. So it prepends the text before the
+;; level-1 headline, where it will stick out like a sore thumb.
 
-;; trs-throw assumes that most headings you file will have four or more stars. Why? Imagine you are throwing headings to an outline. The level-1 heading is the document title. The level-2 headings are categories. The level-3 headings are subcategories. The level-4 headings are topics. Outlines become unwieldy when they get too deep, at which point it's better to create more files and directories to spread the load.
+;; trs-throw assumes that most headings you file will have four stars. Why?
+;; Imagine you are throwing headings to an outline. The level-1 heading is the
+;; document title. The level-2 headings are categories. The level-3 headings are
+;; sub-categories. The level-4 headings are topics. Outlines become unwieldy
+;; when they get too deep, at which point it's better to create more files and
+;; directories to spread the load.
 
-;; trs-throw only imposes this opinion on you in one way: it creates Inbox.org files with a "*** offset" at the top. You can still file level-5 headings, but they might "vanish" if you accidentally file a level-4 heading that folds appended level-5 headings beneath it. You can also file level-3 headings, although they won't be children of the "offset" heading, and might unexpectedly fold appended level-4 headings. I recommend that you convert headings to level 4 for transport, and then resize them at their destination.
+;; trs-throw only imposes this opinion on you in one way: it creates Inbox.org
+;; files with a "*** offset" at the top. You can still file level-5 headings,
+;; but they might "vanish" if you accidentally file a level-4 heading that folds
+;; appended level-5 headings beneath it. You can also file level-3 headings,
+;; although they won't be children of the "offset" heading, and might
+;; unexpectedly fold appended level-4 headings. I recommend that you convert
+;; headings to level 4 for transport, and then resize them at their destination.
 
-;; The last text thrown is saved in the variable trs-object-text until the Emacs session ends. Text is not saved to the kill ring.
+;; The last text thrown is saved in the variable trs-object-text until the Emacs
+;; session ends. Text is not saved to the kill ring.
 
 ;;;; Installation
 
 ;;;;; MELPA
 
-;; If you installed from MELPA, you're done.
+;; If you installed from MELPA, you're done. This package is not yet on MELPA.
 
 ;;;;; Manual
 
@@ -62,13 +90,20 @@
 
 ;; Use org-id for global link IDs that are not path-dependent.
 
-;; Treesort encourages many org files in deeply nested directories. This can make it challenging to construct an org-agenda files list. See here to load org agenda files recursively: https://stackoverflow.com/questions/17215868/recursively-adding-org-files-in-a-top-level-directory-for-org-agenda-files-take
+;; Treesort encourages many org files in deeply nested directories. This can
+;; make it challenging to construct an org-agenda files list. See here to load
+;; org agenda files recursively:
+;; https://stackoverflow.com/questions/17215868/recursively-adding-org-files-in-a-top-level-directory-for-org-agenda-files-take
 
-;; It also helps to have a function that refreshes your org agenda file list, if you've altered paths in that directory.
+;; It also helps to have a function that refreshes your org agenda file list, if
+;; you've altered paths in that directory.
 
-;; I recommend configuring Dired to sort directories before files. Where possible, capitalize files and directories. This makes it easy to target them with isearch in a few keystrokes. Omit extensions to reduce visual clutter.
+;; I recommend configuring Dired to sort directories before files. Where
+;; possible, capitalize files and directories. This makes it easy to target them
+;; with isearch in a few keystrokes. Omit extensions to reduce visual clutter.
 
-;; Treesort filing is fast. Think with your fingers, not your brain. You can always redo it later.
+;; Treesort filing is fast. Think with your fingers, not your brain. You can
+;; always redo it later.
 
 ;;; My keybindings
 
@@ -89,6 +124,22 @@
 ;; (global-set-key (kbd "H-3") 'split-window-right)
 ;; (global-set-key (kbd "s-i") 'ido-dired)
 
+;;; Comments and whitespace
+
+;; Treesort departs from
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Coding-Conventions.html
+;; by placing close-parentheses on lines by themselves where it enhances
+;; readability. I find it much easier to keep track of parenthetical nesting
+;; with indentation than only by counting and font color. Ruby does something
+;; similar by placing end-braces on lines by themselves when they embrace
+;; multiple lines.
+
+;; Treesort uses an Outshine-style outline to structure its code. Outline
+;; navigation, narrowing and folding negates the disadvantage of using extra
+;; lines to show end-parentheses indentation. Outshine supports todo tags. There
+;; are two level-1 headings at the beginning of the code due to Outshine's
+;; visibility-cycling behavior.
+
 ;;; License:
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -107,21 +158,33 @@
 
 ;; * treesort.el
 ;; * offset
-;; ** throw DONE
+;; ** require
 
-;; *** config DONE
+(require 'org)
+(require 'dired)
+(require 'dash)
+(require 'f)
+;; ** throw
 
-;; **** don't search invisible text in dired DONE
+;; *** config
+
+;; **** don't search invisible text in dired
 
 (defun trs-dired-dont-search-invisible ()
   (make-local-variable 'search-invisible)
   (setq search-invisible nil)
   )
 (add-hook 'dired-mode-hook 'trs-dired-dont-search-invisible)
-;; *** main defun DONE
 
+;; **** define global variable
+
+(defvar trs-object-text nil
+  "Stores the last text treesort killed or copied.")
+;; *** main defun
+
+;;;###autoload
 (defun trs-throw (&optional count)
-  "Throw text or dired entry to a target in the next window COUNT times."
+  "Throw text/file to target in next window COUNT times."
   (interactive "p")
 
   (dotimes (var count)
@@ -131,12 +194,13 @@
             (trs-throw-file)
           (trs-throw-text))
       (other-window -1) ; save-selected-window fails for throw-text
+      (message "Threw %s times." var)
       )
     )
   )
-;; *** flow control dispatcher DONE
+;; *** flow control dispatcher
 
-;; **** main defun DONE
+;; **** main defun
 
 (defun trs-throw-text ()
   "Throw text to either Dired or an outline."
@@ -151,10 +215,10 @@
       )
     )
   )
-;; **** throw file DONE
+;; **** throw file
 
 (defun trs-throw-file ()
-  "Throw file(s) from one Dired buffer to a searched target in an adjacent Dired buffer."
+  "Throw file(s) from Dired to searched target in next window."
 
   (select-window (next-window))
   (trs-search-dired-open)
@@ -165,37 +229,38 @@
 
   (select-window (next-window))
   (dired-up-directory) ; restores original dired buffer.
-  (dired-up-directory) ; necessary because save-current-buffer won't restore after dired-do-rename.
+  (dired-up-directory) ; necessary because save-current-buffer won't restore
+                       ; after dired-do-rename.
   (forward-char 1)
   )
-;; **** throw text DONE
-;; ***** destination = dired DONE
+;; **** throw text
+;; ***** destination = dired
 
-;; ****** main defun DONE
+;; ****** main defun
 
 (defun trs-throw-text-to-dired ()
   "Throw text to a searched target in an adjacent Dired buffer."
 
   (select-window (next-window))
-
   (let ((trs-dired-starting-buffer (current-buffer))
         )
-  (trs-search-dired-open)
-  (select-window (previous-window))
-  (trs-snort-text)
-  (select-window (next-window))
-  (if buffer-file-name
-      (trs-insert-text-to-file-blind)
-    (trs-insert-text-to-directory)
+    (trs-search-dired-open)
+    (select-window (previous-window))
+    (trs-snort-text)
+    (select-window (next-window))
+    (if buffer-file-name
+        (trs-insert-text-to-file-blind)
+      (trs-insert-text-to-directory)
+      )
+    (switch-to-buffer trs-dired-starting-buffer) ; Save-current-buffer bugged,
+                                        ; must use instead.
+    (forward-char 1)
     )
-  (switch-to-buffer trs-dired-starting-buffer) ; save-current-buffer bugged, must use instead
-  (forward-char 1)
-  )
   )
 ;; ****** destination = dir
 
 (defun trs-insert-text-to-directory ()
-  "Insert trs-object-text to Inbox.org."
+  "Insert `trs-object-text' to Inbox.org."
 
     (trs-create-open-inbox-org)
     (trs-insert-to-end-of-buffer)
@@ -213,7 +278,7 @@ Function assumes a polished document will have a level-1 near the top."
   (goto-char (point-min))
   (condition-case nil
       (progn
-        (re-search-forward "^* ") ; search for a level-1 headline
+        (re-search-forward "^* ") ; Search for a level-1 headline.
         (goto-char (point-at-bol))
         (insert trs-object-text)
         )
@@ -222,15 +287,16 @@ Function assumes a polished document will have a level-1 near the top."
   (trs-text-inserted-to-buffer-path-message)
   )
 ;; ***** destination = text
-;; ****** main defun DONE
+;; ****** main defun
 
 (defun trs-throw-text-to-outline (PREFIX)
   "Append text to next window's heading beginning with PREFIX.
 Assumes parent heading is at the top of the visible region.
 
-Prompts user for input. Asks for enough letters from the beginning of the target
-child heading to distinguish it from the other immediate children of the parent
-heading. Searches for a simple string. Takes the first match.
+Prompts user for input. Asks for enough letters from the
+beginning of the target child heading to distinguish it from the
+other immediate children of the parent heading. Searches for a
+simple string. Takes the first match.
 
 If no match found, fails with an error, and does not delete the line."
 
@@ -243,14 +309,16 @@ If no match found, fails with an error, and does not delete the line."
     (goto-char (point-min))
     (search-forward
      (concat "\n"
-             (make-string (+ 1 (skip-chars-forward "*")) ?*)
+             (make-string (1+ (skip-chars-forward "*")) ?*)
              " "
              PREFIX)
      )
 
-    (unless (outline-on-heading-p) (user-error "%s" "Search did not find a valid heading"))
+    (unless (outline-on-heading-p)
+      (user-error "%s" "Search did not find a valid heading"))
 
-    (org-save-outline-visibility 1 ; argument necessary, else heading after body text unfolds body text
+    (org-save-outline-visibility 1 ; argument necessary, else heading after body
+                                   ; text unfolds body text
       (save-restriction
         (org-narrow-to-subtree)
         (goto-char (point-max))
@@ -264,9 +332,10 @@ If no match found, fails with an error, and does not delete the line."
       )
     )
   )
-;; *** throw up DONE
-;; **** main defun DONE
+;; *** throw up
+;; **** main defun
 
+;;;###autoload
 (defun trs-throw-up (&optional count)
   "Throw file or text one directory upwards, COUNT times."
   (interactive "p")
@@ -276,12 +345,13 @@ If no match found, fails with an error, and does not delete the line."
     (if (eq major-mode 'dired-mode)
         (trs-throw-up-file)
       (trs-throw-up-text))
+    (message "Threw up %s times" var)
     )
   )
-;; **** jump height DONE
+;; **** jump height
 
 (defun trs-jump-destination ()
-  "Return a directory either one above current, or two if parent is /0-Inbox."
+  "Return directory 1-2 above current, depending on ../0-Inbox."
 
   (concat default-directory
 
@@ -291,7 +361,7 @@ If no match found, fails with an error, and does not delete the line."
             "../")
           )
   )
-;; **** object = text DONE
+;; **** object = text
 
 (defun trs-throw-up-text ()
   "Throw text upwards in the directory tree to the next /0-Inbox."
@@ -305,7 +375,7 @@ If no match found, fails with an error, and does not delete the line."
     (switch-to-buffer trs-buffer-home) ; because save-current-buffer failed here
     )
   )
-;; **** target = file DONE
+;; **** target = file
 
 (defun trs-throw-up-file ()
   "Throw file upwards in the directory tree to the next /0-Inbox."
@@ -322,8 +392,8 @@ If no match found, fails with an error, and does not delete the line."
     )
   (revert-buffer) ; refreshes screen significantly faster than otherwise.
   )
-;; *** library DONE
-;; **** snort type DONE
+;; *** library
+;; **** snort type
 ;; ***** text mode?
 
 (defun trs-snort-text ()
@@ -348,7 +418,7 @@ If no match found, fails with an error, and does not delete the line."
      (if (outline-on-heading-p) (trs-snort-outline-heading)
             (trs-snort-line))
      )
-;; ***** heading type? DONE
+;; ***** heading type?
 
 (defun trs-snort-org-heading ()
   (save-restriction
@@ -371,7 +441,7 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** line
 
 (defun trs-snort-line ()
-  "Move a line of text to var trs-object-text."
+  "Move a line of text to variable `trs-object-text'."
 
   (if (eq (point-min) (point-max))
       (user-error "%s" "Selected line is empty")
@@ -383,8 +453,8 @@ If no match found, fails with an error, and does not delete the line."
     (trs-delete-leftover-empty-line)
     )
   )
-;; **** files DONE
-;; ***** Find the searched dired entry DONE
+;; **** files
+;; ***** Find the searched dired entry
 
 (defun trs-search-dired-open ()
   "Opens the isearched Dired entry."
@@ -399,20 +469,20 @@ If no match found, fails with an error, and does not delete the line."
   (isearch-forward)
   (dired-find-file)
   )
-;; ***** check whether immediate parent dir is "0-Inbox" DONE
+;; ***** check whether immediate parent dir is "0-Inbox"
 
 (defun trs-parent-dir-inbox-p ()
   "Return t if parent dir is 0-Inbox."
 
   (equal
-   (file-name-nondirectory (directory-file-name default-directory)) ; returns parent directory
+   (file-name-nondirectory (directory-file-name default-directory)) ; Return parent directory.
    "0-Inbox")
   )
-;; ***** Inbox.org creation DONE
-;; ****** Create open Inbox.org DONE
+;; ***** Inbox.org creation
+;; ****** Create open Inbox.org
 
 (defun trs-create-open-inbox-org ()
-  "If Inbox.org doesn't already exist, create it and insert *** offset."
+  "If no Inbox.org, make it and insert *** offset."
 
   (let* ((trs-inbox-org-path (concat default-directory "Inbox.org"))
          (trs-inbox-org-buffer (find-buffer-visiting trs-inbox-org-path)))
@@ -428,9 +498,10 @@ If no match found, fails with an error, and does not delete the line."
           )
     )
   )
-;; ** utilities DONE
-;; *** trs-delete-this-buffer-and-file DONE
+;; ** utilities
+;; *** trs-delete-this-buffer-and-file
 
+;;;###autoload
 (defun trs-delete-this-buffer-and-file ()
   "Delete file visited by current buffer and kill buffer."
   (interactive)
@@ -441,22 +512,23 @@ If no match found, fails with an error, and does not delete the line."
         (user-error "%s" "Buffer is narrowed")
       (when (yes-or-no-p "Are you sure you want to remove this file? ")
         (kill-buffer (current-buffer))
-        (deletrs-file filename)
+        (delete-file filename)
         (message "File `%s' successfully removed" filename)
         )
       )
     )
   )
-;; *** org links DONE
-;; **** Store link and fold the PROPERTIES drawer DONE
+;; *** org links
+;; **** Store link and fold the PROPERTIES drawer
 
+;;;###autoload
 (defun trs-store-link-fold-drawer ()
   "Store an org link to a heading, and fold the drawer."
   (interactive)
 
   (save-excursion
     (save-restriction
-      (org-store-link nil t) ; without interactive=t arg, no org link gets created
+      (org-store-link nil t) ; Without interactive=t arg, no org link gets created.
       (org-narrow-to-subtree)
       (org-previous-visible-heading 1)
       (widen)
@@ -465,10 +537,14 @@ If no match found, fails with an error, and does not delete the line."
     (org-cycle-hide-drawers 1)
     )
   )
-;; **** create Zinks.org DONE
+;; **** create Zinks.org
 
+;;;###autoload
 (defun trs-dired-zinks ()
-  "Create Zinks.org and insert an anchor org-id link titled with its path relative to `vc-root-dir' if present, else `user-home-directory'."
+  "Make Zinks.org.  Insert org-id link.
+
+Link title's path is relative to `vc-root-dir' if present,
+else `user-home-directory'."
   (interactive)
 
   (let ((zinks-filename (concat default-directory "Zinks.org"))
@@ -479,7 +555,7 @@ If no match found, fails with an error, and does not delete the line."
       (insert (concat "*** "
                       (expand-file-name (file-name-directory buffer-file-name) (if (vc-root-dir)
                                                                                    (vc-root-dir)
-                                                                                 user-home-directory)) ; this might cause an error if outside the user-home-directory and not in a repo. DEFER
+                                                                                 user-home-directory)) ; This might cause an error if outside the user-home-directory and not in a repo. DEFER
                       "\n\n\n"
                       )
               )
@@ -488,10 +564,11 @@ If no match found, fails with an error, and does not delete the line."
       )
     )
   )
-;; *** duplicate heading to other window DONE
+;; *** duplicate heading to other window
 
+;;;###autoload
 (defun trs-duplicate-heading-to-other-window ()
-  "Insert heading at point to the bottom of the buffer in the next window."
+  "Append heading at point to end of next window's buffer."
   (interactive)
 
   (save-restriction
@@ -509,15 +586,18 @@ If no match found, fails with an error, and does not delete the line."
       )
     )
   )
-;; ** library DONE
+;; ** library
 
-;; *** snort visible region DONE
+;; *** snort visible region
 
 (defun trs-snort-visible ()
-  "Move visible text to the variable trs-object-text. Widen. Delete the empty line."
+  "Move region to `trs-object-text'.  Widen.  Delete empty line."
 
   (goto-char (point-max))
-  (org-N-empty-lines-before-current 1)
+  (if (bolp)
+      (org-N-empty-lines-before-current 0)
+    (insert "\n")
+    )
   (setq trs-object-text (delete-and-extract-region (point-min) (point-max)))
   (widen)
   (trs-delete-leftover-empty-line)
@@ -531,14 +611,14 @@ If no match found, fails with an error, and does not delete the line."
     (if (bobp)
         (delete-char 1)
       (when
-          (org--line-empty-p 1) ; (not my) bug: this wrongly returns nil when point is on an empty line at top of buffer. hence the workaround
+          (org--line-empty-p 1) ; (not my) bug: This wrongly returns nil when point is on an empty line at top of buffer.  Hence the workaround.
         (delete-char -1)
         (unless (eobp) (forward-char 1))
         )
       )
     )
   )
-;; *** insert at bottom of buffer DONE
+;; *** insert at bottom of buffer
 
 (defun trs-insert-to-end-of-buffer ()
   "Add `trs-object-text' text to bottom of target buffer."
@@ -551,7 +631,9 @@ If no match found, fails with an error, and does not delete the line."
 ;; *** text inserted confirmation message
 
 (defun trs-text-inserted-to-buffer-path-message ()
-  "Reports the filename the text arrived at, with path relative to vd-root-dir or ~/."
+  "Report filename that text was inserted to.
+
+Reported path is relative to vd-root-dir or ~/."
 
   (message "Inserted text into `%s'" (if (vc-root-dir)
                                          (expand-file-name buffer-file-name (vc-root-dir))
