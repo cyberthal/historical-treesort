@@ -594,7 +594,10 @@ else `user-home-directory'."
   "Move region to `trs-object-text'.  Widen.  Delete empty line."
 
   (goto-char (point-max))
-  (org-N-empty-lines-before-current 1)
+  (if (bolp)
+      (org-N-empty-lines-before-current 0)
+    (insert "\n")
+    )
   (setq trs-object-text (delete-and-extract-region (point-min) (point-max)))
   (widen)
   (trs-delete-leftover-empty-line)
