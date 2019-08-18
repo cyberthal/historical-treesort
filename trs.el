@@ -1,4 +1,4 @@
-;;; trs.el --- Move text & files thru a directory tree
+;;; trs.el --- Move text & files thru a directory tree -*- lexical-binding: t; -*-
 
 ;; Leos commands for sorting text and files.
 ;; Copyright (C) 2019 Leo Buchignani III
