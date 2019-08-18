@@ -1,14 +1,13 @@
-;;; treesort.el --- move text/files thru directory tree -*- lexical-binding: t; -*-
+;;; treesort.el --- Move text & files thru a directory tree
 
+;; Leos commands for sorting text and files.
 ;; Copyright (C) 2019 Leo Buchignani III
 
 ;; Author: Leo Buchignani III <texas.cyberthal@gmail.com>
 ;; Keywords: outlines, files, convenience
-;; Package-Requires: ((org) (dired) (dash) (f))
+;; Package-Requires: ()
 ;; URL: https://github.com/cyberthal/treesort
 ;; Version: 1.0.0
-
-;; This file is NOT part of GNU Emacs.
 
 ;;; Commentary:
 
@@ -155,7 +154,7 @@
 ;; You should have received a copy of the GNU General Public License
 
 ;;; Code:
-
+
 ;; * treesort.el
 ;; * offset
 ;; ** require
