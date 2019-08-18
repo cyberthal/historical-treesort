@@ -1,14 +1,13 @@
-;;; treesort.el --- move text/files thru directory tree -*- lexical-binding: t; -*-
+;;; trs.el --- Move text & files thru a directory tree
 
+;; Leos commands for sorting text and files.
 ;; Copyright (C) 2019 Leo Buchignani III
 
 ;; Author: Leo Buchignani III <texas.cyberthal@gmail.com>
 ;; Keywords: outlines, files, convenience
-;; Package-Requires: ((org) (dired) (dash) (f))
+;; Package-Requires: ((emacs "24.3"))
 ;; URL: https://github.com/cyberthal/treesort
 ;; Version: 1.0.0
-
-;; This file is NOT part of GNU Emacs.
 
 ;;; Commentary:
 
@@ -73,7 +72,7 @@
 ;; Put this file in your load-path, and put this in your init
 ;; file: treesort.el
 
-;; (require 'treesort)
+;; (require 'trs)
 
 ;;;; Usage
 
@@ -155,7 +154,7 @@
 ;; You should have received a copy of the GNU General Public License
 
 ;;; Code:
-
+
 ;; * treesort.el
 ;; * offset
 ;; ** require
@@ -164,6 +163,7 @@
 (require 'dired)
 (require 'dash)
 (require 'f)
+;(require '(emacs "24.3"))
 ;; ** throw
 
 ;; *** config
@@ -552,9 +552,11 @@ else `user-home-directory'."
         (user-error "%s" "Zinks.org already exists")
       (find-file zinks-filename)
       (insert (concat "*** "
-                      (expand-file-name (file-name-directory buffer-file-name) (if (vc-root-dir)
-                                                                                   (vc-root-dir)
-                                                                                 user-home-directory)) ; This might cause an error if outside the user-home-directory and not in a repo. DEFER
+                      (expand-file-name (file-name-directory buffer-file-name)
+                                        (cond ((vc-root-dir) (vc-root-dir))
+                                              ((user-home-directory) (user-home-directory)) ; Spacemacs variable. If missing, no problem.
+                                              )
+                                        )
                       "\n\n\n"
                       )
               )
@@ -658,5 +660,5 @@ Reported path is relative to vd-root-dir or ~/."
   )
 ;; ** provide
 
-(provide 'treesort)
-;;; treesort.el ends here
+(provide 'trs)
+;;; trs.el ends here
