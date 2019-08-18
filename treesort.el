@@ -322,7 +322,7 @@ If no match found, fails with an error, and does not delete the line."
       (save-restriction
         (org-narrow-to-subtree)
         (goto-char (point-max))
-        (org-N-empty-lines-before-current 1)
+        (trs-region-ends-n-newlines 1)
 
         (save-selected-window (select-window (previous-window))
                               (trs-snort-text))
@@ -574,13 +574,13 @@ else `user-home-directory'."
   (save-restriction
     (org-narrow-to-subtree)
     (goto-char (point-max))
-    (org-N-empty-lines-before-current 1)
+    (trs-region-ends-n-newlines 1)
     (let ((home-buffer (current-buffer))
           )
       (save-selected-window
         (select-window (next-window))
+        (trs-region-ends-n-newlines 1)
         (goto-char (point-max))
-        (org-N-empty-lines-before-current 1)
         (insert-buffer-substring home-buffer)
         )
       )
@@ -618,10 +618,7 @@ else `user-home-directory'."
   "Move region to `trs-object-text'.  Widen.  Delete empty line."
 
   (goto-char (point-max))
-  (if (bolp)
-      (org-N-empty-lines-before-current 0)
-    (insert "\n")
-    )
+  (trs-region-ends-n-newlines 1)
   (setq trs-object-text (delete-and-extract-region (point-min) (point-max)))
   (widen)
   (trs-delete-leftover-empty-line)
@@ -649,7 +646,7 @@ else `user-home-directory'."
 
   (widen)
   (goto-char (point-max))
-  (org-N-empty-lines-before-current 1)
+  (trs-region-ends-n-newlines 1)
   (insert trs-object-text)
   )
 ;; *** text inserted confirmation message
