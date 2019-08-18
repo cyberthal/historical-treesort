@@ -321,7 +321,6 @@ If no match found, fails with an error, and does not delete the line."
                                    ; text unfolds body text
       (save-restriction
         (org-narrow-to-subtree)
-        (goto-char (point-max))
         (trs-region-ends-n-newlines 1)
 
         (save-selected-window (select-window (previous-window))
@@ -573,14 +572,12 @@ else `user-home-directory'."
 
   (save-restriction
     (org-narrow-to-subtree)
-    (goto-char (point-max))
     (trs-region-ends-n-newlines 1)
     (let ((home-buffer (current-buffer))
           )
       (save-selected-window
         (select-window (next-window))
-        (trs-region-ends-n-newlines 1)
-        (goto-char (point-max))
+        (trs-region-ends-n-newlines 2)
         (insert-buffer-substring home-buffer)
         )
       )
@@ -591,7 +588,7 @@ else `user-home-directory'."
 ;; *** heading ends n newlines
 
 (defun trs-region-ends-n-newlines (n)
-  "Make region end in N newlines."
+  "Make region end in N newlines. Set point to end of region."
 
   (if (>= n 0)
       ()
@@ -599,25 +596,23 @@ else `user-home-directory'."
     )
 
   (let ((m (- n 1)))
-    (save-excursion
-      (goto-char (point-max))
-      (if (bolp)
-          (if (= n 0)
-              (progn (org-N-empty-lines-before-current n)
-                     (delete-char -1))
-            (org-N-empty-lines-before-current m)
-            )
-        (insert (make-string n ?\n))
-        )
+    (goto-char (point-max))
+    (if (bolp)
+        (if (= n 0)
+            (progn (org-N-empty-lines-before-current n)
+                   (delete-char -1))
+          (org-N-empty-lines-before-current m)
+          )
+      (insert (make-string n ?\n))
       )
     )
+  (goto-char (point-max))
   )
 ;; *** snort visible region
 
 (defun trs-snort-visible ()
   "Move region to `trs-object-text'.  Widen.  Delete empty line."
 
-  (goto-char (point-max))
   (trs-region-ends-n-newlines 1)
   (setq trs-object-text (delete-and-extract-region (point-min) (point-max)))
   (widen)
@@ -645,7 +640,6 @@ else `user-home-directory'."
   "Add `trs-object-text' text to bottom of target buffer."
 
   (widen)
-  (goto-char (point-max))
   (trs-region-ends-n-newlines 1)
   (insert trs-object-text)
   )
