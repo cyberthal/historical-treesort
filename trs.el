@@ -176,10 +176,15 @@
   )
 (add-hook 'dired-mode-hook 'trs-dired-dont-search-invisible)
 
-;; **** define global variable
+;; **** define variables and declare functions
 
 (defvar trs-object-text nil
   "Stores the last text treesort killed or copied.")
+
+(defvar user-home-directory) ; Spacemacs variable
+
+(declare-function outshine-narrow-to-subtree "outshine" ())
+
 ;; *** main defun
 
 ;;;###autoload
