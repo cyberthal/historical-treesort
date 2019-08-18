@@ -322,7 +322,7 @@ If no match found, fails with an error, and does not delete the line."
       (save-restriction
         (org-narrow-to-subtree)
         (goto-char (point-max))
-        (org-N-empty-lines-before-current 1)
+        (trs-region-ends-n-newlines 1)
 
         (save-selected-window (select-window (previous-window))
                               (trs-snort-text))
@@ -574,13 +574,13 @@ else `user-home-directory'."
   (save-restriction
     (org-narrow-to-subtree)
     (goto-char (point-max))
-    (org-N-empty-lines-before-current 1)
+    (trs-region-ends-n-newlines 1)
     (let ((home-buffer (current-buffer))
           )
       (save-selected-window
         (select-window (next-window))
+        (trs-region-ends-n-newlines 1)
         (goto-char (point-max))
-        (org-N-empty-lines-before-current 1)
         (insert-buffer-substring home-buffer)
         )
       )
@@ -588,16 +588,37 @@ else `user-home-directory'."
   )
 ;; ** library
 
+;; *** heading ends n newlines
+
+(defun trs-region-ends-n-newlines (n)
+  "Make region end in N newlines."
+
+  (if (>= n 0)
+      ()
+    (user-error "N is too small: %s" n)
+    )
+
+  (let ((m (- n 1)))
+    (save-excursion
+      (goto-char (point-max))
+      (if (bolp)
+          (if (= n 0)
+              (progn (org-N-empty-lines-before-current n)
+                     (delete-char -1))
+            (org-N-empty-lines-before-current m)
+            )
+        (insert (make-string n ?\n))
+        )
+      )
+    )
+  )
 ;; *** snort visible region
 
 (defun trs-snort-visible ()
   "Move region to `trs-object-text'.  Widen.  Delete empty line."
 
   (goto-char (point-max))
-  (if (bolp)
-      (org-N-empty-lines-before-current 0)
-    (insert "\n")
-    )
+  (trs-region-ends-n-newlines 1)
   (setq trs-object-text (delete-and-extract-region (point-min) (point-max)))
   (widen)
   (trs-delete-leftover-empty-line)
@@ -625,7 +646,7 @@ else `user-home-directory'."
 
   (widen)
   (goto-char (point-max))
-  (org-N-empty-lines-before-current 1)
+  (trs-region-ends-n-newlines 1)
   (insert trs-object-text)
   )
 ;; *** text inserted confirmation message
