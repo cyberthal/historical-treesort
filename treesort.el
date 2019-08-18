@@ -640,7 +640,7 @@ else `user-home-directory'."
   "Add `trs-object-text' text to bottom of target buffer."
 
   (widen)
-  (trs-region-ends-n-newlines 1)
+  (trs-region-ends-n-newlines 2)
   (insert trs-object-text)
   )
 ;; *** text inserted confirmation message
