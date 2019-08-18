@@ -73,7 +73,7 @@
 ;; Put this file in your load-path, and put this in your init
 ;; file: treesort.el
 
-;; (require 'treesort)
+;; (require 'trs)
 
 ;;;; Usage
 
@@ -658,5 +658,5 @@ Reported path is relative to vd-root-dir or ~/."
   )
 ;; ** provide
 
-(provide 'treesort)
+(provide 'trs)
 ;;; treesort.el ends here
