@@ -552,9 +552,10 @@ else `user-home-directory'."
         (user-error "%s" "Zinks.org already exists")
       (find-file zinks-filename)
       (insert (concat "*** "
-                      (expand-file-name (file-name-directory buffer-file-name) (cond ((vc-root-dir) (vc-root-dir))
-                                                                                     ((user-home-directory) (user-home-directory))
-                                                                                     )
+                      (expand-file-name (file-name-directory buffer-file-name)
+                                        (cond ((vc-root-dir) (vc-root-dir))
+                                              ((user-home-directory) (user-home-directory)) ; Spacemacs variable. If missing, no problem.
+                                              )
                                         )
                       "\n\n\n"
                       )
