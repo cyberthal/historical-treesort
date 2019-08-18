@@ -1,6 +1,5 @@
 ;;; trs.el --- Move text & files thru a directory tree -*- lexical-binding: t; -*-
 
-;; Leos commands for sorting text and files.
 ;; Copyright (C) 2019 Leo Buchignani III
 
 ;; Author: Leo Buchignani III <texas.cyberthal@gmail.com>
@@ -11,27 +10,27 @@
 
 ;;; Commentary:
 
-;; Treesort moves text and files through a directory tree.
+;; Treesort rapidly sorts text and files into outlines and the directory tree.
 
 ;; Treesort's main command is trs-throw. It moves text or files from the current
 ;; window to a target in the next window. A second function, trs-throw-up, moves
-;; text or files up one directory level. You can throw directories the same as
+;; text or files up one directory level. You can throw directories as well as
 ;; files.
 
 ;; When you throw a file to a directory, trs-throw creates a child directory
 ;; <target-directory>/0-Inbox/ and puts the file there. This makes it easy to
 ;; remember which files are new arrivals.
 
-;; When you throw text to a directory, trs-throw creates a file Inbox.org. Lots
-;; of these files get created during a filing session. You can quickly delete
-;; them with trs-delete-this-buffer-and-file.
+;; When you throw text to a directory, trs-throw creates a file Inbox.org. Many
+;; such files are created during a filing session. To quickly delete them, use
+;; trs-delete-this-buffer-and-file.
 
 ;; Treesort can rapidly change the directory tree structure of your notes. It
 ;; helps to have some links that won't break when paths change. Use
 ;; trs-dired-zinks to create a file with an org-id link in it.
 
 ;; trs-throw can throw text into existing files or outlines. You can duplicate a
-;; heading to another window with trs-duplicate-heading-to-other-window.
+;; heading to another text window with trs-duplicate-heading-to-other-window.
 
 ;; When you throw text to an outline, trs-throw believes that the parent heading
 ;; is at the top of the visible region. It will only throw to direct children of
@@ -52,25 +51,27 @@
 
 ;; trs-throw only imposes this opinion on you in one way: it creates Inbox.org
 ;; files with a "*** offset" at the top. You can still file level-5 headings,
-;; but they might "vanish" if you accidentally file a level-4 heading that folds
+;; but they might "vanish" if you file a level-4 heading that unintentionally folds
 ;; appended level-5 headings beneath it. You can also file level-3 headings,
 ;; although they won't be children of the "offset" heading, and might
 ;; unexpectedly fold appended level-4 headings. I recommend that you convert
 ;; headings to level 4 for transport, and then resize them at their destination.
 
 ;; The last text thrown is saved in the variable trs-object-text until the Emacs
-;; session ends. Text is not saved to the kill ring.
+;; session ends. Text is not saved to the kill ring. A message appears in the
+;; minibuffer displaying the destination of text and files moved with ts-throw
+;; commands.
 
 ;;;; Installation
 
 ;;;;; MELPA
 
-;; If you installed from MELPA, you're done. This package is not yet on MELPA.
+;; If you installed from MELPA, you're done. (This package is not yet on MELPA.)
 
 ;;;;; Manual
 
 ;; Put this file in your load-path, and put this in your init
-;; file: treesort.el
+;; file: trs.el
 
 ;; (require 'trs)
 
@@ -155,7 +156,7 @@
 
 ;;; Code:
 
-;; * treesort.el
+;; * trs.el
 ;; * offset
 ;; ** require
 
@@ -163,7 +164,6 @@
 (require 'dired)
 (require 'dash)
 (require 'f)
-;(require '(emacs "24.3"))
 ;; ** throw
 
 ;; *** config
@@ -176,10 +176,15 @@
   )
 (add-hook 'dired-mode-hook 'trs-dired-dont-search-invisible)
 
-;; **** define global variable
+;; **** define variables and declare functions
 
 (defvar trs-object-text nil
   "Stores the last text treesort killed or copied.")
+
+(defvar user-home-directory) ; Spacemacs variable
+
+(declare-function outshine-narrow-to-subtree "outshine" ())
+
 ;; *** main defun
 
 ;;;###autoload
@@ -552,9 +557,9 @@ else `user-home-directory'."
         (user-error "%s" "Zinks.org already exists")
       (find-file zinks-filename)
       (insert (concat "*** "
-                      (expand-file-name (file-name-directory buffer-file-name)
+                      (file-relative-name (file-name-directory buffer-file-name)
                                         (cond ((vc-root-dir) (vc-root-dir))
-                                              ((user-home-directory) (user-home-directory)) ; Spacemacs variable. If missing, no problem.
+                                              (user-home-directory user-home-directory) ; Spacemacs variable. If missing, no problem.
                                               )
                                         )
                       "\n\n\n"
