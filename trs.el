@@ -496,7 +496,10 @@ If no match found, fails with an error, and does not delete the line."
           ;; else create and open file
           (t (progn (f-touch "Inbox.org")
                     (find-file trs-inbox-org-path)
-                    (insert "*** offset\n\n")
+                    (insert "*** offset\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n\n")
+                    (goto-char (point-min))
+                    (org-cycle-hide-drawers 1)
+                    (goto-char (point-max))
                     )
              )
           )
@@ -532,13 +535,11 @@ If no match found, fails with an error, and does not delete the line."
 
   (save-excursion
     (save-restriction
-      (org-store-link nil t) ; Without interactive=t arg, no org link gets created.
       (org-narrow-to-subtree)
+      (org-store-link nil t) ; Without interactive=t arg, no org link gets created.
       (org-previous-visible-heading 1)
-      (widen)
-      (forward-line)
+      (org-cycle-hide-drawers 1)
       )
-    (org-cycle-hide-drawers 1)
     )
   )
 ;; **** create Zinks.org
