@@ -236,7 +236,7 @@
   (dired-up-directory) ; restores original dired buffer.
   (dired-up-directory) ; necessary because save-current-buffer won't restore
                        ; after dired-do-rename.
-  (forward-char 1)
+  (forward-char 2)
   )
 ;; **** throw text
 ;; ***** destination = dired
@@ -259,7 +259,7 @@
       )
     (switch-to-buffer trs-dired-starting-buffer) ; Save-current-buffer bugged,
                                         ; must use instead.
-    (forward-char 1)
+    (forward-char 2)
     )
   )
 ;; ****** destination = dir
