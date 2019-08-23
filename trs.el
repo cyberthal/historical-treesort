@@ -294,7 +294,7 @@ Function assumes a polished document will have a level-1 near the top."
 ;; ***** destination = text
 ;; ****** main defun
 
-(defun trs-throw-text-to-outline (PREFIX)
+(defun trs-throw-text-to-outline (prefix)
   "Append text to next window's heading beginning with PREFIX.
 Assumes parent heading is at the top of the visible region.
 
@@ -316,7 +316,7 @@ If no match found, fails with an error, and does not delete the line."
      (concat "\n"
              (make-string (1+ (skip-chars-forward "*")) ?*)
              " "
-             PREFIX)
+             prefix)
      )
 
     (unless (outline-on-heading-p)
