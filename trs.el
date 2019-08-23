@@ -505,6 +505,16 @@ If no match found, fails with an error, and does not delete the line."
           )
     )
   )
+;; ******* customization
+
+(defgroup trs nil "Refactor prose and incrementally refile things."
+  :group 'convenience
+  :group 'files)
+
+(defcustom trs-inbox-file-header "*** Inbox.org\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n\n"
+  "Header inserted into new Inbox.org files created by `trs-throw-text' and `trs-throw-up-text'."
+  :type '(string)
+  :group 'trs)
 ;; ** utilities
 ;; *** trs-delete-this-buffer-and-file
 
