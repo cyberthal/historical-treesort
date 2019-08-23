@@ -199,7 +199,7 @@
             (trs-throw-file)
           (trs-throw-text))
       (other-window -1) ; save-selected-window fails for throw-text
-      (message "Threw %s times." var)
+      (message "Threw %s times." (1+ var))
       )
     )
   )
@@ -349,7 +349,7 @@ If no match found, fails with an error, and does not delete the line."
     (if (eq major-mode 'dired-mode)
         (trs-throw-up-file)
       (trs-throw-up-text))
-    (message "Threw up %s times" var)
+    (message "Threw up %s times" (1+ var))
     )
   )
 ;; **** jump height
