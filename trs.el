@@ -294,8 +294,8 @@ Function assumes a polished document will have a level-1 near the top."
 ;; ***** destination = text
 ;; ****** main defun
 
-(defun trs-throw-text-to-outline (prefix)
-  "Append text to next window's heading beginning with PREFIX.
+(defun trs-throw-text-to-outline (start)
+  "Append text to next window's heading beginning with START.
 Assumes parent heading is at the top of the visible region.
 
 Prompts user for input. Asks for enough letters from the
@@ -305,35 +305,45 @@ simple string. Takes the first match.
 
 If no match found, fails with an error, and does not delete the line."
 
-  (interactive "sEnter target heading's unique prefix: ")
+  (interactive "sEnter target heading's unique beginning characters: ")
 
-  (save-selected-window
-    (select-window (next-window))
+  (select-window (next-window))
 
-    ;; find searched heading
-    (goto-char (point-min))
+  ;; reset target list visibility
+  (goto-char (point-min))
+  (outline-hide-subtree)
+  (outline-show-children 1)
+  (outline-hide-body)
+
+  (let ((trs-parent-heading-level (org-outline-level))
+        )
+    (if (search-forward
+             (concat "\n"
+                     (make-string (1+ trs-parent-heading-level) ?*)
+                     " "
+                     start)
+             nil t 2)
+      (user-error "Searched characters %s returned two or more headings" start)
+      )
     (search-forward
      (concat "\n"
-             (make-string (1+ (skip-chars-forward "*")) ?*)
+             (make-string (1+ trs-parent-heading-level) ?*)
              " "
-             prefix)
+             start)
      )
-
     (unless (outline-on-heading-p)
-      (user-error "%s" "Search did not find a valid heading"))
-
-    (org-save-outline-visibility 1 ; argument necessary, else heading after body
-                                   ; text unfolds body text
+      (user-error "%s" "Search did not find a valid heading")
+      )
       (save-restriction
         (org-narrow-to-subtree)
-        (trs-region-ends-n-newlines 1)
-
+        (trs-region-ends-n-newlines 2)
         (save-selected-window (select-window (previous-window))
-                              (trs-snort-text))
-
+                              (trs-snort-text)
+                              )
         (insert trs-object-text)
+        (goto-char (point-min))
         )
-      )
+    (outline-hide-subtree)
     )
   )
 ;; *** throw up
