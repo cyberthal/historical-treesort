@@ -267,7 +267,7 @@
 (defun trs-insert-text-to-directory ()
   "Insert `trs-object-text' to Inbox.org."
 
-    (trs-create-open-inbox-org)
+    (trs-create-open-inbox-file)
     (trs-insert-to-end-of-buffer)
     (trs-text-inserted-to-buffer-path-message)
   )
@@ -371,10 +371,10 @@ If no match found, fails with an error, and does not delete the line."
   "Throw text upwards in the directory tree to the next /0-Inbox."
 
   (let ((trs-buffer-home (current-buffer))
-        (trs-text-object (trs-snort-text))
+        (trs-object-text (trs-snort-text))
         (default-directory (trs-jump-destination))
         )
-    (trs-create-open-inbox-org)
+    (trs-create-open-inbox-file)
     (trs-insert-text-to-file-blind)
     (switch-to-buffer trs-buffer-home) ; because save-current-buffer failed here
     )
@@ -485,18 +485,18 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** Inbox.org creation
 ;; ****** Create open Inbox.org
 
-(defun trs-create-open-inbox-org ()
+(defun trs-create-open-inbox-file ()
   "If no Inbox.org, make it and insert *** offset."
 
-  (let* ((trs-inbox-org-path (concat default-directory "Inbox.org"))
-         (trs-inbox-org-buffer (find-buffer-visiting trs-inbox-org-path)))
+  (let* ((trs-inbox-file-path (concat default-directory "Inbox.org"))
+         (trs-inbox-file-buffer (find-buffer-visiting trs-inbox-file-path)))
 
-    (cond (trs-inbox-org-buffer (set-buffer trs-inbox-org-buffer)) ; select buffer if exists
-          ((file-exists-p trs-inbox-org-path) (find-file trs-inbox-org-path)) ; open file if exists
+    (cond (trs-inbox-file-buffer (set-buffer trs-inbox-file-buffer)) ; select buffer if exists
+          ((file-exists-p trs-inbox-file-path) (find-file trs-inbox-file-path)) ; open file if exists
           ;; else create and open file
           (t (progn (f-touch "Inbox.org")
-                    (find-file trs-inbox-org-path)
-                    (insert "*** offset\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n\n")
+                    (find-file trs-inbox-file-path)
+                    (insert trs-inbox-file-header)
                     (goto-char (point-min))
                     (org-cycle-hide-drawers 1)
                     (goto-char (point-max))
