@@ -381,9 +381,9 @@ If no match found, fails with an error, and does not delete the line."
   "Throw text upwards in the directory tree to the next /0-Inbox."
 
   (let ((trs-buffer-home (current-buffer))
-        (trs-object-text (trs-snort-text))
         (default-directory (trs-jump-destination))
         )
+    (trs-snort-text)
     (trs-create-open-inbox-file)
     (trs-insert-text-to-file-blind)
     (switch-to-buffer trs-buffer-home) ; because save-current-buffer failed here
