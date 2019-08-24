@@ -199,7 +199,7 @@
             (trs-throw-file)
           (trs-throw-text))
       (other-window -1) ; save-selected-window fails for throw-text
-      (message "Threw %s times." var)
+      (message "Threw %s times." (1+ var))
       )
     )
   )
@@ -236,7 +236,7 @@
   (dired-up-directory) ; restores original dired buffer.
   (dired-up-directory) ; necessary because save-current-buffer won't restore
                        ; after dired-do-rename.
-  (forward-char 1)
+  (forward-char 2)
   )
 ;; **** throw text
 ;; ***** destination = dired
@@ -259,7 +259,7 @@
       )
     (switch-to-buffer trs-dired-starting-buffer) ; Save-current-buffer bugged,
                                         ; must use instead.
-    (forward-char 1)
+    (forward-char 2)
     )
   )
 ;; ****** destination = dir
@@ -267,7 +267,7 @@
 (defun trs-insert-text-to-directory ()
   "Insert `trs-object-text' to Inbox.org."
 
-    (trs-create-open-inbox-org)
+    (trs-create-open-inbox-file)
     (trs-insert-to-end-of-buffer)
     (trs-text-inserted-to-buffer-path-message)
   )
@@ -294,8 +294,8 @@ Function assumes a polished document will have a level-1 near the top."
 ;; ***** destination = text
 ;; ****** main defun
 
-(defun trs-throw-text-to-outline (PREFIX)
-  "Append text to next window's heading beginning with PREFIX.
+(defun trs-throw-text-to-outline (start)
+  "Append text to next window's heading beginning with START.
 Assumes parent heading is at the top of the visible region.
 
 Prompts user for input. Asks for enough letters from the
@@ -305,35 +305,45 @@ simple string. Takes the first match.
 
 If no match found, fails with an error, and does not delete the line."
 
-  (interactive "sEnter target heading's unique prefix: ")
+  (interactive "sEnter target heading's unique beginning characters: ")
 
-  (save-selected-window
-    (select-window (next-window))
+  (select-window (next-window))
 
-    ;; find searched heading
-    (goto-char (point-min))
+  ;; reset target list visibility
+  (goto-char (point-min))
+  (outline-hide-subtree)
+  (outline-show-children 1)
+  (outline-hide-body)
+
+  (let ((trs-parent-heading-level (org-outline-level))
+        )
+    (if (search-forward
+             (concat "\n"
+                     (make-string (1+ trs-parent-heading-level) ?*)
+                     " "
+                     start)
+             nil t 2)
+      (user-error "Searched characters %s returned two or more headings" start)
+      )
     (search-forward
      (concat "\n"
-             (make-string (1+ (skip-chars-forward "*")) ?*)
+             (make-string (1+ trs-parent-heading-level) ?*)
              " "
-             PREFIX)
+             start)
      )
-
     (unless (outline-on-heading-p)
-      (user-error "%s" "Search did not find a valid heading"))
-
-    (org-save-outline-visibility 1 ; argument necessary, else heading after body
-                                   ; text unfolds body text
+      (user-error "%s" "Search did not find a valid heading")
+      )
       (save-restriction
         (org-narrow-to-subtree)
-        (trs-region-ends-n-newlines 1)
-
+        (trs-region-ends-n-newlines 2)
         (save-selected-window (select-window (previous-window))
-                              (trs-snort-text))
-
+                              (trs-snort-text)
+                              )
         (insert trs-object-text)
+        (goto-char (point-min))
         )
-      )
+    (outline-hide-subtree)
     )
   )
 ;; *** throw up
@@ -349,7 +359,7 @@ If no match found, fails with an error, and does not delete the line."
     (if (eq major-mode 'dired-mode)
         (trs-throw-up-file)
       (trs-throw-up-text))
-    (message "Threw up %s times" var)
+    (message "Threw up %s times" (1+ var))
     )
   )
 ;; **** jump height
@@ -371,10 +381,10 @@ If no match found, fails with an error, and does not delete the line."
   "Throw text upwards in the directory tree to the next /0-Inbox."
 
   (let ((trs-buffer-home (current-buffer))
-        (trs-text-object (trs-snort-text))
         (default-directory (trs-jump-destination))
         )
-    (trs-create-open-inbox-org)
+    (trs-snort-text)
+    (trs-create-open-inbox-file)
     (trs-insert-text-to-file-blind)
     (switch-to-buffer trs-buffer-home) ; because save-current-buffer failed here
     )
@@ -485,18 +495,18 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** Inbox.org creation
 ;; ****** Create open Inbox.org
 
-(defun trs-create-open-inbox-org ()
+(defun trs-create-open-inbox-file ()
   "If no Inbox.org, make it and insert *** offset."
 
-  (let* ((trs-inbox-org-path (concat default-directory "Inbox.org"))
-         (trs-inbox-org-buffer (find-buffer-visiting trs-inbox-org-path)))
+  (let* ((trs-inbox-file-path (concat default-directory "Inbox.org"))
+         (trs-inbox-file-buffer (find-buffer-visiting trs-inbox-file-path)))
 
-    (cond (trs-inbox-org-buffer (set-buffer trs-inbox-org-buffer)) ; select buffer if exists
-          ((file-exists-p trs-inbox-org-path) (find-file trs-inbox-org-path)) ; open file if exists
+    (cond (trs-inbox-file-buffer (set-buffer trs-inbox-file-buffer)) ; select buffer if exists
+          ((file-exists-p trs-inbox-file-path) (find-file trs-inbox-file-path)) ; open file if exists
           ;; else create and open file
           (t (progn (f-touch "Inbox.org")
-                    (find-file trs-inbox-org-path)
-                    (insert "*** offset\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n\n")
+                    (find-file trs-inbox-file-path)
+                    (insert trs-inbox-file-header)
                     (goto-char (point-min))
                     (org-cycle-hide-drawers 1)
                     (goto-char (point-max))
@@ -505,6 +515,16 @@ If no match found, fails with an error, and does not delete the line."
           )
     )
   )
+;; ******* customization
+
+(defgroup trs nil "Refactor prose and incrementally refile things."
+  :group 'convenience
+  :group 'files)
+
+(defcustom trs-inbox-file-header "*** Inbox.org\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n\n"
+  "Header inserted into new Inbox.org files created by `trs-throw-text' and `trs-throw-up-text'."
+  :type '(string)
+  :group 'trs)
 ;; ** utilities
 ;; *** trs-delete-this-buffer-and-file
 
