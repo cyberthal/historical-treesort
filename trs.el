@@ -182,6 +182,9 @@
 (defvar trs-object-text nil
   "Stores the last text treesort killed or copied.")
 
+(defvar trs-no-avy nil
+  "Tells `trs' whether to use avy to search.")
+
 (defvar user-home-directory) ; Spacemacs variable
 
 (declare-function outshine-narrow-to-subtree "outshine" ())
@@ -190,20 +193,45 @@
 
 ;;;###autoload
 (defun trs-throw (&optional count)
-  "Throw text/file to target in next window COUNT times."
+  "Throw text/file to target in next window COUNT times.
+Select a line from target list using `isearch' then `avy'."
   (interactive "p")
 
   (dotimes (var count)
-
     (unwind-protect
-        (if (eq major-mode 'dired-mode)
-            (trs-throw-file)
-          (trs-throw-text))
-      (other-window -1) ; save-selected-window fails for throw-text
-      (message "Threw %s times." (1+ var))
+        (trs-throw-object-mode-check)
+      (trs-throw-unwind var)
       )
     )
   )
+
+;;;###autoload
+(defun trs-throw-no-avy (&optional count)
+  "Throw text/file to target in next window COUNT times.
+Use only `isearch', not `avy', to pick targets."
+  (interactive "p")
+
+  (let ((trs-no-avy t))
+    (dotimes (var count)
+      (unwind-protect
+          (trs-throw-object-mode-check)
+        (trs-throw-unwind var)
+        )
+      )
+    )
+  )
+
+(defun trs-throw-object-mode-check ()
+    (if (eq major-mode 'dired-mode)
+        (trs-throw-file)
+      (trs-throw-text))
+  )
+
+(defun trs-throw-unwind (var)
+    (other-window -1)                ; save-selected-window fails for throw-text
+  (message "Threw %s times." (1+ var))
+  )
+
 ;; *** flow control dispatcher
 
 ;; **** main defun
@@ -234,9 +262,9 @@
   (dired-do-rename)
 
   (select-window (next-window))
-  (dired-up-directory) ; restores original dired buffer.
-  (dired-up-directory) ; necessary because save-current-buffer won't restore
-                       ; after dired-do-rename.
+  (dired-up-directory)     ; restores original dired buffer.
+  (dired-up-directory)     ; necessary because save-current-buffer won't restore
+                                        ; after dired-do-rename.
   (forward-char 2)
   )
 ;; **** throw text
@@ -471,8 +499,10 @@ run `avy' to pick one."
     (dired-hide-details-mode))
 
   (isearch-forward)
-  (let ((avy-all-windows nil))
-    (avy-isearch)
+
+  (unless trs-no-avy
+      (let ((avy-all-windows nil))
+        (avy-isearch))
     )
   (if (> (point) 1)
       (dired-find-file))
