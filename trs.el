@@ -164,6 +164,7 @@
 (require 'dired)
 (require 'dash)
 (require 'f)
+(require 'avy)
 ;; ** throw
 
 ;; *** config
@@ -294,7 +295,7 @@ Function assumes a polished document will have a level-1 near the top."
 ;; ***** destination = text
 ;; ****** main defun
 
-(defun trs-throw-text-to-outline (start)
+(defun trs-throw-text-to-outline ()
   "Append text to next window's heading beginning with START.
 Assumes parent heading is at the top of the visible region.
 
@@ -305,7 +306,7 @@ simple string. Takes the first match.
 
 If no match found, fails with an error, and does not delete the line."
 
-  (interactive "sEnter target heading's unique beginning characters: ")
+  (interactive)
 
   (select-window (next-window))
 
@@ -315,37 +316,21 @@ If no match found, fails with an error, and does not delete the line."
   (outline-show-children 1)
   (outline-hide-body)
 
-  (let ((trs-parent-heading-level (org-outline-level))
-        )
-    (if (search-forward
-             (concat "\n"
-                     (make-string (1+ trs-parent-heading-level) ?*)
-                     " "
-                     start)
-             nil t 2)
-      (user-error "Searched characters %s returned two or more headings" start)
-      )
-    (search-forward
-     (concat "\n"
-             (make-string (1+ trs-parent-heading-level) ?*)
-             " "
-             start)
-     )
-    (unless (outline-on-heading-p)
-      (user-error "%s" "Search did not find a valid heading")
-      )
-      (save-restriction
-        (org-narrow-to-subtree)
-        (trs-region-ends-n-newlines 2)
-        (save-selected-window (select-window (previous-window))
-                              (trs-snort-text)
-                              )
-        (insert trs-object-text)
-        (goto-char (point-min))
-        )
-    (outline-hide-subtree)
+  (let ((avy-all-windows nil))
+    (avy-goto-line-below)
     )
+  (save-restriction
+    (org-narrow-to-subtree)
+    (trs-region-ends-n-newlines 2)
+    (save-selected-window (select-window (previous-window))
+                          (trs-snort-text)
+                          )
+    (insert trs-object-text)
+    (goto-char (point-min))
+    )
+  (outline-hide-subtree)
   )
+
 ;; *** throw up
 ;; **** main defun
 
