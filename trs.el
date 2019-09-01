@@ -165,6 +165,7 @@
 (require 'dash)
 (require 'f)
 (require 'avy)
+
 ;; ** Refile
 
 ;; *** config
@@ -173,6 +174,8 @@
 
 (defvar trs-object-text nil
   "Stores the last text treesort killed or copied.")
+
+(defvar trs-inbox-file-header)
 
 (defvar user-home-directory) ; Spacemacs variable
 
@@ -186,7 +189,7 @@
 Select a line from target list using `isearch' then `avy'."
   (interactive "p")
 
-  (dotimes (var count)
+  (dotimes (_var count)
     (unwind-protect
         (trs-refile-object-mode-check)
       (other-window -1)                ; save-selected-window fails for refile-text
@@ -195,9 +198,12 @@ Select a line from target list using `isearch' then `avy'."
   )
 
 (defun trs-refile-object-mode-check ()
-    (if (eq major-mode 'dired-mode)
-        (trs-refile-file)
-      (trs-refile-text))
+  "Determine correct action based on current window mode.
+If in dired, refile files. If not, refile text."
+
+  (if (eq major-mode 'dired-mode)
+      (trs-refile-file)
+    (trs-refile-text))
   )
 
 ;; *** flow control dispatcher
@@ -316,7 +322,7 @@ Refiled text may be a line or an outline heading."
 
   (let ((avy-all-windows nil))
     (if (string-equal (avy-isearch) nil)
-        (user-error "Avy selection failed."))
+        (user-error "Avy selection failed"))
     )
 
   (save-restriction
@@ -406,32 +412,53 @@ Refiled text may be a line or an outline heading."
 ;; ***** at heading?
 
 (defun trs-snort-text-org ()
-     (if (org-at-heading-p) (trs-snort-org-heading)
-            (trs-snort-line))
-     )
+  "Store text. Range stored depends on local context.
+
+If in a an `org' heading, store the heading. Otherwise, store the
+line."
+
+  (if (org-at-heading-p) (trs-snort-org-heading)
+    (trs-snort-line))
+  )
 (defun trs-snort-text-outshine ()
-     (if (outline-on-heading-p) (trs-snort-outshine-heading)
-            (trs-snort-line))
-     )
+  "Store text. Range stored depends on context.
+
+If inside an `outshine' outline heading, store text. Otherwise,
+store line."
+
+  (if (outline-on-heading-p) (trs-snort-outshine-heading)
+    (trs-snort-line))
+  )
 (defun trs-snort-text-outline ()
-     (if (outline-on-heading-p) (trs-snort-outline-heading)
-            (trs-snort-line))
-     )
+  "Store text. Range stored depends on context.
+
+If in an outline heading, store the heading. Otherwise store
+line."
+
+  (if (outline-on-heading-p) (trs-snort-outline-heading)
+    (trs-snort-line))
+  )
 ;; ***** heading type?
 
 (defun trs-snort-org-heading ()
+  "Store an `org' heading."
+
   (save-restriction
     (org-narrow-to-subtree)
     (trs-snort-visible)
     )
   )
 (defun trs-snort-outshine-heading ()
+  "Store an `outshine' heading."
+
   (save-restriction
     (outshine-narrow-to-subtree)
     (trs-snort-visible)
     )
   )
 (defun trs-snort-outline-heading ()
+  "Store an outline heading."
+
   (save-restriction
     (org-narrow-to-subtree)
     (trs-snort-visible)
@@ -457,9 +484,10 @@ Refiled text may be a line or an outline heading."
 
 (defun trs-search-dired-open ()
   "Open the `dired' line that the user picked.
+
 If line 1 of the `dired' buffer is selected, stay there. First
-run `isearch'. If the search string has multiple matches, then
-run `avy' to pick one."
+use `isearch'. If `isearch' returns multiple matches, then
+use `avy' to pick one."
 
   (if (string-equal major-mode "dired-mode")
       nil
@@ -473,12 +501,11 @@ run `avy' to pick one."
   (let ((search-invisible nil))
     (isearch-forward))
 
-  (unless trs-no-avy
-    (let ((avy-all-windows nil))
-      (if (string-equal (avy-isearch) nil)
-          (user-error "Avy selection failed."))
-      )
+  (let ((avy-all-windows nil))
+    (if (string-equal (avy-isearch) nil)
+        (user-error "Avy selection failed"))
     )
+
   (if (> (point) 1)
       (dired-find-file))
   )
