@@ -330,11 +330,10 @@ Refiled text may be a line or an outline heading."
   (outline-show-children 1)
   (outline-hide-body)
 
-  (let ((search-invisible nil))
-    (isearch-forward))
   (let ((avy-all-windows nil))
-    (avy-isearch)
+    (avy-goto-line-below 1)
     )
+
   (save-restriction
     (org-narrow-to-subtree)
     (trs-region-ends-n-newlines 2)
