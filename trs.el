@@ -330,7 +330,7 @@ Refiled text may be a line or an outline heading."
   (outline-show-children 1)
   (outline-hide-body)
 
-  (let (search-invisible nil)
+  (let ((search-invisible nil))
     (isearch-forward))
   (let ((avy-all-windows nil))
     (avy-isearch)
