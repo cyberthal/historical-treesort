@@ -200,7 +200,7 @@ Select a line from target list using `isearch' then `avy'."
   (dotimes (var count)
     (unwind-protect
         (trs-throw-object-mode-check)
-      (trs-throw-unwind var)
+      (other-window -1)                ; save-selected-window fails for throw-text
       )
     )
   )
@@ -215,7 +215,7 @@ Use only `isearch', not `avy', to pick targets."
     (dotimes (var count)
       (unwind-protect
           (trs-throw-object-mode-check)
-        (trs-throw-unwind var)
+        (other-window -1)                ; save-selected-window fails for throw-text
         )
       )
     )
@@ -227,10 +227,6 @@ Use only `isearch', not `avy', to pick targets."
       (trs-throw-text))
   )
 
-(defun trs-throw-unwind (var)
-    (other-window -1)                ; save-selected-window fails for throw-text
-  (message "Threw %s times." (1+ var))
-  )
 
 ;; *** flow control dispatcher
 
