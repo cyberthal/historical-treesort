@@ -169,14 +169,6 @@
 
 ;; *** config
 
-;; **** don't search invisible text in dired
-
-(defun trs-dired-dont-search-invisible ()
-  (make-local-variable 'search-invisible)
-  (setq search-invisible nil)
-  )
-(add-hook 'dired-mode-hook 'trs-dired-dont-search-invisible)
-
 ;; **** define variables and declare functions
 
 (defvar trs-object-text nil
@@ -226,7 +218,6 @@ Use only `isearch', not `avy', to pick targets."
         (trs-throw-file)
       (trs-throw-text))
   )
-
 
 ;; *** flow control dispatcher
 
@@ -339,7 +330,8 @@ Refiled text may be a line or an outline heading."
   (outline-show-children 1)
   (outline-hide-body)
 
-  (isearch-forward)
+  (let (search-invisible nil)
+    (isearch-forward))
   (let ((avy-all-windows nil))
     (avy-isearch)
     )
@@ -494,7 +486,8 @@ run `avy' to pick one."
   (let ((inhibit-message t))
     (dired-hide-details-mode))
 
-  (isearch-forward)
+  (let (search-invisible nil)
+    (isearch-forward))
 
   (unless trs-no-avy
       (let ((avy-all-windows nil))
