@@ -456,17 +456,24 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** Find the searched dired entry
 
 (defun trs-search-dired-open ()
-  "Opens the isearched Dired entry."
+  "Open the `dired' line that the user picked.
+If line 1 of the `dired' buffer is selected, stay there. First
+run `isearch'. If the search string has multiple matches, then
+run `avy' to pick one."
 
   (if (string-equal major-mode "dired-mode")
       nil
-      (user-error "%s" "Mode must be Dired"))
+    (user-error "%s" "Mode must be Dired"))
 
   (goto-char (point-min))
-  (forward-line)
   (dired-hide-details-mode)
+
   (isearch-forward)
-  (dired-find-file)
+  (let ((avy-all-windows nil))
+    (avy-isearch)
+    )
+  (if (> (point) 1)
+      (dired-find-file))
   )
 ;; ***** check whether immediate parent dir is "0-Inbox"
 
