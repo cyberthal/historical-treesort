@@ -174,9 +174,6 @@
 (defvar trs-object-text nil
   "Stores the last text treesort killed or copied.")
 
-(defvar trs-no-avy nil
-  "Tells `trs' whether to use avy to search.")
-
 (defvar user-home-directory) ; Spacemacs variable
 
 (declare-function outshine-narrow-to-subtree "outshine" ())
@@ -193,22 +190,6 @@ Select a line from target list using `isearch' then `avy'."
     (unwind-protect
         (trs-refile-object-mode-check)
       (other-window -1)                ; save-selected-window fails for refile-text
-      )
-    )
-  )
-
-;;;###autoload
-(defun trs-refile-no-avy (&optional count)
-  "Refile text/file to target in next window COUNT times.
-Use only `isearch', not `avy', to pick targets."
-  (interactive "p")
-
-  (let ((trs-no-avy t))
-    (dotimes (var count)
-      (unwind-protect
-          (trs-refile-object-mode-check)
-        (other-window -1)                ; save-selected-window fails for refile-text
-        )
       )
     )
   )
