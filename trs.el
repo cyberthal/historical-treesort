@@ -296,15 +296,14 @@ Function assumes a polished document will have a level-1 near the top."
 ;; ****** main defun
 
 (defun trs-throw-text-to-outline ()
-  "Append text to next window's heading beginning with START.
-Assumes parent heading is at the top of the visible region.
+  "Refile text to an outline heading in the next window.
 
-Prompts user for input. Asks for enough letters from the
-beginning of the target child heading to distinguish it from the
-other immediate children of the parent heading. Searches for a
-simple string. Takes the first match.
+Assume that the first line of the target window is the parent heading.
+Present a target list of the parent's direct children.
+Call `isearch'. If multiple matches result, select one with `avy'.
 
-If no match found, fails with an error, and does not delete the line."
+Move text at point in home window to the bottom of the target heading.
+Refiled text may be a line or an outline heading."
 
   (interactive)
 
