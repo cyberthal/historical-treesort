@@ -316,8 +316,9 @@ If no match found, fails with an error, and does not delete the line."
   (outline-show-children 1)
   (outline-hide-body)
 
+  (isearch-forward)
   (let ((avy-all-windows nil))
-    (avy-goto-line-below)
+    (avy-isearch)
     )
   (save-restriction
     (org-narrow-to-subtree)
