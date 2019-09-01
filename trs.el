@@ -296,15 +296,14 @@ Function assumes a polished document will have a level-1 near the top."
 ;; ****** main defun
 
 (defun trs-throw-text-to-outline ()
-  "Append text to next window's heading beginning with START.
-Assumes parent heading is at the top of the visible region.
+  "Refile text to an outline heading in the next window.
 
-Prompts user for input. Asks for enough letters from the
-beginning of the target child heading to distinguish it from the
-other immediate children of the parent heading. Searches for a
-simple string. Takes the first match.
+Assume that the first line of the target window is the parent heading.
+Present a target list of the parent's direct children.
+Call `isearch'. If multiple matches result, select one with `avy'.
 
-If no match found, fails with an error, and does not delete the line."
+Move text at point in home window to the bottom of the target heading.
+Refiled text may be a line or an outline heading."
 
   (interactive)
 
@@ -316,8 +315,9 @@ If no match found, fails with an error, and does not delete the line."
   (outline-show-children 1)
   (outline-hide-body)
 
+  (isearch-forward)
   (let ((avy-all-windows nil))
-    (avy-goto-line-below)
+    (avy-isearch)
     )
   (save-restriction
     (org-narrow-to-subtree)
@@ -456,17 +456,24 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** Find the searched dired entry
 
 (defun trs-search-dired-open ()
-  "Opens the isearched Dired entry."
+  "Open the `dired' line that the user picked.
+If line 1 of the `dired' buffer is selected, stay there. First
+run `isearch'. If the search string has multiple matches, then
+run `avy' to pick one."
 
   (if (string-equal major-mode "dired-mode")
       nil
-      (user-error "%s" "Mode must be Dired"))
+    (user-error "%s" "Mode must be Dired"))
 
   (goto-char (point-min))
-  (forward-line)
   (dired-hide-details-mode)
+
   (isearch-forward)
-  (dired-find-file)
+  (let ((avy-all-windows nil))
+    (avy-isearch)
+    )
+  (if (> (point) 1)
+      (dired-find-file))
   )
 ;; ***** check whether immediate parent dir is "0-Inbox"
 
