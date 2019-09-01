@@ -330,8 +330,12 @@ Refiled text may be a line or an outline heading."
   (outline-show-children 1)
   (outline-hide-body)
 
+  (let ((search-invisible nil))
+    (isearch-forward))
+
   (let ((avy-all-windows nil))
-    (avy-goto-line-below 1)
+    (if (string-equal (avy-isearch) nil)
+        (user-error "Avy selection failed."))
     )
 
   (save-restriction
@@ -489,8 +493,10 @@ run `avy' to pick one."
     (isearch-forward))
 
   (unless trs-no-avy
-      (let ((avy-all-windows nil))
-        (avy-isearch))
+    (let ((avy-all-windows nil))
+      (if (string-equal (avy-isearch) nil)
+          (user-error "Avy selection failed."))
+      )
     )
   (if (> (point) 1)
       (dired-find-file))
