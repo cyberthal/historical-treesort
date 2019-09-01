@@ -466,7 +466,9 @@ run `avy' to pick one."
     (user-error "%s" "Mode must be Dired"))
 
   (goto-char (point-min))
-  (dired-hide-details-mode)
+
+  (let ((inhibit-message t))
+    (dired-hide-details-mode))
 
   (isearch-forward)
   (let ((avy-all-windows nil))
