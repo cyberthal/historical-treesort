@@ -1,4 +1,4 @@
-;;; trs.el --- Move text & files thru a directory tree -*- lexical-binding: t; -*-
+;;; trs.el --- Batch refactor and refile text & files -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019 Leo Buchignani III
 
@@ -12,16 +12,16 @@
 
 ;; Treesort rapidly sorts text and files into outlines and the directory tree.
 
-;; Treesort's main command is trs-throw. It moves text or files from the current
-;; window to a target in the next window. A second function, trs-throw-up, moves
-;; text or files up one directory level. You can throw directories as well as
+;; Treesort's main command is trs-refile. It moves text or files from the current
+;; window to a target in the next window. A second function, trs-refile-up, moves
+;; text or files up one directory level. You can refile directories as well as
 ;; files.
 
-;; When you throw a file to a directory, trs-throw creates a child directory
+;; When you refile a file to a directory, trs-refile creates a child directory
 ;; <target-directory>/0-Inbox/ and puts the file there. This makes it easy to
 ;; remember which files are new arrivals.
 
-;; When you throw text to a directory, trs-throw creates a file Inbox.org. Many
+;; When you refile text to a directory, trs-refile creates a file Inbox.org. Many
 ;; such files are created during a filing session. To quickly delete them, use
 ;; trs-delete-this-buffer-and-file.
 
@@ -29,21 +29,21 @@
 ;; helps to have some links that won't break when paths change. Use
 ;; trs-dired-zinks to create a file with an org-id link in it.
 
-;; trs-throw can throw text into existing files or outlines. You can duplicate a
+;; trs-refile can refile text into existing files or outlines. You can duplicate a
 ;; heading to another text window with trs-duplicate-heading-to-other-window.
 
-;; When you throw text to an outline, trs-throw believes that the parent heading
-;; is at the top of the visible region. It will only throw to direct children of
-;; the parent. You should narrow appropriately before throwing.
+;; When you refile text to an outline, trs-refile believes that the parent heading
+;; is at the top of the visible region. It will only refile to direct children of
+;; the parent. You should narrow appropriately before refiling.
 
-;; When you throw text to a file, trs-throw puts the text at the bottom. EXCEPT
-;; when the file already has a level-1 heading. Then trs-throw assumes this is a
-;; polished document, not an inbox file. trs-throw worries you will forget about
+;; When you refile text to a file, trs-refile puts the text at the bottom. EXCEPT
+;; when the file already has a level-1 heading. Then trs-refile assumes this is a
+;; polished document, not an inbox file. trs-refile worries you will forget about
 ;; text appended to polished documents. So it prepends the text before the
 ;; level-1 headline, where it will stick out like a sore thumb.
 
-;; trs-throw assumes that most headings you file will have four stars. Why?
-;; Imagine you are throwing headings to an outline. The level-1 heading is the
+;; trs-refile assumes that most headings you file will have four stars. Why?
+;; Imagine you are refiling headings to an outline. The level-1 heading is the
 ;; document title. The level-2 headings are categories. The level-3 headings are
 ;; sub-categories. The level-4 headings are topics. Outlines become unwieldy
 ;; when they get too deep, at which point it's better to create more files and
@@ -57,9 +57,9 @@
 ;; unexpectedly fold appended level-4 headings. I recommend that you convert
 ;; headings to level 4 for transport, and then resize them at their destination.
 
-;; The last text thrown is saved in the variable trs-object-text until the Emacs
+;; The last text refiled is saved in the variable trs-object-text until the Emacs
 ;; session ends. Text is not saved to the kill ring. A message appears in the
-;; minibuffer displaying the destination of text and files moved with ts-throw
+;; minibuffer displaying the destination of text and files moved with ts-refile
 ;; commands.
 
 ;;;; Installation
@@ -79,8 +79,8 @@
 
 ;; Run one of these commands:
 
-;; `trs-throw' throw text/files to the next window
-;; `trs-throw-up' throw text/files one directory up
+;; `trs-refile' refile text/files to the next window
+;; `trs-refile-up' refile text/files one directory up
 ;; `trs-delete-this-buffer-and-file' self-explanatory
 ;; `trs-store-link-fold-drawer' store an org link and hide the drawer
 ;; `trs-dired-zinks' store an org link in a file, titled with relative path
@@ -107,10 +107,10 @@
 
 ;;; My keybindings
 
-;; By putting the following commands on convenient keys, you can file without thinking about it.
+;; By putting the following commands on convenient keys, you can refile without thinking about it.
 
-;; (global-set-key (kbd "H-f") 'trs-throw)
-;; (global-set-key (kbd "H-g") 'trs-throw-up)
+;; (global-set-key (kbd "H-f") 'trs-refile)
+;; (global-set-key (kbd "H-g") 'trs-refile-up)
 ;; (global-set-key (kbd "C-c k") 'trs-delete-this-buffer-and-file)
 ;; (global-set-key (kbd "C-c l") 'trs-store-link-fold-drawer)
 ;; (global-set-key (kbd "H-a") 'other-window)
@@ -158,72 +158,88 @@
 
 ;; * trs.el
 ;; * offset
-;; ** require
+;; ** config
+;; *** require
 
 (require 'org)
 (require 'dired)
 (require 'dash)
 (require 'f)
-;; ** throw
+(require 'avy)
 
-;; *** config
-
-;; **** don't search invisible text in dired
-
-(defun trs-dired-dont-search-invisible ()
-  (make-local-variable 'search-invisible)
-  (setq search-invisible nil)
-  )
-(add-hook 'dired-mode-hook 'trs-dired-dont-search-invisible)
-
-;; **** define variables and declare functions
+;; *** define vars and funcs
 
 (defvar trs-object-text nil
   "Stores the last text treesort killed or copied.")
 
 (defvar user-home-directory) ; Spacemacs variable
 
+;; ** Refile
+
+;; *** config
+
+;; **** define variables and declare functions
+
+(defvar trs-inbox-file-header)
+
 (declare-function outshine-narrow-to-subtree "outshine" ())
+
+;; **** aliases
+
+(defalias 'leo-refile 'trs-refile)
+(defalias 'leo-refile-up 'trs-refile-up)
+(defalias 'leo-delete-this-buffer-and-file 'trs-delete-this-buffer-and-file)
+(defalias 'leo-store-link-fold-drawer 'trs-store-link-fold-drawer)
+(defalias 'leo-dired-zinks 'trs-dired-zinks)
+(defalias 'leo-duplicate-heading-to-other-window 'trs-duplicate-heading-to-other-window)
+(defalias 'leo-region-ends-n-newlines 'trs-region-ends-n-newlines)
 
 ;; *** main defun
 
 ;;;###autoload
-(defun trs-throw (&optional count)
-  "Throw text/file to target in next window COUNT times."
+(defun trs-refile (&optional count)
+  "Refile text/file to target in next window COUNT times.
+Select a line from target list using `isearch' then `avy'."
   (interactive "p")
 
-  (dotimes (var count)
-
+  (dotimes (_var count)
     (unwind-protect
-        (if (eq major-mode 'dired-mode)
-            (trs-throw-file)
-          (trs-throw-text))
-      (other-window -1) ; save-selected-window fails for throw-text
-      (message "Threw %s times." (1+ var))
+        (trs-refile-object-mode-check)
+      (other-window -1)                ; save-selected-window fails for refile-text
       )
     )
   )
+
+(defun trs-refile-object-mode-check ()
+  "Determine correct action based on current window mode.
+If in dired, refile files. If not, refile text."
+
+  (if (eq major-mode 'dired-mode)
+      (trs-refile-file)
+    (trs-refile-text))
+  )
+
 ;; *** flow control dispatcher
 
 ;; **** main defun
 
-(defun trs-throw-text ()
-  "Throw text to either Dired or an outline."
+(defun trs-refile-text ()
+  "Refile text to either Dired or an outline."
 
   (select-window (next-window))
   (let ((trs-in-dired-p (string-equal major-mode 'dired-mode)))
     (select-window (previous-window))
 
     (if trs-in-dired-p
-        (trs-throw-text-to-dired)
-      (call-interactively 'trs-throw-text-to-outline)
+        (trs-refile-text-to-dired)
+      (call-interactively 'trs-refile-text-to-outline)
       )
     )
   )
-;; **** throw file
+;; **** refile file
 
-(defun trs-throw-file ()
-  "Throw file(s) from Dired to searched target in next window."
+(defun trs-refile-file ()
+  "Refile file(s) from Dired to searched target in next window."
 
   (select-window (next-window))
   (trs-search-dired-open)
@@ -233,18 +249,18 @@
   (dired-do-rename)
 
   (select-window (next-window))
-  (dired-up-directory) ; restores original dired buffer.
-  (dired-up-directory) ; necessary because save-current-buffer won't restore
-                       ; after dired-do-rename.
+  (dired-up-directory)     ; restores original dired buffer.
+  (dired-up-directory)     ; necessary because save-current-buffer won't restore
+                                        ; after dired-do-rename.
   (forward-char 2)
   )
-;; **** throw text
+;; **** refile text
 ;; ***** destination = dired
 
 ;; ****** main defun
 
-(defun trs-throw-text-to-dired ()
-  "Throw text to a searched target in an adjacent Dired buffer."
+(defun trs-refile-text-to-dired ()
+  "Refile text to a searched target in an adjacent Dired buffer."
 
   (select-window (next-window))
   (let ((trs-dired-starting-buffer (current-buffer))
@@ -294,18 +310,17 @@ Function assumes a polished document will have a level-1 near the top."
 ;; ***** destination = text
 ;; ****** main defun
 
-(defun trs-throw-text-to-outline (start)
-  "Append text to next window's heading beginning with START.
-Assumes parent heading is at the top of the visible region.
+(defun trs-refile-text-to-outline ()
+  "Refile text to an outline heading in the next window.
 
-Prompts user for input. Asks for enough letters from the
-beginning of the target child heading to distinguish it from the
-other immediate children of the parent heading. Searches for a
-simple string. Takes the first match.
+Assume that the first line of the target window is the parent
+heading. Show the parent's direct child headings. Use `isearch'.
+If multiple matches result, pick one with `avy'.
 
-If no match found, fails with an error, and does not delete the line."
+Refile text at point in home window to the bottom of the target heading.
+Refiled text may be a line or an outline heading."
 
-  (interactive "sEnter target heading's unique beginning characters: ")
+  (interactive)
 
   (select-window (next-window))
 
@@ -315,50 +330,44 @@ If no match found, fails with an error, and does not delete the line."
   (outline-show-children 1)
   (outline-hide-body)
 
-  (let ((trs-parent-heading-level (org-outline-level))
-        )
-    (if (search-forward
-             (concat "\n"
-                     (make-string (1+ trs-parent-heading-level) ?*)
-                     " "
-                     start)
-             nil t 2)
-      (user-error "Searched characters %s returned two or more headings" start)
-      )
-    (search-forward
-     (concat "\n"
-             (make-string (1+ trs-parent-heading-level) ?*)
-             " "
-             start)
-     )
-    (unless (outline-on-heading-p)
-      (user-error "%s" "Search did not find a valid heading")
-      )
-      (save-restriction
-        (org-narrow-to-subtree)
-        (trs-region-ends-n-newlines 2)
-        (save-selected-window (select-window (previous-window))
-                              (trs-snort-text)
-                              )
-        (insert trs-object-text)
-        (goto-char (point-min))
-        )
-    (outline-hide-subtree)
+  (let ((search-invisible nil))
+    (isearch-forward))
+
+  ;; Run Avy if multiple isearch matches.
+  ;; Avy doesn't signal a quit, so it is inferred from point.
+  (let ((avy-all-windows nil)
+        (avy-case-fold-search nil))
+    (unless (eq 1 (length (avy--regex-candidates (regexp-quote isearch-string))))
+      (goto-char (point-min))
+      (avy-isearch)
+      (if (eq (point) (point-min))
+          (user-error "Quit Avy"))))
+
+  (save-restriction
+    (org-narrow-to-subtree)
+    (trs-region-ends-n-newlines 2)
+    (save-selected-window (select-window (previous-window))
+                          (trs-snort-text)
+                          )
+    (insert trs-object-text)
+    (goto-char (point-min))
     )
+  (outline-hide-subtree)
   )
-;; *** throw up
+
+;; *** refile up
 ;; **** main defun
 
 ;;;###autoload
-(defun trs-throw-up (&optional count)
-  "Throw file or text one directory upwards, COUNT times."
+(defun trs-refile-up (&optional count)
+  "Refile file or text one directory upwards, COUNT times."
   (interactive "p")
 
   (dotimes (var count)
 
     (if (eq major-mode 'dired-mode)
-        (trs-throw-up-file)
-      (trs-throw-up-text))
+        (trs-refile-up-file)
+      (trs-refile-up-text))
     (message "Threw up %s times" (1+ var))
     )
   )
@@ -377,8 +386,8 @@ If no match found, fails with an error, and does not delete the line."
   )
 ;; **** object = text
 
-(defun trs-throw-up-text ()
-  "Throw text upwards in the directory tree to the next /0-Inbox."
+(defun trs-refile-up-text ()
+  "Refile text upwards in the directory tree to the next /0-Inbox."
 
   (let ((trs-buffer-home (current-buffer))
         (default-directory (trs-jump-destination))
@@ -391,8 +400,8 @@ If no match found, fails with an error, and does not delete the line."
   )
 ;; **** target = file
 
-(defun trs-throw-up-file ()
-  "Throw file upwards in the directory tree to the next /0-Inbox."
+(defun trs-refile-up-file ()
+  "Refile file upwards in the directory tree to the next /0-Inbox."
 
   (let* ((trs-jump-destination (trs-jump-destination))
          (trs-inbox-dir (concat trs-jump-destination "0-Inbox/"))
@@ -402,7 +411,7 @@ If no match found, fails with an error, and does not delete the line."
       (mkdir trs-inbox-dir)
       )
     (rename-file (dired-get-filename "no-dir") trs-inbox-dir)
-    (message "File thrown to %s" trs-jump-destination)
+    (message "File refiled to %s" trs-jump-destination)
     )
   (revert-buffer) ; refreshes screen significantly faster than otherwise.
   )
@@ -421,32 +430,53 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** at heading?
 
 (defun trs-snort-text-org ()
-     (if (org-at-heading-p) (trs-snort-org-heading)
-            (trs-snort-line))
-     )
+  "Store text. Range stored depends on local context.
+
+If in a an `org' heading, store the heading. Otherwise, store the
+line."
+
+  (if (org-at-heading-p) (trs-snort-org-heading)
+    (trs-snort-line))
+  )
 (defun trs-snort-text-outshine ()
-     (if (outline-on-heading-p) (trs-snort-outshine-heading)
-            (trs-snort-line))
-     )
+  "Store text. Range stored depends on context.
+
+If inside an `outshine' outline heading, store text. Otherwise,
+store line."
+
+  (if (outline-on-heading-p) (trs-snort-outshine-heading)
+    (trs-snort-line))
+  )
 (defun trs-snort-text-outline ()
-     (if (outline-on-heading-p) (trs-snort-outline-heading)
-            (trs-snort-line))
-     )
+  "Store text. Range stored depends on context.
+
+If in an outline heading, store the heading. Otherwise store
+line."
+
+  (if (outline-on-heading-p) (trs-snort-outline-heading)
+    (trs-snort-line))
+  )
 ;; ***** heading type?
 
 (defun trs-snort-org-heading ()
+  "Store an `org' heading."
+
   (save-restriction
     (org-narrow-to-subtree)
     (trs-snort-visible)
     )
   )
 (defun trs-snort-outshine-heading ()
+  "Store an `outshine' heading."
+
   (save-restriction
     (outshine-narrow-to-subtree)
     (trs-snort-visible)
     )
   )
 (defun trs-snort-outline-heading ()
+  "Store an outline heading."
+
   (save-restriction
     (org-narrow-to-subtree)
     (trs-snort-visible)
@@ -471,16 +501,33 @@ If no match found, fails with an error, and does not delete the line."
 ;; ***** Find the searched dired entry
 
 (defun trs-search-dired-open ()
-  "Opens the isearched Dired entry."
+  "Open the `dired' file that the user picked.
+
+Use `isearch'. If `isearch' returns multiple matches, then
+use `avy' to pick one."
 
   (if (string-equal major-mode "dired-mode")
       nil
-      (user-error "%s" "Mode must be Dired"))
+    (user-error "%s" "Mode must be Dired"))
 
   (goto-char (point-min))
-  (forward-line)
-  (dired-hide-details-mode)
-  (isearch-forward)
+
+  (let ((inhibit-message t))
+    (dired-hide-details-mode))
+
+  (let ((search-invisible nil))
+    (isearch-forward))
+
+  ;; Run Avy if multiple isearch matches.
+  ;; Avy doesn't signal a quit, so it is inferred from point.
+  (let ((avy-all-windows nil)
+        (avy-case-fold-search nil))
+    (unless (eq 1 (length (avy--regex-candidates (regexp-quote isearch-string))))
+      (goto-char (point-min))
+      (avy-isearch)
+      (if (eq (point) (point-min))
+          (user-error "Quit Avy"))))
+
   (dired-find-file)
   )
 ;; ***** check whether immediate parent dir is "0-Inbox"
@@ -522,7 +569,7 @@ If no match found, fails with an error, and does not delete the line."
   :group 'files)
 
 (defcustom trs-inbox-file-header "*** Inbox.org\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n\n"
-  "Header inserted into new Inbox.org files created by `trs-throw-text' and `trs-throw-up-text'."
+  "Header inserted into new Inbox.org files created by `trs-refile-text' and `trs-refile-up-text'."
   :type '(string)
   :group 'trs)
 ;; ** utilities
