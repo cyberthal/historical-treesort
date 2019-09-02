@@ -204,7 +204,7 @@
 (defmacro trs-defalias-from-suffix (suffix)
   "Make a defalias from SUFFIX."
   (let ((trs-alias-name-list (trs-alias-name-list suffix)))
-    `(trs-defalias-from-names ,(car trs-alias-name-list) ,(cdr trs-alias-name-list))))
+    `(trs-defalias-from-names ,(car trs-alias-name-list) ,(nth 1 trs-alias-name-list))))
 
 (trs-defalias-from-suffix "refile")
 (trs-defalias-from-suffix "refile-up")
@@ -214,6 +214,8 @@
 (trs-defalias-from-suffix "duplicate-heading-to-other-window")
 (trs-defalias-from-suffix "region-ends-n-newlines")
 
+(macroexpand '(trs-defalias-from-suffix "refile"))
+(defalias (quote foobar-refile) (quote (trs-refile)))
 ;; ** Refile
 
 ;; *** config
