@@ -180,8 +180,8 @@
   :group 'convenience
   :group 'files)
 
-(defcustom trs-alias-prefix "leo-"
-  "Prefix for aliased user-level commands."
+(defcustom trs-alias-prefix "leo"
+  "Prefix for aliased user-level commands. No dash needed."
   :type '(string)
   :group 'trs)
 
