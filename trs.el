@@ -158,7 +158,8 @@
 
 ;; * trs.el
 ;; * offset
-;; ** require
+;; ** config
+;; *** require
 
 (require 'org)
 (require 'dired)
@@ -166,20 +167,32 @@
 (require 'f)
 (require 'avy)
 
+;; *** define vars and funcs
+
+(defvar trs-object-text nil
+  "Stores the last text treesort killed or copied.")
+
+(defvar user-home-directory) ; Spacemacs variable
+
 ;; ** Refile
 
 ;; *** config
 
 ;; **** define variables and declare functions
 
-(defvar trs-object-text nil
-  "Stores the last text treesort killed or copied.")
-
 (defvar trs-inbox-file-header)
 
-(defvar user-home-directory) ; Spacemacs variable
-
 (declare-function outshine-narrow-to-subtree "outshine" ())
+
+;; **** aliases
+
+(defalias 'leo-refile 'trs-refile)
+(defalias 'leo-refile-up 'trs-refile-up)
+(defalias 'leo-delete-this-buffer-and-file 'trs-delete-this-buffer-and-file)
+(defalias 'leo-store-link-fold-drawer 'trs-store-link-fold-drawer)
+(defalias 'leo-dired-zinks 'trs-dired-zinks)
+(defalias 'leo-duplicate-heading-to-other-window 'trs-duplicate-heading-to-other-window)
+(defalias 'leo-region-ends-n-newlines 'trs-region-ends-n-newlines)
 
 ;; *** main defun
 
