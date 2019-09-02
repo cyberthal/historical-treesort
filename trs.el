@@ -333,10 +333,15 @@ Refiled text may be a line or an outline heading."
   (let ((search-invisible nil))
     (isearch-forward))
 
-  (let ((avy-all-windows nil))
-    (if (string-equal (avy-isearch) nil)
-        (user-error "Avy selection failed"))
-    )
+  ;; Run Avy if multiple isearch matches.
+  ;; Avy doesn't signal a quit, so it is inferred from point.
+  (let ((avy-all-windows nil)
+        (avy-case-fold-search nil))
+    (unless (eq 1 (length (avy--regex-candidates (regexp-quote isearch-string))))
+      (goto-char (point-min))
+      (avy-isearch)
+      (if (eq (point) (point-min))
+          (user-error "Quit Avy"))))
 
   (save-restriction
     (org-narrow-to-subtree)
@@ -514,13 +519,17 @@ use `avy' to pick one."
   (let ((search-invisible nil))
     (isearch-forward))
 
-  (let ((avy-all-windows nil))
-    (if (string-equal (avy-isearch) nil)
-        (user-error "Avy selection failed"))
-    )
+  ;; Run Avy if multiple isearch matches.
+  ;; Avy doesn't signal a quit, so it is inferred from point.
+  (let ((avy-all-windows nil)
+        (avy-case-fold-search nil))
+    (unless (eq 1 (length (avy--regex-candidates (regexp-quote isearch-string))))
+      (goto-char (point-min))
+      (avy-isearch)
+      (if (eq (point) (point-min))
+          (user-error "Quit Avy"))))
 
-  (if (> (point) 1)
-      (dired-find-file))
+  (dired-find-file)
   )
 ;; ***** check whether immediate parent dir is "0-Inbox"
 
