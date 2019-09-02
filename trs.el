@@ -313,11 +313,11 @@ Function assumes a polished document will have a level-1 near the top."
 (defun trs-refile-text-to-outline ()
   "Refile text to an outline heading in the next window.
 
-Assume that the first line of the target window is the parent heading.
-Present a target list of the parent's direct children.
-Call `isearch'. If multiple matches result, select one with `avy'.
+Assume that the first line of the target window is the parent
+heading. Show the parent's direct child headings. Use `isearch'.
+If multiple matches result, pick one with `avy'.
 
-Move text at point in home window to the bottom of the target heading.
+Refile text at point in home window to the bottom of the target heading.
 Refiled text may be a line or an outline heading."
 
   (interactive)
@@ -501,10 +501,9 @@ line."
 ;; ***** Find the searched dired entry
 
 (defun trs-search-dired-open ()
-  "Open the `dired' line that the user picked.
+  "Open the `dired' file that the user picked.
 
-If line 1 of the `dired' buffer is selected, stay there. First
-use `isearch'. If `isearch' returns multiple matches, then
+Use `isearch'. If `isearch' returns multiple matches, then
 use `avy' to pick one."
 
   (if (string-equal major-mode "dired-mode")
