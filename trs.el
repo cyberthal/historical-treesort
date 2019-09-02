@@ -172,9 +172,6 @@
 (defvar trs-object-text nil
   "Stores the last text treesort killed or copied.")
 
-(defvar trs-alias-prefix
-  "Stores the user's preferred alias prefix.")
-
 (defvar user-home-directory) ; Spacemacs variable
 
 ;; *** customization
