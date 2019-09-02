@@ -172,7 +172,50 @@
 (defvar trs-object-text nil
   "Stores the last text treesort killed or copied.")
 
+(defvar trs-alias-prefix
+  "Stores the user's preferred alias prefix.")
+
 (defvar user-home-directory) ; Spacemacs variable
+
+;; *** customization
+
+(defgroup trs nil "Refactor prose and incrementally refile things."
+  :group 'convenience
+  :group 'files)
+
+(defcustom trs-alias-prefix "leo-"
+  "Prefix for aliased user-level commands."
+  :type '(string)
+  :group 'trs)
+
+;; *** aliases
+
+(defun trs-alias-oldname (suffix)
+  "Reconstruct original function name from SUFFIX."
+  (make-symbol (concat "trs-" suffix)))
+(defun trs-alias-newname (suffix)
+  "Make new function name from SUFFIX."
+  (make-symbol (concat trs-alias-prefix "-" suffix)))
+(defun trs-alias-name-list (suffix)
+  "Make a list of new and old function names from SUFFIX."
+  (list (trs-alias-newname suffix) (trs-alias-oldname suffix)))
+
+(defmacro trs-defalias-from-names (newname oldname)
+  "Make a defalias with NEWNAME and OLDNAME."
+  `(defalias ',newname ',oldname))
+
+(defmacro trs-defalias-from-suffix (suffix)
+  "Make a defalias from SUFFIX."
+  (let ((trs-alias-name-list (trs-alias-name-list suffix)))
+    `(trs-defalias-from-names ,(car trs-alias-name-list) ,(cdr trs-alias-name-list))))
+
+(trs-defalias-from-suffix "refile")
+(trs-defalias-from-suffix "refile-up")
+(trs-defalias-from-suffix "delete-this-buffer-and-file")
+(trs-defalias-from-suffix "store-link-fold-drawer")
+(trs-defalias-from-suffix "dired-zinks")
+(trs-defalias-from-suffix "duplicate-heading-to-other-window")
+(trs-defalias-from-suffix "region-ends-n-newlines")
 
 ;; ** Refile
 
@@ -183,16 +226,6 @@
 (defvar trs-inbox-file-header)
 
 (declare-function outshine-narrow-to-subtree "outshine" ())
-
-;; **** aliases
-
-(defalias 'leo-refile 'trs-refile)
-(defalias 'leo-refile-up 'trs-refile-up)
-(defalias 'leo-delete-this-buffer-and-file 'trs-delete-this-buffer-and-file)
-(defalias 'leo-store-link-fold-drawer 'trs-store-link-fold-drawer)
-(defalias 'leo-dired-zinks 'trs-dired-zinks)
-(defalias 'leo-duplicate-heading-to-other-window 'trs-duplicate-heading-to-other-window)
-(defalias 'leo-region-ends-n-newlines 'trs-region-ends-n-newlines)
 
 ;; *** main defun
 
@@ -563,10 +596,6 @@ use `avy' to pick one."
     )
   )
 ;; ******* customization
-
-(defgroup trs nil "Refactor prose and incrementally refile things."
-  :group 'convenience
-  :group 'files)
 
 (defcustom trs-inbox-file-header "*** Inbox.org\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n\n"
   "Header inserted into new Inbox.org files created by `trs-refile-text' and `trs-refile-up-text'."
