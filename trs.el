@@ -169,7 +169,7 @@
 
 ;; *** define vars and funcs
 
-(defvar trs-object-text nil
+(defvar leo-object-text nil
   "Stores the last text treesort killed or copied.")
 
 (defvar user-home-directory) ; Spacemacs variable
@@ -180,101 +180,65 @@
   :group 'convenience
   :group 'files)
 
-(defcustom trs-alias-prefix "leo"
-  "Prefix for aliased user-level commands. No dash needed."
-  :type '(string)
-  :group 'trs)
-
-;; *** aliases TODO
-
-(defun trs-alias-oldname (suffix)
-  "Reconstruct original function name from SUFFIX."
-  (make-symbol (concat "trs-" suffix)))
-(defun trs-alias-newname (suffix)
-  "Make new function name from SUFFIX."
-  (make-symbol (concat trs-alias-prefix "-" suffix)))
-(defun trs-alias-name-list (suffix)
-  "Make a list of new and old function names from SUFFIX."
-  (list (trs-alias-newname suffix) (trs-alias-oldname suffix)))
-
-(defmacro trs-defalias-from-names (newname oldname)
-  "Make a defalias with NEWNAME and OLDNAME."
-  `(defalias ',newname ',oldname))
-
-(defmacro trs-defalias-from-suffix (suffix)
-  "Make a defalias from SUFFIX."
-  (let ((trs-alias-name-list (trs-alias-name-list suffix)))
-    `(trs-defalias-from-names ,(car trs-alias-name-list) ,(nth 1 trs-alias-name-list))))
-
-(trs-defalias-from-suffix "refile")
-(trs-defalias-from-suffix "refile-up")
-(trs-defalias-from-suffix "delete-this-buffer-and-file")
-(trs-defalias-from-suffix "store-link-fold-drawer")
-(trs-defalias-from-suffix "dired-zinks")
-(trs-defalias-from-suffix "duplicate-heading-to-other-window")
-(trs-defalias-from-suffix "region-ends-n-newlines")
-
-(macroexpand '(trs-defalias-from-suffix "refile"))
-(defalias (quote foobar-refile) (quote (trs-refile)))
 ;; ** Refile
 
 ;; *** config
 
 ;; **** define variables and declare functions
 
-(defvar trs-inbox-file-header)
+(defvar leo-inbox-file-header)
 
 (declare-function outshine-narrow-to-subtree "outshine" ())
 
 ;; *** main defun
 
 ;;;###autoload
-(defun trs-refile (&optional count)
+(defun leo-refile (&optional count)
   "Refile text/file to target in next window COUNT times.
 Select a line from target list using `isearch' then `avy'."
   (interactive "p")
 
   (dotimes (_var count)
     (unwind-protect
-        (trs-refile-object-mode-check)
+        (leo-refile-object-mode-check)
       (other-window -1)                ; save-selected-window fails for refile-text
       )
     )
   )
 
-(defun trs-refile-object-mode-check ()
+(defun leo-refile-object-mode-check ()
   "Determine correct action based on current window mode.
 If in dired, refile files. If not, refile text."
 
   (if (eq major-mode 'dired-mode)
-      (trs-refile-file)
-    (trs-refile-text))
+      (leo-refile-file)
+    (leo-refile-text))
   )
 
 ;; *** flow control dispatcher
 
 ;; **** main defun
 
-(defun trs-refile-text ()
+(defun leo-refile-text ()
   "Refile text to either Dired or an outline."
 
   (select-window (next-window))
-  (let ((trs-in-dired-p (string-equal major-mode 'dired-mode)))
+  (let ((leo-in-dired-p (string-equal major-mode 'dired-mode)))
     (select-window (previous-window))
 
-    (if trs-in-dired-p
-        (trs-refile-text-to-dired)
-      (call-interactively 'trs-refile-text-to-outline)
+    (if leo-in-dired-p
+        (leo-refile-text-to-dired)
+      (call-interactively 'leo-refile-text-to-outline)
       )
     )
   )
 ;; **** refile file
 
-(defun trs-refile-file ()
+(defun leo-refile-file ()
   "Refile file(s) from Dired to searched target in next window."
 
   (select-window (next-window))
-  (trs-search-dired-open)
+  (leo-search-dired-open)
   (mkdir (concat default-directory "0-Inbox/") 1)
   (find-file (concat default-directory "0-Inbox/"))
   (select-window (previous-window))
@@ -291,37 +255,37 @@ If in dired, refile files. If not, refile text."
 
 ;; ****** main defun
 
-(defun trs-refile-text-to-dired ()
+(defun leo-refile-text-to-dired ()
   "Refile text to a searched target in an adjacent Dired buffer."
 
   (select-window (next-window))
-  (let ((trs-dired-starting-buffer (current-buffer))
+  (let ((leo-dired-starting-buffer (current-buffer))
         )
-    (trs-search-dired-open)
+    (leo-search-dired-open)
     (select-window (previous-window))
-    (trs-snort-text)
+    (leo-snort-text)
     (select-window (next-window))
     (if buffer-file-name
-        (trs-insert-text-to-file-blind)
-      (trs-insert-text-to-directory)
+        (leo-insert-text-to-file-blind)
+      (leo-insert-text-to-directory)
       )
-    (switch-to-buffer trs-dired-starting-buffer) ; Save-current-buffer bugged,
+    (switch-to-buffer leo-dired-starting-buffer) ; Save-current-buffer bugged,
                                         ; must use instead.
     (forward-char 2)
     )
   )
 ;; ****** destination = dir
 
-(defun trs-insert-text-to-directory ()
-  "Insert `trs-object-text' to Inbox.org."
+(defun leo-insert-text-to-directory ()
+  "Insert `leo-object-text' to Inbox.org."
 
-    (trs-create-open-inbox-file)
-    (trs-insert-to-end-of-buffer)
-    (trs-text-inserted-to-buffer-path-message)
+    (leo-create-open-inbox-file)
+    (leo-insert-to-end-of-buffer)
+    (leo-text-inserted-to-buffer-path-message)
   )
 ;; ****** destination = file
 
-(defun trs-insert-text-to-file-blind ()
+(defun leo-insert-text-to-file-blind ()
   "Put point either before first level-1 heading or at end of buffer.
 Normally one wants to yank to the end of the buffer.
 But if it's a polished document rather than an inbox,
@@ -333,16 +297,16 @@ Function assumes a polished document will have a level-1 near the top."
       (progn
         (re-search-forward "^* ") ; Search for a level-1 headline.
         (goto-char (point-at-bol))
-        (insert trs-object-text)
+        (insert leo-object-text)
         )
-    (error (trs-insert-to-end-of-buffer))
+    (error (leo-insert-to-end-of-buffer))
     )
-  (trs-text-inserted-to-buffer-path-message)
+  (leo-text-inserted-to-buffer-path-message)
   )
 ;; ***** destination = text
 ;; ****** main defun
 
-(defun trs-refile-text-to-outline ()
+(defun leo-refile-text-to-outline ()
   "Refile text to an outline heading in the next window.
 
 Assume that the first line of the target window is the parent
@@ -377,11 +341,11 @@ Refiled text may be a line or an outline heading."
 
   (save-restriction
     (org-narrow-to-subtree)
-    (trs-region-ends-n-newlines 2)
+    (leo-region-ends-n-newlines 2)
     (save-selected-window (select-window (previous-window))
-                          (trs-snort-text)
+                          (leo-snort-text)
                           )
-    (insert trs-object-text)
+    (insert leo-object-text)
     (goto-char (point-min))
     )
   (outline-hide-subtree)
@@ -391,59 +355,59 @@ Refiled text may be a line or an outline heading."
 ;; **** main defun
 
 ;;;###autoload
-(defun trs-refile-up (&optional count)
+(defun leo-refile-up (&optional count)
   "Refile file or text one directory upwards, COUNT times."
   (interactive "p")
 
   (dotimes (var count)
 
     (if (eq major-mode 'dired-mode)
-        (trs-refile-up-file)
-      (trs-refile-up-text))
+        (leo-refile-up-file)
+      (leo-refile-up-text))
     (message "Threw up %s times" (1+ var))
     )
   )
 ;; **** jump height
 
-(defun trs-jump-destination ()
+(defun leo-jump-destination ()
   "Return directory 1-2 above current, depending on ../0-Inbox."
 
   (concat default-directory
 
           ;; "Returns ../ unless parent dir is 0-inbox, then ../../"
-          (if (trs-parent-dir-inbox-p)
+          (if (leo-parent-dir-inbox-p)
               "../../"
             "../")
           )
   )
 ;; **** object = text
 
-(defun trs-refile-up-text ()
+(defun leo-refile-up-text ()
   "Refile text upwards in the directory tree to the next /0-Inbox."
 
-  (let ((trs-buffer-home (current-buffer))
-        (default-directory (trs-jump-destination))
+  (let ((leo-buffer-home (current-buffer))
+        (default-directory (leo-jump-destination))
         )
-    (trs-snort-text)
-    (trs-create-open-inbox-file)
-    (trs-insert-text-to-file-blind)
-    (switch-to-buffer trs-buffer-home) ; because save-current-buffer failed here
+    (leo-snort-text)
+    (leo-create-open-inbox-file)
+    (leo-insert-text-to-file-blind)
+    (switch-to-buffer leo-buffer-home) ; because save-current-buffer failed here
     )
   )
 ;; **** target = file
 
-(defun trs-refile-up-file ()
+(defun leo-refile-up-file ()
   "Refile file upwards in the directory tree to the next /0-Inbox."
 
-  (let* ((trs-jump-destination (trs-jump-destination))
-         (trs-inbox-dir (concat trs-jump-destination "0-Inbox/"))
+  (let* ((leo-jump-destination (leo-jump-destination))
+         (leo-inbox-dir (concat leo-jump-destination "0-Inbox/"))
          )
-    (if (file-exists-p trs-inbox-dir)
+    (if (file-exists-p leo-inbox-dir)
         ()
-      (mkdir trs-inbox-dir)
+      (mkdir leo-inbox-dir)
       )
-    (rename-file (dired-get-filename "no-dir") trs-inbox-dir)
-    (message "File refiled to %s" trs-jump-destination)
+    (rename-file (dired-get-filename "no-dir") leo-inbox-dir)
+    (message "File refiled to %s" leo-jump-destination)
     )
   (revert-buffer) ; refreshes screen significantly faster than otherwise.
   )
@@ -451,88 +415,88 @@ Refiled text may be a line or an outline heading."
 ;; **** snort type
 ;; ***** text mode?
 
-(defun trs-snort-text ()
-  "If heading or line of text to trs-snort-line variable."
-  (cond ((eq major-mode 'org-mode) (trs-snort-text-org))
-        ((-contains-p minor-mode-list 'outshine-mode) (trs-snort-text-outshine))
-        ((-contains-p minor-mode-list 'outline-minor-mode) (trs-snort-text-outline))
-        (t (trs-snort-line))
+(defun leo-snort-text ()
+  "If heading or line of text to leo-snort-line variable."
+  (cond ((eq major-mode 'org-mode) (leo-snort-text-org))
+        ((-contains-p minor-mode-list 'outshine-mode) (leo-snort-text-outshine))
+        ((-contains-p minor-mode-list 'outline-minor-mode) (leo-snort-text-outline))
+        (t (leo-snort-line))
         )
   )
 ;; ***** at heading?
 
-(defun trs-snort-text-org ()
+(defun leo-snort-text-org ()
   "Store text. Range stored depends on local context.
 
 If in a an `org' heading, store the heading. Otherwise, store the
 line."
 
-  (if (org-at-heading-p) (trs-snort-org-heading)
-    (trs-snort-line))
+  (if (org-at-heading-p) (leo-snort-org-heading)
+    (leo-snort-line))
   )
-(defun trs-snort-text-outshine ()
+(defun leo-snort-text-outshine ()
   "Store text. Range stored depends on context.
 
 If inside an `outshine' outline heading, store text. Otherwise,
 store line."
 
-  (if (outline-on-heading-p) (trs-snort-outshine-heading)
-    (trs-snort-line))
+  (if (outline-on-heading-p) (leo-snort-outshine-heading)
+    (leo-snort-line))
   )
-(defun trs-snort-text-outline ()
+(defun leo-snort-text-outline ()
   "Store text. Range stored depends on context.
 
 If in an outline heading, store the heading. Otherwise store
 line."
 
-  (if (outline-on-heading-p) (trs-snort-outline-heading)
-    (trs-snort-line))
+  (if (outline-on-heading-p) (leo-snort-outline-heading)
+    (leo-snort-line))
   )
 ;; ***** heading type?
 
-(defun trs-snort-org-heading ()
+(defun leo-snort-org-heading ()
   "Store an `org' heading."
 
   (save-restriction
     (org-narrow-to-subtree)
-    (trs-snort-visible)
+    (leo-snort-visible)
     )
   )
-(defun trs-snort-outshine-heading ()
+(defun leo-snort-outshine-heading ()
   "Store an `outshine' heading."
 
   (save-restriction
     (outshine-narrow-to-subtree)
-    (trs-snort-visible)
+    (leo-snort-visible)
     )
   )
-(defun trs-snort-outline-heading ()
+(defun leo-snort-outline-heading ()
   "Store an outline heading."
 
   (save-restriction
     (org-narrow-to-subtree)
-    (trs-snort-visible)
+    (leo-snort-visible)
     )
   )
 ;; ***** line
 
-(defun trs-snort-line ()
-  "Move a line of text to variable `trs-object-text'."
+(defun leo-snort-line ()
+  "Move a line of text to variable `leo-object-text'."
 
   (if (eq (point-min) (point-max))
       (user-error "%s" "Selected line is empty")
-    (setq trs-object-text
+    (setq leo-object-text
           (concat (delete-and-extract-region (line-beginning-position) (line-end-position))
                   "\n"
                   )
           )
-    (trs-delete-leftover-empty-line)
+    (leo-delete-leftover-empty-line)
     )
   )
 ;; **** files
 ;; ***** Find the searched dired entry
 
-(defun trs-search-dired-open ()
+(defun leo-search-dired-open ()
   "Open the `dired' file that the user picked.
 
 Use `isearch'. If `isearch' returns multiple matches, then
@@ -564,7 +528,7 @@ use `avy' to pick one."
   )
 ;; ***** check whether immediate parent dir is "0-Inbox"
 
-(defun trs-parent-dir-inbox-p ()
+(defun leo-parent-dir-inbox-p ()
   "Return t if parent dir is 0-Inbox."
 
   (equal
@@ -574,18 +538,18 @@ use `avy' to pick one."
 ;; ***** Inbox.org creation
 ;; ****** Create open Inbox.org
 
-(defun trs-create-open-inbox-file ()
+(defun leo-create-open-inbox-file ()
   "If no Inbox.org, make it and insert *** offset."
 
-  (let* ((trs-inbox-file-path (concat default-directory "Inbox.org"))
-         (trs-inbox-file-buffer (find-buffer-visiting trs-inbox-file-path)))
+  (let* ((leo-inbox-file-path (concat default-directory "Inbox.org"))
+         (leo-inbox-file-buffer (find-buffer-visiting leo-inbox-file-path)))
 
-    (cond (trs-inbox-file-buffer (set-buffer trs-inbox-file-buffer)) ; select buffer if exists
-          ((file-exists-p trs-inbox-file-path) (find-file trs-inbox-file-path)) ; open file if exists
+    (cond (leo-inbox-file-buffer (set-buffer leo-inbox-file-buffer)) ; select buffer if exists
+          ((file-exists-p leo-inbox-file-path) (find-file leo-inbox-file-path)) ; open file if exists
           ;; else create and open file
           (t (progn (f-touch "Inbox.org")
-                    (find-file trs-inbox-file-path)
-                    (insert trs-inbox-file-header)
+                    (find-file leo-inbox-file-path)
+                    (insert leo-inbox-file-header)
                     (goto-char (point-min))
                     (org-cycle-hide-drawers 1)
                     (goto-char (point-max))
@@ -596,15 +560,15 @@ use `avy' to pick one."
   )
 ;; ******* customization
 
-(defcustom trs-inbox-file-header "*** Inbox.org\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n\n"
-  "Header inserted into new Inbox.org files created by `trs-refile-text' and `trs-refile-up-text'."
+(defcustom leo-inbox-file-header "*** Inbox.org\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n\n"
+  "Header inserted into new Inbox.org files created by `leo-refile-text' and `leo-refile-up-text'."
   :type '(string)
   :group 'trs)
 ;; ** utilities
-;; *** trs-delete-this-buffer-and-file
+;; *** leo-delete-this-buffer-and-file
 
 ;;;###autoload
-(defun trs-delete-this-buffer-and-file ()
+(defun leo-delete-this-buffer-and-file ()
   "Delete file visited by current buffer and kill buffer."
   (interactive)
 
@@ -624,7 +588,7 @@ use `avy' to pick one."
 ;; **** Store link and fold the PROPERTIES drawer
 
 ;;;###autoload
-(defun trs-store-link-fold-drawer ()
+(defun leo-store-link-fold-drawer ()
   "Store an org link to a heading, and fold the drawer."
   (interactive)
 
@@ -640,7 +604,7 @@ use `avy' to pick one."
 ;; **** create Zinks.org
 
 ;;;###autoload
-(defun trs-dired-zinks ()
+(defun leo-dired-zinks ()
   "Make Zinks.org.  Insert org-id link.
 
 Link title's path is relative to `vc-root-dir' if present,
@@ -661,7 +625,7 @@ else `user-home-directory'."
                       "\n\n\n"
                       )
               )
-      (trs-store-link-fold-drawer)
+      (leo-store-link-fold-drawer)
       (goto-char (point-max))
       )
     )
@@ -669,18 +633,18 @@ else `user-home-directory'."
 ;; *** duplicate heading to other window
 
 ;;;###autoload
-(defun trs-duplicate-heading-to-other-window ()
+(defun leo-duplicate-heading-to-other-window ()
   "Append heading at point to end of next window's buffer."
   (interactive)
 
   (save-restriction
     (org-narrow-to-subtree)
-    (trs-region-ends-n-newlines 1)
+    (leo-region-ends-n-newlines 1)
     (let ((home-buffer (current-buffer))
           )
       (save-selected-window
         (select-window (next-window))
-        (trs-region-ends-n-newlines 2)
+        (leo-region-ends-n-newlines 2)
         (insert-buffer-substring home-buffer)
         )
       )
@@ -690,7 +654,7 @@ else `user-home-directory'."
 
 ;; *** heading ends n newlines
 
-(defun trs-region-ends-n-newlines (n)
+(defun leo-region-ends-n-newlines (n)
   "Make region end in N newlines. Set point to end of region."
 
   (if (>= n 0)
@@ -713,17 +677,17 @@ else `user-home-directory'."
   )
 ;; *** snort visible region
 
-(defun trs-snort-visible ()
-  "Move region to `trs-object-text'.  Widen.  Delete empty line."
+(defun leo-snort-visible ()
+  "Move region to `leo-object-text'.  Widen.  Delete empty line."
 
-  (trs-region-ends-n-newlines 1)
-  (setq trs-object-text (delete-and-extract-region (point-min) (point-max)))
+  (leo-region-ends-n-newlines 1)
+  (setq leo-object-text (delete-and-extract-region (point-min) (point-max)))
   (widen)
-  (trs-delete-leftover-empty-line)
+  (leo-delete-leftover-empty-line)
   )
 ;; *** safely delete empty line
 
-(defun trs-delete-leftover-empty-line ()
+(defun leo-delete-leftover-empty-line ()
   "Deletes empty line at point, if there is one."
 
   (unless (and (bobp) (eobp))
@@ -739,16 +703,16 @@ else `user-home-directory'."
   )
 ;; *** insert at bottom of buffer
 
-(defun trs-insert-to-end-of-buffer ()
-  "Add `trs-object-text' text to bottom of target buffer."
+(defun leo-insert-to-end-of-buffer ()
+  "Add `leo-object-text' text to bottom of target buffer."
 
   (widen)
-  (trs-region-ends-n-newlines 2)
-  (insert trs-object-text)
+  (leo-region-ends-n-newlines 2)
+  (insert leo-object-text)
   )
 ;; *** text inserted confirmation message
 
-(defun trs-text-inserted-to-buffer-path-message ()
+(defun leo-text-inserted-to-buffer-path-message ()
   "Report filename that text was inserted to.
 
 Reported path is relative to vd-root-dir or ~/."
