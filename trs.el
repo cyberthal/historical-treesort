@@ -185,7 +185,7 @@
   :type '(string)
   :group 'trs)
 
-;; *** aliases
+;; *** aliases TODO
 
 (defun trs-alias-oldname (suffix)
   "Reconstruct original function name from SUFFIX."
