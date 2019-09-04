@@ -326,13 +326,14 @@ Refiled text may be a line or an outline heading."
   (outline-show-children 1)
   (outline-hide-body)
 
-  (let ((search-invisible nil))
+  (let ((isearch-invisible nil))
     (isearch-forward))
 
   ;; Run Avy if multiple isearch matches.
   ;; Avy doesn't signal a quit, so it is inferred from point.
   (let ((avy-all-windows nil)
-        (avy-case-fold-search nil))
+        (avy-case-fold-search nil)
+        (search-invisible nil))
     (unless (eq 1 (length (avy--regex-candidates (regexp-quote isearch-string))))
       (goto-char (point-min))
       (avy-isearch)
@@ -511,13 +512,15 @@ use `avy' to pick one."
   (let ((inhibit-message t))
     (dired-hide-details-mode))
 
-  (let ((search-invisible nil))
+  (let ((isearch-invisible nil))
     (isearch-forward))
 
   ;; Run Avy if multiple isearch matches.
   ;; Avy doesn't signal a quit, so it is inferred from point.
   (let ((avy-all-windows nil)
-        (avy-case-fold-search nil))
+        (avy-case-fold-search nil)
+        (search-invisible nil) ; avy-isearch fails to observe
+        (isearch-invisible nil)) ; both these variables.
     (unless (eq 1 (length (avy--regex-candidates (regexp-quote isearch-string))))
       (goto-char (point-min))
       (avy-isearch)
