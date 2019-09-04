@@ -488,22 +488,10 @@ use `avy' to pick one."
   (let ((inhibit-message t))
     (dired-hide-details-mode))
 
-  (let ((isearch-invisible nil))
-    (dired-isearch-filenames))
-
-  ;; Run Avy if multiple isearch matches.
-  ;; Avy doesn't signal a quit, so it is inferred from point.
-  (let ((avy-all-windows nil)
-        (avy-case-fold-search nil)
-        (search-invisible nil)          ; avy-isearch fails
-        (isearch-invisible nil)         ; to observe all of
-        (dired-isearch-filenames t)     ; these variables.
+  (let ((isearch-invisible nil)
+        (dired-isearch-filenames t)     ; used as a function, causes error
         )
-    (unless (eq 1 (length (avy--regex-candidates (regexp-quote isearch-string))))
-      (goto-char (point-min))
-      (avy-isearch)
-      (if (eq (point) (point-min))
-          (user-error "Quit Avy"))))
+    (isearch-forward))
 
   (dired-find-file))
 
