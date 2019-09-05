@@ -189,10 +189,10 @@
 
 (defun trs-alias-oldname (suffix)
   "Reconstruct original function name from SUFFIX."
-  (make-symbol (concat "trs-" suffix)))
+  (intern (concat "trs-" suffix)))
 (defun trs-alias-newname (suffix)
   "Make new function name from SUFFIX."
-  (make-symbol (concat trs-alias-prefix "-" suffix)))
+  (intern (concat trs-alias-prefix "-" suffix)))
 (defun trs-alias-name-list (suffix)
   "Make a list of new and old function names from SUFFIX."
   (list (trs-alias-newname suffix) (trs-alias-oldname suffix)))
@@ -216,6 +216,7 @@
 
 (macroexpand '(trs-defalias-from-suffix "refile"))
 (defalias (quote foobar-refile) (quote (trs-refile)))
+
 ;; ** Refile
 
 ;; *** config
