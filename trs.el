@@ -181,8 +181,15 @@
   :group 'convenience
   :group 'files)
 
+(defcustom trs-use-alias-prefixes t
+  "Non-nil if prefix aliases should be created for user commands."
+  :type 'boolean
+  :group 'trs)
+
 (defcustom trs-alias-prefix "leo"
-  "Prefix for aliased user-level commands. No dash needed."
+  "Prefix for aliased user commands. No dash needed.
+
+Do not set to trs or it will cause an infinite loop."
   :type '(string)
   :group 'trs)
 
@@ -207,16 +214,14 @@
   (let ((trs-alias-name-list (trs-alias-name-list suffix)))
     `(trs-defalias-from-names ,(car trs-alias-name-list) ,(nth 1 trs-alias-name-list))))
 
-(trs-defalias-from-suffix "refile")
+(when trs-use-alias-prefixes
+  (trs-defalias-from-suffix "refile")
 (trs-defalias-from-suffix "refile-up")
 (trs-defalias-from-suffix "delete-this-buffer-and-file")
 (trs-defalias-from-suffix "store-link-fold-drawer")
 (trs-defalias-from-suffix "dired-zinks")
 (trs-defalias-from-suffix "duplicate-heading-to-other-window")
-(trs-defalias-from-suffix "region-ends-n-newlines")
-
-(macroexpand '(trs-defalias-from-suffix "refile"))
-(defalias (quote foobar-refile) (quote (trs-refile)))
+(trs-defalias-from-suffix "region-ends-n-newlines"))
 
 ;; ** Refile
 
