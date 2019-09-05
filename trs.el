@@ -181,6 +181,43 @@
   :group 'convenience
   :group 'files)
 
+(defcustom leo-alias-prefix "leo"
+  "Prefix for aliased user-level commands. No dash needed."
+  :type '(string)
+  :group 'trs)
+
+;; *** aliases TODO
+
+(defun leo-alias-oldname (suffix)
+  "Reconstruct original function name from SUFFIX."
+  (intern (concat "leo-" suffix)))
+(defun leo-alias-newname (suffix)
+  "Make new function name from SUFFIX."
+  (intern (concat leo-alias-prefix "-" suffix)))
+(defun leo-alias-name-list (suffix)
+  "Make a list of new and old function names from SUFFIX."
+  (list (leo-alias-newname suffix) (leo-alias-oldname suffix)))
+
+(defmacro leo-defalias-from-names (newname oldname)
+  "Make a defalias with NEWNAME and OLDNAME."
+  `(defalias ',newname ',oldname))
+
+(defmacro leo-defalias-from-suffix (suffix)
+  "Make a defalias from SUFFIX."
+  (let ((leo-alias-name-list (leo-alias-name-list suffix)))
+    `(leo-defalias-from-names ,(car leo-alias-name-list) ,(nth 1 leo-alias-name-list))))
+
+(leo-defalias-from-suffix "refile")
+(leo-defalias-from-suffix "refile-up")
+(leo-defalias-from-suffix "delete-this-buffer-and-file")
+(leo-defalias-from-suffix "store-link-fold-drawer")
+(leo-defalias-from-suffix "dired-zinks")
+(leo-defalias-from-suffix "duplicate-heading-to-other-window")
+(leo-defalias-from-suffix "region-ends-n-newlines")
+
+(macroexpand '(leo-defalias-from-suffix "refile"))
+(defalias (quote foobar-refile) (quote (leo-refile)))
+
 ;; ** Refile
 
 ;; *** config
