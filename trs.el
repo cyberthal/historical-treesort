@@ -362,6 +362,9 @@ Refiled text may be a line or an outline heading."
   (let ((isearch-invisible nil))
     (isearch-forward))
 
+  (if (eq (point) (point-min))
+      (user-error "Quit isearch"))
+
   ;; Run Avy if multiple isearch matches.
   ;; Avy doesn't signal a quit, so it is inferred from point.
   (let ((avy-all-windows nil)
