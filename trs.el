@@ -624,8 +624,9 @@ else `user-home-directory'."
                                           (cond ((vc-root-dir) (vc-root-dir))
                                                 (user-home-directory user-home-directory) ; Spacemacs variable. If missing, no problem.
                                                 ))
-                      "\n\n\n"))
+                      "\n\n"))
       (trs-store-link-fold-drawer)
+      (save-buffer)                     ; Since no user data is being moved, can assume the file save.
       (goto-char (point-max)))))
 
 ;; *** duplicate heading to other window
