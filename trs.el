@@ -27,10 +27,10 @@
 
 ;; Treesort can rapidly change the directory tree structure of your notes. It
 ;; helps to have some links that won't break when paths change. Use
-;; trs-dired-zinks to create a file with an org-id link in it.
+;; trs-org-dired-zinks to create a file with an org-id link in it.
 
 ;; trs-refile can refile text into existing files or outlines. You can duplicate a
-;; heading to another text window with trs-duplicate-heading-to-other-window.
+;; heading to another text window with trs-org-duplicate-heading-to-other-window.
 
 ;; When you refile text to an outline, trs-refile believes that the parent heading
 ;; is at the top of the visible region. It will only refile to direct children of
@@ -82,9 +82,9 @@
 ;; `trs-refile' refile text/files to the next window
 ;; `trs-refile-up' refile text/files one directory up
 ;; `trs-delete-this-buffer-and-file' self-explanatory
-;; `trs-store-link-fold-drawer' store an org link and hide the drawer
-;; `trs-dired-zinks' store an org link in a file, titled with relative path
-;; `trs-duplicate-heading-to-other-window' self-explanatory
+;; `trs-org-store-link-fold-drawer' store an org link and hide the drawer
+;; `trs-org-dired-zinks' store an org link in a file, titled with relative path
+;; `trs-org-duplicate-heading-to-other-window' self-explanatory
 ;; `trs-org-refactor-heading' to refactor an org heading
 
 ;;;; Tips
@@ -113,7 +113,7 @@
 ;; (global-set-key (kbd "H-f") 'trs-refile)
 ;; (global-set-key (kbd "H-g") 'trs-refile-up)
 ;; (global-set-key (kbd "C-c k") 'trs-delete-this-buffer-and-file)
-;; (global-set-key (kbd "C-c l") 'trs-store-link-fold-drawer)
+;; (global-set-key (kbd "C-c l") 'trs-org-store-link-fold-drawer)
 ;; (global-set-key (kbd "H-a") 'other-window)
 ;; (global-set-key (kbd "H-w") 'outline-up-heading)
 ;; (global-set-key (kbd "H-e") 'outline-previous-visible-heading)
@@ -218,9 +218,9 @@ Do not set to trs or it will cause an infinite loop."
   (tro-defalias-from-suffix "refile")
 (tro-defalias-from-suffix "refile-up")
 (tro-defalias-from-suffix "delete-this-buffer-and-file")
-(tro-defalias-from-suffix "store-link-fold-drawer")
-(tro-defalias-from-suffix "dired-zinks")
-(tro-defalias-from-suffix "duplicate-heading-to-other-window")
+(tro-defalias-from-suffix "org-store-link-fold-drawer")
+(tro-defalias-from-suffix "org-dired-zinks")
+(tro-defalias-from-suffix "org-duplicate-heading-to-other-window")
 (tro-defalias-from-suffix "org-refactor-heading"))
 
 ;; ** Refile
@@ -594,7 +594,7 @@ use `avy' to pick one."
 ;; **** Store link and fold the PROPERTIES drawer
 
 ;;;###autoload
-(defun tro-store-link-fold-drawer ()
+(defun tro-org-store-link-fold-drawer ()
   "Store an org link to a heading, and fold the drawer."
   (interactive)
 
@@ -608,7 +608,7 @@ use `avy' to pick one."
 ;; **** create Zinks.org
 
 ;;;###autoload
-(defun tro-dired-zinks ()
+(defun tro-org-dired-zinks ()
   "Make Zinks.org.  Insert org-id link.
 
 Link title's path is relative to `vc-root-dir' if present,
@@ -625,14 +625,14 @@ else `user-home-directory'."
                                                 (user-home-directory user-home-directory) ; Spacemacs variable. If missing, no problem.
                                                 ))
                       "\n\n"))
-      (tro-store-link-fold-drawer)
+      (tro-org-store-link-fold-drawer)
       (save-buffer)                     ; Since no user data is being moved, can assume the file save.
       (goto-char (point-max)))))
 
 ;; *** duplicate heading to other window
 
 ;;;###autoload
-(defun tro-duplicate-heading-to-other-window ()
+(defun tro-org-duplicate-heading-to-other-window ()
   "Append heading at point to end of next window's buffer."
   (interactive)
 
