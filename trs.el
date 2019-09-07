@@ -221,7 +221,7 @@ Do not set to trs or it will cause an infinite loop."
 (trs-defalias-from-suffix "store-link-fold-drawer")
 (trs-defalias-from-suffix "dired-zinks")
 (trs-defalias-from-suffix "duplicate-heading-to-other-window")
-(trs-defalias-from-suffix "region-ends-n-newlines"))
+(trs-defalias-from-suffix "org-refactor-heading"))
 
 ;; ** Refile
 
