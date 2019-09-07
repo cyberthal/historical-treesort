@@ -221,7 +221,7 @@ Do not set to trs or it will cause an infinite loop."
 (trs-defalias-from-suffix "store-link-fold-drawer")
 (trs-defalias-from-suffix "dired-zinks")
 (trs-defalias-from-suffix "duplicate-heading-to-other-window")
-(trs-defalias-from-suffix "region-ends-n-newlines"))
+(trs-defalias-from-suffix "org-refactor-heading"))
 
 ;; ** Refile
 
@@ -624,8 +624,9 @@ else `user-home-directory'."
                                           (cond ((vc-root-dir) (vc-root-dir))
                                                 (user-home-directory user-home-directory) ; Spacemacs variable. If missing, no problem.
                                                 ))
-                      "\n\n\n"))
+                      "\n\n"))
       (trs-store-link-fold-drawer)
+      (save-buffer)                     ; Since no user data is being moved, can assume the file save.
       (goto-char (point-max)))))
 
 ;; *** duplicate heading to other window
