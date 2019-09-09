@@ -10,41 +10,6 @@
 
 ;;; Commentary:
 
-;; The last text refiled is saved in the variable tro-object-text until the Emacs
-;; session ends. Text is not saved to the kill ring. A message appears in the
-;; minibuffer displaying the destination of text and files moved with ts-refile
-;; commands.
-
-;;;; Usage
-
-;; Run one of these commands:
-
-;; `tro-refile' refile text/files to the next window
-;; `tro-refile-up' refile text/files one directory up
-;; `tro-delete-this-buffer-and-file' self-explanatory
-;; `tro-org-store-link-fold-drawer' store an org link and hide the drawer
-;; `tro-org-dired-zinks' store an org link in a file, titled with relative path
-;; `tro-org-duplicate-heading-to-other-window' self-explanatory
-;; `tro-org-refactor-heading' to refactor an org heading
-
-;;;; Tips
-
-;; Use org-id for global link IDs that are not path-dependent.
-
-;; Treefactor encourages many org files in deeply nested directories. This can
-;; make it challenging to construct an org-agenda files list. See here to load
-;; org agenda files recursively:
-;; https://stackoverflow.com/questions/17215868/recursively-adding-org-files-in-a-top-level-directory-for-org-agenda-files-take
-
-;; It also helps to have a function that refreshes your org agenda file list, if
-;; you've altered paths in that directory.
-
-;; I recommend configuring Dired to sort directories before files. Where
-;; possible, capitalize files and directories. This makes it easy to target them
-;; with isearch in a few keystrokes. Omit extensions to reduce visual clutter.
-
-;; Treefactor filing is fast. Think with your fingers, not your brain. You can
-;; always redo it later.
 
 ;;; License:
 
