@@ -5,14 +5,14 @@
 ;; Author: Leo Buchignani III <texas.cyberthal@gmail.com>
 ;; Keywords: outlines, files, convenience
 ;; Package-Requires: ((emacs "24.3") (dash "2.16.0") (f "0.20.0"))
-;; URL: https://github.com/cyberthal/treesort
+;; URL: https://github.com/cyberthal/treefactor
 ;; Version: 1.0.4
 
 ;;; Commentary:
 
-;; Treesort rapidly sorts text and files into outlines and the directory tree.
+;; Treefactor rapidly sorts text and files into outlines and the directory tree.
 
-;; Treesort's main command is trs-refile. It moves text or files from the current
+;; Treefactor's main command is trs-refile. It moves text or files from the current
 ;; window to a target in the next window. A second function, trs-refile-up, moves
 ;; text or files up one directory level. You can refile directories as well as
 ;; files.
@@ -25,7 +25,7 @@
 ;; such files are created during a filing session. To quickly delete them, use
 ;; trs-delete-this-buffer-and-file.
 
-;; Treesort can rapidly change the directory tree structure of your notes. It
+;; Treefactor can rapidly change the directory tree structure of your notes. It
 ;; helps to have some links that won't break when paths change. Use
 ;; trs-org-dired-zinks to create a file with an org-id link in it.
 
@@ -91,7 +91,7 @@
 
 ;; Use org-id for global link IDs that are not path-dependent.
 
-;; Treesort encourages many org files in deeply nested directories. This can
+;; Treefactor encourages many org files in deeply nested directories. This can
 ;; make it challenging to construct an org-agenda files list. See here to load
 ;; org agenda files recursively:
 ;; https://stackoverflow.com/questions/17215868/recursively-adding-org-files-in-a-top-level-directory-for-org-agenda-files-take
@@ -103,7 +103,7 @@
 ;; possible, capitalize files and directories. This makes it easy to target them
 ;; with isearch in a few keystrokes. Omit extensions to reduce visual clutter.
 
-;; Treesort filing is fast. Think with your fingers, not your brain. You can
+;; Treefactor filing is fast. Think with your fingers, not your brain. You can
 ;; always redo it later.
 
 ;;; My keybindings
@@ -127,7 +127,7 @@
 
 ;;; Comments and whitespace
 
-;; Treesort departs from
+;; Treefactor departs from
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Coding-Conventions.html
 ;; by placing close-parentheses on lines by themselves where it enhances
 ;; readability. I find it much easier to keep track of parenthetical nesting
@@ -135,7 +135,7 @@
 ;; similar by placing end-braces on lines by themselves when they embrace
 ;; multiple lines.
 
-;; Treesort uses an Outshine-style outline to structure its code. Outline
+;; Treefactor uses an Outshine-style outline to structure its code. Outline
 ;; navigation, narrowing and folding negates the disadvantage of using extra
 ;; lines to show end-parentheses indentation. Outshine supports todo tags. There
 ;; are two level-1 headings at the beginning of the code due to Outshine's
@@ -171,7 +171,7 @@
 ;; *** define vars and funcs
 
 (defvar tro-object-text nil
-  "Stores the last text treesort killed or copied.")
+  "Stores the last text Treefactor killed or copied.")
 
 (defvar user-home-directory) ; Spacemacs variable
 
