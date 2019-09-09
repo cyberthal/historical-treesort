@@ -1,4 +1,4 @@
-;;; trs.el --- Batch refactor and refile text & files -*- lexical-binding: t; -*-
+;;; tro.el --- Batch refactor and refile text & files -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019 Leo Buchignani III
 
@@ -12,44 +12,44 @@
 
 ;; Treefactor rapidly sorts text and files into outlines and the directory tree.
 
-;; Treefactor's main command is trs-refile. It moves text or files from the current
-;; window to a target in the next window. A second function, trs-refile-up, moves
+;; Treefactor's main command is tro-refile. It moves text or files from the current
+;; window to a target in the next window. A second function, tro-refile-up, moves
 ;; text or files up one directory level. You can refile directories as well as
 ;; files.
 
-;; When you refile a file to a directory, trs-refile creates a child directory
+;; When you refile a file to a directory, tro-refile creates a child directory
 ;; <target-directory>/0-Inbox/ and puts the file there. This makes it easy to
 ;; remember which files are new arrivals.
 
-;; When you refile text to a directory, trs-refile creates a file Inbox.org. Many
+;; When you refile text to a directory, tro-refile creates a file Inbox.org. Many
 ;; such files are created during a filing session. To quickly delete them, use
-;; trs-delete-this-buffer-and-file.
+;; tro-delete-this-buffer-and-file.
 
 ;; Treefactor can rapidly change the directory tree structure of your notes. It
 ;; helps to have some links that won't break when paths change. Use
-;; trs-org-dired-zinks to create a file with an org-id link in it.
+;; tro-org-dired-zinks to create a file with an org-id link in it.
 
-;; trs-refile can refile text into existing files or outlines. You can duplicate a
-;; heading to another text window with trs-org-duplicate-heading-to-other-window.
+;; tro-refile can refile text into existing files or outlines. You can duplicate a
+;; heading to another text window with tro-org-duplicate-heading-to-other-window.
 
-;; When you refile text to an outline, trs-refile believes that the parent heading
+;; When you refile text to an outline, tro-refile believes that the parent heading
 ;; is at the top of the visible region. It will only refile to direct children of
 ;; the parent. You should narrow appropriately before refiling.
 
-;; When you refile text to a file, trs-refile puts the text at the bottom. EXCEPT
-;; when the file already has a level-1 heading. Then trs-refile assumes this is a
-;; polished document, not an inbox file. trs-refile worries you will forget about
+;; When you refile text to a file, tro-refile puts the text at the bottom. EXCEPT
+;; when the file already has a level-1 heading. Then tro-refile assumes this is a
+;; polished document, not an inbox file. tro-refile worries you will forget about
 ;; text appended to polished documents. So it prepends the text before the
 ;; level-1 headline, where it will stick out like a sore thumb.
 
-;; trs-refile assumes that most headings you file will have four stars. Why?
+;; tro-refile assumes that most headings you file will have four stars. Why?
 ;; Imagine you are refiling headings to an outline. The level-1 heading is the
 ;; document title. The level-2 headings are categories. The level-3 headings are
 ;; sub-categories. The level-4 headings are topics. Outlines become unwieldy
 ;; when they get too deep, at which point it's better to create more files and
 ;; directories to spread the load.
 
-;; trs-throw only imposes this opinion on you in one way: it creates Inbox.org
+;; tro-throw only imposes this opinion on you in one way: it creates Inbox.org
 ;; files with a "*** offset" at the top. You can still file level-5 headings,
 ;; but they might "vanish" if you file a level-4 heading that unintentionally folds
 ;; appended level-5 headings beneath it. You can also file level-3 headings,
@@ -57,7 +57,7 @@
 ;; unexpectedly fold appended level-4 headings. I recommend that you convert
 ;; headings to level 4 for transport, and then resize them at their destination.
 
-;; The last text refiled is saved in the variable trs-object-text until the Emacs
+;; The last text refiled is saved in the variable tro-object-text until the Emacs
 ;; session ends. Text is not saved to the kill ring. A message appears in the
 ;; minibuffer displaying the destination of text and files moved with ts-refile
 ;; commands.
@@ -71,21 +71,21 @@
 ;;;;; Manual
 
 ;; Put this file in your load-path, and put this in your init
-;; file: trs.el
+;; file: tro.el
 
-;; (require 'trs)
+;; (require 'tro)
 
 ;;;; Usage
 
 ;; Run one of these commands:
 
-;; `trs-refile' refile text/files to the next window
-;; `trs-refile-up' refile text/files one directory up
-;; `trs-delete-this-buffer-and-file' self-explanatory
-;; `trs-org-store-link-fold-drawer' store an org link and hide the drawer
-;; `trs-org-dired-zinks' store an org link in a file, titled with relative path
-;; `trs-org-duplicate-heading-to-other-window' self-explanatory
-;; `trs-org-refactor-heading' to refactor an org heading
+;; `tro-refile' refile text/files to the next window
+;; `tro-refile-up' refile text/files one directory up
+;; `tro-delete-this-buffer-and-file' self-explanatory
+;; `tro-org-store-link-fold-drawer' store an org link and hide the drawer
+;; `tro-org-dired-zinks' store an org link in a file, titled with relative path
+;; `tro-org-duplicate-heading-to-other-window' self-explanatory
+;; `tro-org-refactor-heading' to refactor an org heading
 
 ;;;; Tips
 
@@ -110,10 +110,10 @@
 
 ;; By putting the following commands on convenient keys, you can refile without thinking about it.
 
-;; (global-set-key (kbd "H-f") 'trs-refile)
-;; (global-set-key (kbd "H-g") 'trs-refile-up)
-;; (global-set-key (kbd "C-c k") 'trs-delete-this-buffer-and-file)
-;; (global-set-key (kbd "C-c l") 'trs-org-store-link-fold-drawer)
+;; (global-set-key (kbd "H-f") 'tro-refile)
+;; (global-set-key (kbd "H-g") 'tro-refile-up)
+;; (global-set-key (kbd "C-c k") 'tro-delete-this-buffer-and-file)
+;; (global-set-key (kbd "C-c l") 'tro-org-store-link-fold-drawer)
 ;; (global-set-key (kbd "H-a") 'other-window)
 ;; (global-set-key (kbd "H-w") 'outline-up-heading)
 ;; (global-set-key (kbd "H-e") 'outline-previous-visible-heading)
@@ -157,7 +157,7 @@
 
 ;;; Code:
 
-;; * trs.el
+;; * tro.el
 ;; * offset
 ;; ** config
 ;; *** require
@@ -177,21 +177,21 @@
 
 ;; *** customization
 
-(defgroup trs nil "Refactor prose and incrementally refile things."
+(defgroup tro nil "Refactor prose and incrementally refile things."
   :group 'convenience
   :group 'files)
 
 (defcustom tro-use-alias-prefixes t
   "Non-nil if prefix aliases should be created for user commands."
   :type 'boolean
-  :group 'trs)
+  :group 'tro)
 
 (defcustom tro-alias-prefix "leo"
   "Prefix for aliased user commands. No dash needed.
 
-Do not set to trs or it will cause an infinite loop."
+Do not set to tro or it will cause an infinite loop."
   :type '(string)
-  :group 'trs)
+  :group 'tro)
 
 ;; *** aliases
 
@@ -573,7 +573,7 @@ use `avy' to pick one."
 (defcustom tro-inbox-file-header "*** Inbox.org\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n\n"
   "Header inserted into new Inbox.org files created by `tro-refile-text' and `tro-refile-up-text'."
   :type '(string)
-  :group 'trs)
+  :group 'tro)
 ;; ** utilities
 ;; *** tro-delete-this-buffer-and-file
 
@@ -764,5 +764,5 @@ Reported path is relative to vd-root-dir or ~/."
 
 ;; ** provide
 
-(provide 'trs)
-;;; trs.el ends here
+(provide 'tro)
+;;; tro.el ends here
