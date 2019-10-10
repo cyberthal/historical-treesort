@@ -1,8 +1,8 @@
 ;;; tro.el --- Batch refactor and refile text & files -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019 Leo Buchignani III
+;; Copyright (C) 2019 Leo Littlebook
 
-;; Author: Leo Buchignani III <texas.cyberthal@gmail.com>
+;; Author: Leo Littlebook <texas.cyberthal@gmail.com>
 ;; Keywords: outlines, files, convenience
 ;; Package-Requires: ((emacs "24.3") (dash "2.16.0") (f "0.20.0"))
 ;; URL: https://github.com/cyberthal/treefactor
