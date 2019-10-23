@@ -1,8 +1,8 @@
 ;;; tro.el --- Batch refactor and refile text & files -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019 Leo Buchignani III
+;; Copyright (C) 2019 Leo Littlebook
 
-;; Author: Leo Buchignani III <texas.cyberthal@gmail.com>
+;; Author: Leo Littlebook <texas.cyberthal@gmail.com>
 ;; Keywords: outlines, files, convenience
 ;; Package-Requires: ((emacs "24.3") (dash "2.16.0") (f "0.20.0"))
 ;; URL: https://github.com/cyberthal/treefactor
@@ -10,136 +10,6 @@
 
 ;;; Commentary:
 
-;; Treefactor rapidly sorts text and files into outlines and the directory tree.
-
-;; Treefactor's main command is tro-refile. It moves text or files from the current
-;; window to a target in the next window. A second function, tro-refile-up, moves
-;; text or files up one directory level. You can refile directories as well as
-;; files.
-
-;; When you refile a file to a directory, tro-refile creates a child directory
-;; <target-directory>/0-Inbox/ and puts the file there. This makes it easy to
-;; remember which files are new arrivals.
-
-;; When you refile text to a directory, tro-refile creates a file Inbox.org. Many
-;; such files are created during a filing session. To quickly delete them, use
-;; tro-delete-this-buffer-and-file.
-
-;; Treefactor can rapidly change the directory tree structure of your notes. It
-;; helps to have some links that won't break when paths change. Use
-;; tro-org-dired-zinks to create a file with an org-id link in it.
-
-;; tro-refile can refile text into existing files or outlines. You can duplicate a
-;; heading to another text window with tro-org-duplicate-heading-to-other-window.
-
-;; When you refile text to an outline, tro-refile believes that the parent heading
-;; is at the top of the visible region. It will only refile to direct children of
-;; the parent. You should narrow appropriately before refiling.
-
-;; When you refile text to a file, tro-refile puts the text at the bottom. EXCEPT
-;; when the file already has a level-1 heading. Then tro-refile assumes this is a
-;; polished document, not an inbox file. tro-refile worries you will forget about
-;; text appended to polished documents. So it prepends the text before the
-;; level-1 headline, where it will stick out like a sore thumb.
-
-;; tro-refile assumes that most headings you file will have four stars. Why?
-;; Imagine you are refiling headings to an outline. The level-1 heading is the
-;; document title. The level-2 headings are categories. The level-3 headings are
-;; sub-categories. The level-4 headings are topics. Outlines become unwieldy
-;; when they get too deep, at which point it's better to create more files and
-;; directories to spread the load.
-
-;; tro-throw only imposes this opinion on you in one way: it creates Inbox.org
-;; files with a "*** offset" at the top. You can still file level-5 headings,
-;; but they might "vanish" if you file a level-4 heading that unintentionally folds
-;; appended level-5 headings beneath it. You can also file level-3 headings,
-;; although they won't be children of the "offset" heading, and might
-;; unexpectedly fold appended level-4 headings. I recommend that you convert
-;; headings to level 4 for transport, and then resize them at their destination.
-
-;; The last text refiled is saved in the variable tro-object-text until the Emacs
-;; session ends. Text is not saved to the kill ring. A message appears in the
-;; minibuffer displaying the destination of text and files moved with ts-refile
-;; commands.
-
-;;;; Installation
-
-;;;;; MELPA
-
-;; If you installed from MELPA, you're done. (This package is not yet on MELPA.)
-
-;;;;; Manual
-
-;; Put this file in your load-path, and put this in your init
-;; file: tro.el
-
-;; (require 'tro)
-
-;;;; Usage
-
-;; Run one of these commands:
-
-;; `tro-refile' refile text/files to the next window
-;; `tro-refile-up' refile text/files one directory up
-;; `tro-delete-this-buffer-and-file' self-explanatory
-;; `tro-org-store-link-fold-drawer' store an org link and hide the drawer
-;; `tro-org-dired-zinks' store an org link in a file, titled with relative path
-;; `tro-org-duplicate-heading-to-other-window' self-explanatory
-;; `tro-org-refactor-heading' to refactor an org heading
-
-;;;; Tips
-
-;; Use org-id for global link IDs that are not path-dependent.
-
-;; Treefactor encourages many org files in deeply nested directories. This can
-;; make it challenging to construct an org-agenda files list. See here to load
-;; org agenda files recursively:
-;; https://stackoverflow.com/questions/17215868/recursively-adding-org-files-in-a-top-level-directory-for-org-agenda-files-take
-
-;; It also helps to have a function that refreshes your org agenda file list, if
-;; you've altered paths in that directory.
-
-;; I recommend configuring Dired to sort directories before files. Where
-;; possible, capitalize files and directories. This makes it easy to target them
-;; with isearch in a few keystrokes. Omit extensions to reduce visual clutter.
-
-;; Treefactor filing is fast. Think with your fingers, not your brain. You can
-;; always redo it later.
-
-;;; My keybindings
-
-;; By putting the following commands on convenient keys, you can refile without thinking about it.
-
-;; (global-set-key (kbd "H-f") 'tro-refile)
-;; (global-set-key (kbd "H-g") 'tro-refile-up)
-;; (global-set-key (kbd "C-c k") 'tro-delete-this-buffer-and-file)
-;; (global-set-key (kbd "C-c l") 'tro-org-store-link-fold-drawer)
-;; (global-set-key (kbd "H-a") 'other-window)
-;; (global-set-key (kbd "H-w") 'outline-up-heading)
-;; (global-set-key (kbd "H-e") 'outline-previous-visible-heading)
-;; (global-set-key (kbd "H-r") 'outline-next-visible-heading)
-;; (global-set-key (kbd "H-d") 'org-narrow-to-subtree)
-;; (global-set-key (kbd "H-s") 'widen)
-;; (global-set-key (kbd "H-1") 'spacemacs/toggle-maximize-buffer)
-;; (global-set-key (kbd "H-2") 'delete-window)
-;; (global-set-key (kbd "H-3") 'split-window-right)
-;; (global-set-key (kbd "s-i") 'ido-dired)
-
-;;; Comments and whitespace
-
-;; Treefactor departs from
-;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Coding-Conventions.html
-;; by placing close-parentheses on lines by themselves where it enhances
-;; readability. I find it much easier to keep track of parenthetical nesting
-;; with indentation than only by counting and font color. Ruby does something
-;; similar by placing end-braces on lines by themselves when they embrace
-;; multiple lines.
-
-;; Treefactor uses an Outshine-style outline to structure its code. Outline
-;; navigation, narrowing and folding negates the disadvantage of using extra
-;; lines to show end-parentheses indentation. Outshine supports todo tags. There
-;; are two level-1 headings at the beginning of the code due to Outshine's
-;; visibility-cycling behavior.
 
 ;;; License:
 
@@ -181,7 +51,7 @@
   :group 'convenience
   :group 'files)
 
-(defcustom tro-use-alias-prefixes t
+(defcustom tro-use-alias-prefixes nil
   "Non-nil if prefix aliases should be created for user commands."
   :type 'boolean
   :group 'tro)
@@ -244,7 +114,6 @@ Select a line from target list using `isearch' then `avy'."
   (dotimes (_var count)
     (unwind-protect
         (tro-refile-object-mode-check)
-      (other-window -1)     ; because save-selected-window fails for refile-text
       )))
 
 (defun tro-refile-object-mode-check ()
@@ -256,8 +125,8 @@ If in dired, refile files. If not, refile text."
     (tro-refile-text)))
 
 ;; *** flow control dispatcher
-
-;; **** main defun
+;; **** refile text
+;; ***** main defun
 
 (defun tro-refile-text ()
   "Refile text to either Dired or an outline."
@@ -268,27 +137,10 @@ If in dired, refile files. If not, refile text."
 
     (if tro-in-dired-p
         (tro-refile-text-to-dired)
-      (call-interactively 'tro-refile-text-to-outline))))
+      (call-interactively 'tro-refile-text-to-outline)))
+  (other-window -1)                     ; because save-selected-window fails
+  (save-buffer))
 
-;; **** refile file
-
-(defun tro-refile-file ()
-  "Refile file(s) from Dired to searched target in next window."
-
-  (select-window (next-window))
-  (tro-search-dired-open)
-  (mkdir (concat default-directory "0-Inbox/") 1)
-  (find-file (concat default-directory "0-Inbox/"))
-  (select-window (previous-window))
-  (dired-do-rename)
-
-  (select-window (next-window))
-  (dired-up-directory)     ; restores original dired buffer.
-  (dired-up-directory)     ; necessary because save-current-buffer won't restore
-                                        ; after dired-do-rename.
-  (forward-char 2))
-
-;; **** refile text
 ;; ***** destination = dired
 
 ;; ****** main defun
@@ -305,8 +157,7 @@ If in dired, refile files. If not, refile text."
     (if buffer-file-name
         (tro-insert-text-to-file-blind)
       (tro-insert-text-to-directory))
-    (switch-to-buffer tro-dired-starting-buffer) ; Save-current-buffer bugged,
-                                        ; must use instead.
+    (switch-to-buffer tro-dired-starting-buffer) ; cuz save-current-buffer bugged
     (forward-char 2)))
 
 ;; ****** destination = dir
@@ -334,6 +185,7 @@ Function assumes a polished document will have a level-1 near the top."
         (goto-char (point-at-bol))
         (insert tro-object-text))
     (error (tro-insert-to-end-of-buffer)))
+  (save-buffer)
   (tro-text-inserted-to-buffer-path-message))
 
 ;; ***** destination = text
@@ -382,8 +234,27 @@ Refiled text may be a line or an outline heading."
     (save-selected-window (select-window (previous-window))
                           (tro-snort-text))
     (insert tro-object-text)
+    (save-buffer)
     (goto-char (point-min)))
   (outline-hide-subtree))
+
+;; **** refile file
+
+(defun tro-refile-file ()
+  "Refile file(s) from Dired to searched target in next window."
+
+  (select-window (next-window))
+  (tro-search-dired-open)
+  (mkdir (concat default-directory "0-Inbox/") 1)
+  (find-file (concat default-directory "0-Inbox/"))
+  (select-window (previous-window))
+  (dired-do-rename)
+
+  (select-window (next-window))
+  (dired-up-directory)     ; restores original dired buffer.
+  (dired-up-directory)     ; necessary because save-current-buffer won't restore
+                                        ; after dired-do-rename.
+  (forward-char 2))
 
 ;; *** refile up
 ;; **** main defun
@@ -423,7 +294,7 @@ Refiled text may be a line or an outline heading."
     (tro-create-open-inbox-file)
     (tro-insert-text-to-file-blind)
     (switch-to-buffer tro-buffer-home) ; because save-current-buffer failed here
-    ))
+    (save-buffer)))
 
 ;; **** target = file
 
@@ -626,7 +497,7 @@ else `user-home-directory'."
                                                 ))
                       "\n\n"))
       (tro-org-store-link-fold-drawer)
-      (save-buffer)                     ; Since no user data is being moved, can assume the file save.
+      (save-buffer)
       (goto-char (point-max)))))
 
 ;; *** duplicate heading to other window
@@ -749,7 +620,8 @@ else `user-home-directory'."
 
   (widen)
   (tro-region-ends-n-newlines 2)
-  (insert tro-object-text))
+  (insert tro-object-text)
+  (save-buffer))
 
 ;; *** text inserted confirmation message
 
