@@ -114,7 +114,6 @@ Select a line from target list using `isearch' then `avy'."
   (dotimes (_var count)
     (unwind-protect
         (tro-refile-object-mode-check)
-      (other-window -1)     ; because save-selected-window fails for refile-text
       )))
 
 (defun tro-refile-object-mode-check ()
@@ -126,8 +125,8 @@ If in dired, refile files. If not, refile text."
     (tro-refile-text)))
 
 ;; *** flow control dispatcher
-
-;; **** main defun
+;; **** refile text
+;; ***** main defun
 
 (defun tro-refile-text ()
   "Refile text to either Dired or an outline."
@@ -138,27 +137,10 @@ If in dired, refile files. If not, refile text."
 
     (if tro-in-dired-p
         (tro-refile-text-to-dired)
-      (call-interactively 'tro-refile-text-to-outline))))
+      (call-interactively 'tro-refile-text-to-outline)))
+  (other-window -1)                     ; because save-selected-window fails
+  (save-buffer))
 
-;; **** refile file
-
-(defun tro-refile-file ()
-  "Refile file(s) from Dired to searched target in next window."
-
-  (select-window (next-window))
-  (tro-search-dired-open)
-  (mkdir (concat default-directory "0-Inbox/") 1)
-  (find-file (concat default-directory "0-Inbox/"))
-  (select-window (previous-window))
-  (dired-do-rename)
-
-  (select-window (next-window))
-  (dired-up-directory)     ; restores original dired buffer.
-  (dired-up-directory)     ; necessary because save-current-buffer won't restore
-                                        ; after dired-do-rename.
-  (forward-char 2))
-
-;; **** refile text
 ;; ***** destination = dired
 
 ;; ****** main defun
@@ -175,8 +157,7 @@ If in dired, refile files. If not, refile text."
     (if buffer-file-name
         (tro-insert-text-to-file-blind)
       (tro-insert-text-to-directory))
-    (switch-to-buffer tro-dired-starting-buffer) ; Save-current-buffer bugged,
-                                        ; must use instead.
+    (switch-to-buffer tro-dired-starting-buffer) ; cuz save-current-buffer bugged
     (forward-char 2)))
 
 ;; ****** destination = dir
@@ -204,6 +185,7 @@ Function assumes a polished document will have a level-1 near the top."
         (goto-char (point-at-bol))
         (insert tro-object-text))
     (error (tro-insert-to-end-of-buffer)))
+  (save-buffer)
   (tro-text-inserted-to-buffer-path-message))
 
 ;; ***** destination = text
@@ -252,8 +234,27 @@ Refiled text may be a line or an outline heading."
     (save-selected-window (select-window (previous-window))
                           (tro-snort-text))
     (insert tro-object-text)
+    (save-buffer)
     (goto-char (point-min)))
   (outline-hide-subtree))
+
+;; **** refile file
+
+(defun tro-refile-file ()
+  "Refile file(s) from Dired to searched target in next window."
+
+  (select-window (next-window))
+  (tro-search-dired-open)
+  (mkdir (concat default-directory "0-Inbox/") 1)
+  (find-file (concat default-directory "0-Inbox/"))
+  (select-window (previous-window))
+  (dired-do-rename)
+
+  (select-window (next-window))
+  (dired-up-directory)     ; restores original dired buffer.
+  (dired-up-directory)     ; necessary because save-current-buffer won't restore
+                                        ; after dired-do-rename.
+  (forward-char 2))
 
 ;; *** refile up
 ;; **** main defun
@@ -293,7 +294,7 @@ Refiled text may be a line or an outline heading."
     (tro-create-open-inbox-file)
     (tro-insert-text-to-file-blind)
     (switch-to-buffer tro-buffer-home) ; because save-current-buffer failed here
-    ))
+    (save-buffer)))
 
 ;; **** target = file
 
@@ -496,7 +497,7 @@ else `user-home-directory'."
                                                 ))
                       "\n\n"))
       (tro-org-store-link-fold-drawer)
-      (save-buffer)                     ; Since no user data is being moved, can assume the file save.
+      (save-buffer)
       (goto-char (point-max)))))
 
 ;; *** duplicate heading to other window
@@ -619,7 +620,8 @@ else `user-home-directory'."
 
   (widen)
   (tro-region-ends-n-newlines 2)
-  (insert tro-object-text))
+  (insert tro-object-text)
+  (save-buffer))
 
 ;; *** text inserted confirmation message
 
