@@ -217,16 +217,7 @@ Refiled text may be a line or an outline heading."
   (if (eq (point) (point-min))
       (user-error "Quit isearch"))
 
-  ;; Run Avy if multiple isearch matches.
-  ;; Avy doesn't signal a quit, so it is inferred from point.
-  (let ((avy-all-windows nil)
-        (avy-case-fold-search nil)
-        (search-invisible nil))
-    (unless (eq 1 (length (avy--regex-candidates (regexp-quote isearch-string))))
-      (goto-char (point-min))
-      (avy-isearch)
-      (if (eq (point) (point-min))
-          (user-error "Quit Avy"))))
+  (tro-avy-isearch)
 
   (save-restriction
     (org-narrow-to-subtree)
@@ -390,10 +381,7 @@ line."
 ;; ***** Find the searched dired entry
 
 (defun tro-search-dired-open ()
-  "Open the `dired' file that the user picked.
-
-Use `isearch'. If `isearch' returns multiple matches, then
-use `avy' to pick one."
+  "Open the `dired' file that the user picked using `isearch'."
 
   (if (string-equal major-mode "dired-mode")
       nil
@@ -408,6 +396,10 @@ use `avy' to pick one."
         (dired-isearch-filenames t)     ; used as a function, causes error
         )
     (isearch-forward))
+
+  ;; (tro-avy-isearch) cuz avy searches hidden dired text
+  ;; https://github.com/abo-abo/avy/issues/282
+  ;; isearch-lazy-count might also work when it's released.
 
   (dired-find-file))
 
@@ -570,6 +562,18 @@ else `user-home-directory'."
              (org-cycle-hide-drawers 1)))))
 
 ;; ** library
+
+;; *** avy-isearch if multimatch
+
+(defun tro-avy-isearch ()
+  "Run avy-isearch if two or more isearch matches exist in the visible portion of the current buffer."
+  (let ((avy-all-windows nil)
+        (avy-case-fold-search nil)
+        (search-invisible nil))
+    (if (eq nil (unless (eq 1 (length (avy--regex-candidates (regexp-quote isearch-string))))
+                                   (goto-char (point-min))
+                                   (avy-isearch)))
+        (user-error "Quit Avy"))))
 
 ;; *** heading ends n newlines
 
