@@ -2,14 +2,21 @@
 
 ;; Copyright (C) 2019 Leo Littlebook
 
-;; Author: Leo Littlebook <texas.cyberthal@gmail.com>
+;; Author: Leo Littlebook <leo.littlebook@gmail.com>
 ;; Keywords: outlines, files, convenience
 ;; Package-Requires: ((emacs "24.3") (dash "2.16.0") (f "0.20.0"))
 ;; URL: https://github.com/cyberthal/treefactor
-;; Version: 1.0.4
+;; Version: 2.0.0
 
 ;;; Commentary:
 
+;; Treefactor provides commands to move files in Dired and to refactor outlines.
+;; It allows Org mode to manage a dynamic meta-outline combining both the
+;; directory hierarchy and outlines within files.
+
+;; Read the manual at
+
+;;   https://treefactor-docs.nfshost.com
 
 ;;; License:
 
@@ -511,7 +518,12 @@ else `user-home-directory'."
 ;; *** Refactor heading
 
 (defun tro-org-refactor-heading ()
-  "From a single-window frame in `org-mode', setup frame to refactor an heading."
+  "From a single-window frame in `org-mode', setup frame to refactor an heading.
+
+A duplicate of the heading is created with the suffix | REFACTORED.
+The first window narrows to the original heading. The new window displays an
+INBOX heading. The user transfers text from the first window to the second."
+
   (interactive)
 
   (cond ((unless (string-equal major-mode 'org-mode) t) (user-error "%s" "Error, must be in org-mode"))
