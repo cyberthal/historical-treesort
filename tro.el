@@ -1,8 +1,8 @@
-;;; tro.el --- Batch refactor and refile text & files -*- lexical-binding: t; -*-
+;;; tro.el --- Refactor prose outlines and incrementally refile     -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019 Leo Littlebook
 
-;; Author: Leo Littlebook <leo.littlebook@gmail.com>
+;; Author: Leo Littlebook <Leo.Littlebook@gmail.com>
 ;; Keywords: outlines, files, convenience
 ;; Package-Requires: ((emacs "24.3") (dash "2.16.0") (f "0.20.0"))
 ;; URL: https://github.com/cyberthal/treefactor
@@ -10,9 +10,9 @@
 
 ;;; Commentary:
 
-;; Treefactor provides commands to move files in Dired and to refactor outlines.
-;; It allows Org mode to manage a dynamic meta-outline combining both the
-;; directory hierarchy and outlines within files.
+;; Treefactor provides commands to incrementally refile files in Dired and to
+;; refactor outlines. It allows Org mode to manage a dynamic meta-outline
+;; combining both the directory hierarchy and outlines within files.
 
 ;; Read the manual at
 
@@ -54,7 +54,7 @@
 
 ;; *** customization
 
-(defgroup tro nil "Refactor prose and incrementally refile things."
+(defgroup tro nil "Refactor prose and incrementally refile."
   :group 'convenience
   :group 'files)
 
@@ -102,9 +102,7 @@ Do not set to tro or it will cause an infinite loop."
 
 ;; ** Refile
 
-;; *** config
-
-;; **** define variables and declare functions
+;; *** define variables and declare functions
 
 (defvar tro-inbox-file-header)
 
@@ -182,8 +180,8 @@ If in dired, refile files. If not, refile text."
   "Put point either before first level-1 heading or at end of buffer.
 Normally one wants to yank to the end of the buffer.
 But if it's a polished document rather than an inbox,
-then one wants the new text at the top, where its more noticeable.
-Function assumes a polished document will have a level-1 near the top."
+then one wants the new text at the top, where it's more noticeable.
+Assume a polished document will have a level-1 near the top."
 
   (goto-char (point-min))
   (condition-case nil
