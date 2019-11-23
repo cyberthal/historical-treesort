@@ -218,7 +218,8 @@ Refiled text may be a line or an outline heading."
   (outline-show-children 1)
   (outline-hide-body)
 
-  (let ((isearch-invisible nil))
+  (let ((isearch-invisible nil)
+        (search-exit-option nil))
     (isearch-forward))
 
   (if (eq (point) (point-min))
@@ -400,8 +401,8 @@ line."
     (dired-hide-details-mode))
 
   (let ((isearch-invisible nil)
-        (dired-isearch-filenames t)     ; used as a function, causes error
-        )
+        (dired-isearch-filenames t)     ; use var cuz function causes error
+        (search-exit-option nil))
     (isearch-forward))
 
   ;; (tro-avy-isearch) cuz avy searches hidden dired text
