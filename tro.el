@@ -222,7 +222,7 @@ Refiled text may be a line or an outline heading."
     (isearch-forward))
 
   (if (eq (point) (point-min))
-      (user-error "Quit isearch"))
+      (user-error "User quit isearch"))
 
   (tro-avy-isearch)
 
@@ -585,7 +585,7 @@ INBOX heading. The user transfers text from the first window to the second."
     (if (eq nil (unless (eq 1 (length (avy--regex-candidates (regexp-quote isearch-string))))
                                    (goto-char (point-min))
                                    (avy-isearch)))
-        (user-error "Quit Avy"))))
+        (user-error "User quit Avy"))))
 
 ;; *** heading ends n newlines
 
