@@ -1,0 +1,6 @@
+- [ ] pre-release checklist
+  - [ ] flycheck
+  - [ ] package-lint
+  - [ ] flycheck-package
+  - [ ] checkdoc
+  - [ ] release to prod
