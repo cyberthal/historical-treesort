@@ -306,7 +306,7 @@ unless already under 0-Inbox/, in which case two higher beneath a
 ;; **** object = text
 
 (defun tro-refile-up-text ()
-  "Refile text upwards to the next Inbox.org
+  "Refile text up to the next Inbox.org.
 
 Text will go to an Inbox.org of the same directory level, or one
 higher if already in an Inbox.org"
@@ -322,11 +322,10 @@ higher if already in an Inbox.org"
 ;; **** target = file
 
 (defun tro-refile-up-file ()
-  "Refile file upwards in the directory tree to the next 0-Inbox/
+  "Refile file up to the next 0-Inbox/.
 
-File will go one directory level higher and beneath a 0-Inbox/,
-unless already under 0-Inbox/, in which case two higher and beneath a
-0-Inbox/"
+File will go one directory level higher and beneath 0-Inbox/,
+unless already under 0-Inbox/, in which case two higher and beneath 0-Inbox/."
 
   (let* ((tro-jump-destination (tro-jump-destination))
          (tro-inbox-dir (concat tro-jump-destination "0-Inbox/")))
@@ -451,7 +450,7 @@ line."
 ;; ***** check whether file is "Inbox.org"
 
 (defun tro-file-inbox-p ()
-  "Return t if buffer's file is Inbox.org"
+  "Return t if buffer's filename is Inbox.org."
 
   (if (eq (buffer-file-name) nil)
       (user-error "%s" "Buffer has no file"))
