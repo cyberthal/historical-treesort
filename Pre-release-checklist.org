@@ -1,0 +1,7 @@
+- [-] pre-release checklist
+  - [X] flycheck
+  - [X] package-lint
+  - [X] flycheck-package
+  - [X] checkdoc
+  - [X] Prefix function names with #’ not '
+  - [ ] release to prod
