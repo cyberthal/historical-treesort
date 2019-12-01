@@ -1,4 +1,4 @@
-#+TITLE: Treefactor documentation
+#+TITLE: Treefactor - Restructure your messy Org documents
 
 Treefactor provides commands to incrementally refile files in Dired and to refactor outlines. It allows Org mode to manage a dynamic meta-outline combining both the directory hierarchy and outlines within files.
 
