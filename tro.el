@@ -1,4 +1,4 @@
-;;; tro.el --- Refactor prose outlines and incrementally refile     -*- lexical-binding: t; -*-
+;;; tro.el --- Treefactor refactors outlines and incrementally refiles     -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019 Leo Littlebook
 
