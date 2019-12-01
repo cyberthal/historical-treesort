@@ -1,4 +1,4 @@
-;;; tro.el --- Treefactor refactors outlines and incrementally refiles     -*- lexical-binding: t; -*-
+;;; tro.el --- Restructure your messy Org documents     -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019 Leo Littlebook
 
