@@ -4,7 +4,7 @@
 
 ;; Author: Leo Littlebook <Leo.Littlebook@gmail.com>
 ;; Keywords: outlines, files, convenience
-;; Package-Requires: ((emacs "26.1") (dash "2.16.0") (f "0.20.0") (org "9.2.6"))
+;; Package-Requires: ((emacs "26.1") (dash "2.16.0") (f "0.20.0") (org "9.2.6") (avy "0.5.0")
 ;; URL: https://github.com/cyberthal/treefactor
 ;; Version: 2.1.3
 
