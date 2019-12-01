@@ -91,3 +91,6 @@ flycheck_*.el
 
 # git
 .gitconfig
+
+# project
+Pre-release-checklist.org
