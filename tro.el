@@ -168,9 +168,9 @@ Assume a polished document will have a level-1 near the top."
 
   (goto-char (point-min))
   (condition-case nil
-      ((re-search-forward "^* ")       ; Search for a level-1 headline.
+      (re-search-forward "^* ")       ; Search for a level-1 headline.
        (goto-char (point-at-bol))
-       (insert tro-object-text))
+       (insert tro-object-text)
     (error (tro-insert-to-end-of-buffer)))
   (save-buffer)
   (tro-text-inserted-to-buffer-path-message))
