@@ -168,10 +168,9 @@ Assume a polished document will have a level-1 near the top."
 
   (goto-char (point-min))
   (condition-case nil
-      (progn
-        (re-search-forward "^* ")       ; Search for a level-1 headline.
-        (goto-char (point-at-bol))
-        (insert tro-object-text))
+      ((re-search-forward "^* ")       ; Search for a level-1 headline.
+       (goto-char (point-at-bol))
+       (insert tro-object-text))
     (error (tro-insert-to-end-of-buffer)))
   (save-buffer)
   (tro-text-inserted-to-buffer-path-message))
@@ -457,12 +456,12 @@ line."
     (cond (tro-inbox-file-buffer (set-buffer tro-inbox-file-buffer)) ; select buffer if exists
           ((file-exists-p tro-inbox-file-path) (find-file tro-inbox-file-path)) ; open file if exists
           ;; else create and open file
-          (t (progn (f-touch "Inbox.org")
-                    (find-file tro-inbox-file-path)
-                    (insert tro-inbox-file-header)
-                    (goto-char (point-min))
-                    (org-cycle-hide-drawers 1)
-                    (goto-char (point-max)))))))
+          (t (f-touch "Inbox.org")
+             (find-file tro-inbox-file-path)
+             (insert tro-inbox-file-header)
+             (goto-char (point-min))
+             (org-cycle-hide-drawers 1)
+             (goto-char (point-max))))))
 
 ;; ****** customization
 
@@ -558,8 +557,7 @@ INBOX heading. The user transfers text from the first window to the second."
                    (org-narrow-to-subtree)
                    (org-previous-visible-heading 1)
                    (org-at-heading-p)) t) (user-error "%s" "Error, point must be inside a heading"))
-        (t (progn
-
+        (t
              ;; ensure region ends with two newlines
              (goto-char (point-max))
              (if (bolp)
@@ -597,7 +595,7 @@ INBOX heading. The user transfers text from the first window to the second."
              (org-cycle)
              (org-narrow-to-subtree)
              (org-show-all '(headings))
-             (org-cycle-hide-drawers 1)))))
+             (org-cycle-hide-drawers 1))))
 
 ;; ** library
 
@@ -625,10 +623,10 @@ INBOX heading. The user transfers text from the first window to the second."
   (let ((m (- n 1)))
     (goto-char (point-max))
     (if (bolp)
-        (if (= n 0)
-            (progn (org-N-empty-lines-before-current n)
-                   (delete-char -1))
-          (org-N-empty-lines-before-current m))
+        (if (/= n 0)
+            (org-N-empty-lines-before-current m)
+          (org-N-empty-lines-before-current n)
+          (delete-char -1))
       (insert (make-string n ?\n))))
   (goto-char (point-max)))
 
