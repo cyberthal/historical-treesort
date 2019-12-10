@@ -195,7 +195,16 @@ Refiled text may be a line or an outline heading."
 
   ;; reset target list visibility
   (goto-char (point-min))
-  (outline-hide-subtree)
+
+  (if (org-at-heading-p)
+      (outline-hide-subtree)
+    (outline-next-visible-heading 1))
+
+  (if (org-at-heading-p)
+      (outline-hide-subtree)
+    (goto-char (point-min))
+    (user-error "%s" "Outline not found in visible region"))
+
   (outline-show-children 1)
   (outline-hide-body)
 
