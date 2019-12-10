@@ -120,7 +120,7 @@ If in dired, refile files. If not, refile text."
   "Refile text to either Dired or an outline."
 
   (select-window (next-window))
-  (let ((tro-in-dired-p (string-equal major-mode 'dired-mode)))
+  (let ((tro-in-dired-p (eq major-mode 'dired-mode)))
     (select-window (previous-window))
 
     (if tro-in-dired-p
@@ -405,7 +405,7 @@ line."
 (defun tro-search-dired-open ()
   "Open the `dired' file that the user picked using `isearch'."
 
-  (unless (string-equal major-mode "dired-mode")
+  (unless (eq major-mode "dired-mode")
     (user-error "%s" "Mode must be Dired"))
 
   (goto-char (point-min))
@@ -552,7 +552,7 @@ INBOX heading. The user transfers text from the first window to the second."
 
   (interactive)
 
-  (cond ((unless (string-equal major-mode 'org-mode) t) (user-error "%s" "Error, must be in org-mode"))
+  (cond ((unless (eq major-mode 'org-mode) t) (user-error "%s" "Error, must be in org-mode"))
         ((unless (eq 1 (length (window-list))) t) (user-error "%s" "Error, must have only one window open in frame"))
         ((unless (progn
                    (org-narrow-to-subtree)
