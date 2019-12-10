@@ -126,7 +126,7 @@ If in dired, refile files. If not, refile text."
     (if tro-in-dired-p
         (tro-refile-text-to-dired)
       (call-interactively #'tro-refile-text-to-outline)))
-  (other-window -1)                     ; because save-selected-window fails
+  (select-window (previous-window)) ; because save-selected-window fails
   (save-buffer))
 
 ;; ***** destination = dired
