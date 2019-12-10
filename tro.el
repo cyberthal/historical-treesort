@@ -405,7 +405,7 @@ line."
 (defun tro-search-dired-open ()
   "Open the `dired' file that the user picked using `isearch'."
 
-  (unless (eq major-mode "dired-mode")
+  (unless (eq major-mode 'dired-mode)
     (user-error "%s" "Mode must be Dired"))
 
   (goto-char (point-min))
