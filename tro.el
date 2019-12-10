@@ -204,7 +204,7 @@ Refiled text may be a line or an outline heading."
     (isearch-forward))
 
   (if (eq (point) (point-min))
-      (user-error "User quit isearch"))
+      (user-error "%s" "User quit isearch"))
 
   (if (eq 1 (length (avy--regex-candidates (regexp-quote isearch-string)))) ; 1 match?
       (tro-place-in-outline)
@@ -603,7 +603,7 @@ INBOX heading. The user transfers text from the first window to the second."
         (avy-case-fold-search nil)
         (search-invisible nil))
     (unless (avy-isearch)               ; return nil if user quits
-      (user-error "User quit Avy"))))
+      (user-error "%s" "User quit Avy"))))
 
 ;; *** heading ends n newlines
 
