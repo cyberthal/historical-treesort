@@ -115,28 +115,28 @@ Do not set to treefactor or it will cause an infinite loop."
 ;; *** main defun
 
 ;;;###autoload
-(defun treefactor-refile (&optional count)
+(defun treefactor-throw (&optional count)
   "Refile text/file to target in next window COUNT times.
 Select a line from target list using `isearch' then `avy'."
   (interactive "p")
 
   (dotimes (_var count)
     (unwind-protect
-        (treefactor-refile-object-mode-check))))
+        (treefactor-throw-object-mode-check))))
 
-(defun treefactor-refile-object-mode-check ()
+(defun treefactor-throw-object-mode-check ()
   "Determine correct action based on current window mode.
 If in dired, refile files. If not, refile text."
 
   (if (eq major-mode 'dired-mode)
-      (treefactor-refile-file)
-    (treefactor-refile-text)))
+      (treefactor-throw-file)
+    (treefactor-throw-text)))
 
 ;; *** flow control dispatcher
 ;; **** refile text
 ;; ***** main defun
 
-(defun treefactor-refile-text ()
+(defun treefactor-throw-text ()
   "Refile text to either Dired or an outline."
 
   (select-window (next-window))
@@ -144,8 +144,8 @@ If in dired, refile files. If not, refile text."
     (select-window (previous-window))
 
     (if treefactor-in-dired-p
-        (treefactor-refile-text-to-dired)
-      (call-interactively #'treefactor-refile-text-to-outline)))
+        (treefactor-throw-text-to-dired)
+      (call-interactively #'treefactor-throw-text-to-outline)))
   (other-window -1)                     ; because save-selected-window fails
   (save-buffer))
 
@@ -153,7 +153,7 @@ If in dired, refile files. If not, refile text."
 
 ;; ****** main defun
 
-(defun treefactor-refile-text-to-dired ()
+(defun treefactor-throw-text-to-dired ()
   "Refile text to a searched target in an adjacent Dired buffer."
 
   (select-window (next-window))
@@ -198,7 +198,7 @@ Assume a polished document will have a level-1 near the top."
 ;; ***** destination = text
 ;; ****** main defun
 
-(defun treefactor-refile-text-to-outline ()
+(defun treefactor-throw-text-to-outline ()
   "Refile text to an outline heading in the next window.
 
 Assume that the first line of the target window is the parent
@@ -256,7 +256,7 @@ Refiled text may be a line or an outline heading."
 
 ;; **** refile file
 
-(defun treefactor-refile-file ()
+(defun treefactor-throw-file ()
   "Refile file(s) from Dired to searched target in next window."
 
   (select-window (next-window))
@@ -276,7 +276,7 @@ Refiled text may be a line or an outline heading."
 ;; **** main defun
 
 ;;;###autoload
-(defun treefactor-refile-up (&optional count)
+(defun treefactor-up (&optional count)
   "Refile file or text one step upwards, COUNT times.
 
 Text will go to an Inbox.org of the same directory level, or one
@@ -291,14 +291,14 @@ unless already under 0-Inbox/, in which case two higher beneath a
   (dotimes (var count)
 
     (if (eq major-mode 'dired-mode)
-        (treefactor-refile-up-file)
-      (treefactor-refile-up-text))
+        (treefactor-up-file)
+      (treefactor-up-text))
     (message "Refiled up %s times" (1+ var))))
 
 ;; **** jump height
 
 (defun treefactor-jump-destination ()
-  "Return how many directory levels up `treefactor-refile-up' should go."
+  "Return how many directory levels up `treefactor-up' should go."
 
   (if (eq major-mode 'dired-mode)
       (concat default-directory
@@ -312,7 +312,7 @@ unless already under 0-Inbox/, in which case two higher beneath a
 
 ;; **** object = text
 
-(defun treefactor-refile-up-text ()
+(defun treefactor-up-text ()
   "Refile text up to the next Inbox.org.
 
 Text will go to an Inbox.org of the same directory level, or one
@@ -328,7 +328,7 @@ higher if already in an Inbox.org"
 
 ;; **** target = file
 
-(defun treefactor-refile-up-file ()
+(defun treefactor-up-file ()
   "Refile file up to the next 0-Inbox/.
 
 File will go one directory level higher and beneath 0-Inbox/,
@@ -486,7 +486,7 @@ line."
 ;; ****** customization
 
 (defcustom treefactor-inbox-file-header "*** Inbox.org\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n\n"
-  "Header inserted into new Inbox.org files created by `treefactor-refile-text' and `treefactor-refile-up-text'."
+  "Header inserted into new Inbox.org files created by `treefactor-throw-text' and `treefactor-up-text'."
   :type '(string)
   :group 'treefactor)
 
