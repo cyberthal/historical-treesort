@@ -67,8 +67,15 @@
   :type 'boolean
   :group 'treefactor)
 
-(defcustom treefactor-alias-prefix "leo"
-  "Prefix for aliased user commands. No dash needed.
+(defcustom treefactor-alias-prefix-1 "tro"
+  "First prefix for aliased user commands. No dash needed.
+
+Do not set to treefactor or it will cause an infinite loop."
+  :type '(string)
+  :group 'treefactor)
+
+(defcustom treefactor-alias-prefix-2 ""
+  "Second prefix for aliased user commands. No dash needed.
 
 Do not set to treefactor or it will cause an infinite loop."
   :type '(string)
@@ -76,13 +83,26 @@ Do not set to treefactor or it will cause an infinite loop."
 
 ;; *** aliases
 
-(defun treefactor-defalias (suffix)
-  "Alias `treefactor' function SUFFIX to a different prefix `treefactor-alias-prefix'."
-  (defalias (intern (concat treefactor-alias-prefix "-" suffix))
+(defvar treefactor-user-commands
+  (list "refile" "refile-up" "delete-this-buffer-and-file" "org-store-link-fold-drawer" "org-dired-zinks" "org-duplicate-heading-to-other-window" "org-refactor-heading"))
+
+(defun treefactor-defalias-1 (suffix)
+  "Alias `treefactor' function SUFFIX to `treefactor-alias-prefix-1'."
+  (defalias
+    (intern (concat treefactor-alias-prefix-1 "-" suffix))
+    (intern (concat "treefactor-" suffix))))
+
+(defun treefactor-defalias-2 (suffix)
+  "Alias `treefactor' function SUFFIX to `treefactor-alias-prefix-2'."
+  (defalias
+    (intern (concat treefactor-alias-prefix-2 "-" suffix))
     (intern (concat "treefactor-" suffix))))
 
 (when treefactor-use-alias-prefixes
-  (mapc #'treefactor-defalias (list "refile" "refile-up" "delete-this-buffer-and-file" "org-store-link-fold-drawer" "org-dired-zinks" "org-duplicate-heading-to-other-window" "org-refactor-heading")))
+  (when treefactor-alias-prefix-1
+    (mapc #'treefactor-defalias-1 treefactor-user-commands))
+  (when treefactor-alias-prefix-2
+    (mapc #'treefactor-defalias-2 treefactor-user-commands)))
 
 ;; ** Refile
 
@@ -469,6 +489,7 @@ line."
   "Header inserted into new Inbox.org files created by `treefactor-refile-text' and `treefactor-refile-up-text'."
   :type '(string)
   :group 'treefactor)
+
 ;; ** utilities
 ;; *** treefactor-delete-this-buffer-and-file
 
