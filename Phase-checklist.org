@@ -1,0 +1,11 @@
+- [ ] dev phase
+  - [ ] chemacs/dev test
+  - [ ] flycheck
+  - [ ] package-lint
+  - [ ] checkdoc 
+- [ ] prod phase
+  - [ ] note commit messages
+  - [ ] dogfood it
+- [ ] rel phase
+  - [ ] increment metadata version counter
+  - [ ] good commit message
