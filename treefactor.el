@@ -515,15 +515,13 @@ line."
 
 ;; *** Pipify lines
 
-(defun treefactor-pipify-lines (arg)
-  "Converts consecutive lines into one line separated by | "
-  (interactive "p")
-
-  (dotimes (number arg)
+(defun treefactor-pipify-lines ()
+  "Convert consecutive lines into a single line separated by pipes."
+  (interactive)
     (end-of-line)
     (insert " | ")
     (delete-char 1)
-    (end-of-line)))
+    (end-of-line))
 
 ;; *** Org
 
@@ -630,7 +628,7 @@ INBOX heading. The user transfers text from the first window to the second."
 ;; **** Insert inactive timestamp of current time
 
 (defun treefactor-org-timestamp-now-inactive ()
-  "Insert inactive timestamp of current time"
+  "Insert inactive timestamp of current time."
 
   ;; Calls org-time-stamp-inactive with universal prefix
   (interactive)
