@@ -64,34 +64,29 @@
 
 (defcustom treefactor-use-alias-prefixes nil
   "Non-nil if prefix aliases should be created for user commands."
-  :type 'boolean
-  :group 'treefactor)
+  :type 'boolean)
 
 (defcustom treefactor-alias-prefix-1 "tro"
   "First prefix for aliased user commands. No dash needed.
 
 Do not set to treefactor or it will cause an infinite loop."
-  :type 'string
-  :group 'treefactor)
+  :type 'string)
 
 (defcustom treefactor-alias-prefix-2 ""
   "Second prefix for aliased user commands. No dash needed.
 
 Do not set to treefactor or it will cause an infinite loop."
-  :type 'string
-  :group 'treefactor)
+  :type 'string)
 
 ;; **** Org Agenda
 
 (defcustom treefactor-org-agenda-dir nil
   "Directory containing `org-agenda-files'. Requires trailing slash."
-  :type 'directory
-  :group 'treefactor)
+  :type 'directory)
 
 (defcustom treefactor-org-id-extra-dir nil
   "Directory containing `org-id-extra-files'. Requires trailing slash."
-  :type 'directory
-  :group 'treefactor)
+  :type 'directory)
 
 ;; *** aliases
 
