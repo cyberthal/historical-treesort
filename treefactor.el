@@ -91,7 +91,7 @@ Do not set to treefactor or it will cause an infinite loop."
 ;; *** aliases
 
 (defvar treefactor-user-commands
-  (list "throw" "up" "delete-this-buffer-and-file" "org-store-link-fold-drawer" "org-dired-zinks" "org-duplicate-heading-to-other-window" "org-refactor-heading" "clear-org-search-scope" "refresh-org-search-scope"))
+  (list "throw" "up" "delete-this-buffer-and-file" "org-store-link-fold-drawer" "org-dired-zinks" "org-duplicate-heading-to-other-window" "org-refactor-heading" "clear-org-search-scope" "refresh-org-search-scope" "pipify-lines" "org-insert-heading-divider" "rename-next-heading" "org-timestamp-now-inactive" "org-toggle-checkbox-forward-line"))
 
 (defun treefactor-defalias-1 (suffix)
   "Alias `treefactor' function SUFFIX to `treefactor-alias-prefix-1'."
@@ -515,7 +515,7 @@ line."
 
 ;; *** Pipify lines
 
-(defun leo-pipify-lines (arg)
+(defun treefactor-pipify-lines (arg)
   "Converts consecutive lines into one line separated by | "
   (interactive "p")
 
@@ -602,7 +602,7 @@ INBOX heading. The user transfers text from the first window to the second."
 
 ;; **** Insert heading divider
 
-(defun leo-org-insert-heading-divider ()
+(defun treefactor-org-insert-heading-divider ()
   "Create a heading. Advance two paragraphs. Recenter view."
   (interactive)
 
@@ -615,7 +615,7 @@ INBOX heading. The user transfers text from the first window to the second."
 
 ;; **** Rename next heading
 
-(defun leo-rename-next-heading ()
+(defun treefactor-rename-next-heading ()
   "Go to the end of the next headline, narrowed."
   (interactive)
 
@@ -629,7 +629,7 @@ INBOX heading. The user transfers text from the first window to the second."
 
 ;; **** Insert inactive timestamp of current time
 
-(defun leo-org-timestamp-now-inactive ()
+(defun treefactor-org-timestamp-now-inactive ()
   "Insert inactive timestamp of current time"
 
   ;; Calls org-time-stamp-inactive with universal prefix
@@ -638,7 +638,7 @@ INBOX heading. The user transfers text from the first window to the second."
 
 ;; **** Advance checkboxes
 
-(defun leo-org-toggle-checkbox-forward-line ()
+(defun treefactor-org-toggle-checkbox-forward-line ()
   "Toggle checkbox and advance one line."
   (interactive)
 
