@@ -91,7 +91,7 @@ Do not set to treefactor or it will cause an infinite loop."
 ;; *** aliases
 
 (defvar treefactor-user-commands
-  (list "throw" "up" "delete-this-buffer-and-file" "org-store-link-fold-drawer" "org-dired-zinks" "org-duplicate-heading-to-other-window" "org-refactor-heading"))
+  (list "throw" "up" "delete-this-buffer-and-file" "org-store-link-fold-drawer" "org-dired-zinks" "org-duplicate-heading-to-other-window" "org-refactor-heading" "clear-org-search-scope" "refresh-org-search-scope"))
 
 (defun treefactor-defalias-1 (suffix)
   "Alias `treefactor' function SUFFIX to `treefactor-alias-prefix-1'."
