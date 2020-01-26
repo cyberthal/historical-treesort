@@ -667,6 +667,52 @@ INBOX heading. The user transfers text from the first window to the second."
     (delete-char 1)
     (end-of-line)))
 
+;; *** Insert inactive timestamp of current time
+
+(defun leo-org-timestamp-now-inactive ()
+  "Insert inactive timestamp of current time"
+
+  ;; Calls org-time-stamp-inactive with universal prefix
+  (interactive)
+  (org-insert-time-stamp (current-time) t t))
+
+;; *** Checkboxes
+
+(defun leo-org-toggle-checkbox-forward-line ()
+  "Toggle checkbox and advance one line."
+  (interactive)
+
+  (org-toggle-checkbox)
+  (forward-line 1))
+
+;; *** Insert heading divider
+
+(defun leo-org-insert-heading-divider ()
+  "Create a heading. Advance two paragraphs. Recenter view."
+  (interactive)
+
+  (org-open-line 2)
+  (org-insert-heading)
+  (insert "?")
+  (org-forward-paragraph)
+  (org-forward-paragraph)
+  (recenter-top-bottom 10))
+
+;; *** Rename next heading
+
+(defun leo-rename-next-heading ()
+  "Go to the end of the next headline, narrowed."
+  (interactive)
+
+  (org-narrow-to-subtree)
+  (org-previous-visible-heading 1)
+  (widen)
+  (org-cycle -1)
+  (org-next-visible-heading 1)
+  (org-narrow-to-subtree)
+  (goto-char (line-end-position)))
+
+
 ;; ** library
 
 ;; *** avy-isearch if multimatch
