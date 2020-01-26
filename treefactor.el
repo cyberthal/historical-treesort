@@ -51,9 +51,7 @@
   "Stores the last text Treefactor killed or copied.")
 
 (defvar user-home-directory) ; Spacemacs variable
-
 (defvar isearch-string)
-
 (defvar dired-isearch-filenames)
 
 ;; *** customization
@@ -61,6 +59,8 @@
 (defgroup treefactor nil "Refactor prose and incrementally refile."
   :group 'convenience
   :group 'files)
+
+;; **** Alias prefixes
 
 (defcustom treefactor-use-alias-prefixes nil
   "Non-nil if prefix aliases should be created for user commands."
@@ -71,14 +71,26 @@
   "First prefix for aliased user commands. No dash needed.
 
 Do not set to treefactor or it will cause an infinite loop."
-  :type '(string)
+  :type 'string
   :group 'treefactor)
 
 (defcustom treefactor-alias-prefix-2 ""
   "Second prefix for aliased user commands. No dash needed.
 
 Do not set to treefactor or it will cause an infinite loop."
-  :type '(string)
+  :type 'string
+  :group 'treefactor)
+
+;; **** Org Agenda
+
+(defcustom treefactor-org-agenda-dir nil
+  "Directory containing `org-agenda-files'. Requires trailing slash."
+  :type 'directory
+  :group 'treefactor)
+
+(defcustom treefactor-org-id-extra-dir nil
+  "Directory containing `org-id-extra-files'. Requires trailing slash."
+  :type 'directory
   :group 'treefactor)
 
 ;; *** aliases
@@ -617,6 +629,36 @@ INBOX heading. The user transfers text from the first window to the second."
              (org-narrow-to-subtree)
              (org-show-all '(headings))
              (org-cycle-hide-drawers 1))))
+
+;; *** Org search scope
+;; **** Clear
+
+(defun treefactor-clear-org-search-scope ()
+  "Clear `org' search scope file list."
+  (interactive)
+
+  (setq org-agenda-files nil)
+  (setq org-agenda-text-search-extra-files nil))
+
+;; **** Refresh
+
+(defun treefactor-refresh-org-search-scope ()
+  "Recursively refresh `org' search scope."
+  (interactive)
+
+  (treefactor-clear-org-search-scope)
+
+  (unless (file-directory-p treefactor-org-agenda-dir)
+    (error "Not a directory `%s'" treefactor-org-agenda-dir))
+
+  (unless (file-directory-p treefactor-org-id-extra-dir)
+    (error "Not a directory `%s'" treefactor-org-id-extra-dir))
+
+  (setq org-agenda-files
+        (directory-files-recursively treefactor-org-agenda-dir "org$"))
+
+  (setq org-agenda-text-search-extra-files
+        (directory-files-recursively treefactor-org-id-extra-dir ".org$")))
 
 ;; ** library
 
