@@ -36,7 +36,7 @@
 
 ;; * treefactor.el
 ;; * offset
-;; ** config
+;; ** Config
 ;; *** require
 
 (require 'org)
@@ -497,8 +497,8 @@ line."
   :type '(string)
   :group 'treefactor)
 
-;; ** utilities
-;; *** treefactor-delete-this-buffer-and-file
+;; ** Utilities
+;; *** Delete buffer and file
 
 ;;;###autoload
 (defun treefactor-delete-this-buffer-and-file ()
@@ -513,62 +513,21 @@ line."
         (delete-file filename)
         (message "File `%s' successfully removed" filename)))))
 
-;; *** org links
-;; **** Store link and fold the PROPERTIES drawer
+;; *** Pipify lines
 
-;;;###autoload
-(defun treefactor-org-store-link-fold-drawer ()
-  "Store an org link to a heading, and fold the drawer."
-  (interactive)
+(defun leo-pipify-lines (arg)
+  "Converts consecutive lines into one line separated by | "
+  (interactive "p")
 
-  (save-excursion
-    (save-restriction
-      (org-narrow-to-subtree)
-      (org-store-link nil t) ; Without interactive=t arg, no org link gets created.
-      (org-previous-visible-heading 1)
-      (org-cycle-hide-drawers 1))))
+  (dotimes (number arg)
+    (end-of-line)
+    (insert " | ")
+    (delete-char 1)
+    (end-of-line)))
 
-;; **** create Zinks.org
+;; *** Org
 
-;;;###autoload
-(defun treefactor-org-dired-zinks ()
-  "Make Zinks.org.  Insert org-id link.
-
-Link title's path is relative to `vc-root-dir' if present,
-else `user-home-directory'."
-  (interactive)
-
-  (let ((zinks-filename (concat default-directory "Zinks.org")))
-    (if (file-exists-p zinks-filename)
-        (user-error "%s" "Zinks.org already exists")
-      (find-file zinks-filename)
-      (insert (concat "*** "
-                      (file-relative-name (file-name-directory buffer-file-name)
-                                          (cond ((vc-root-dir) (vc-root-dir))
-                                                (user-home-directory user-home-directory) ; Spacemacs variable. If missing, no problem.
-                                                ))
-                      "\n\n"))
-      (treefactor-org-store-link-fold-drawer)
-      (save-buffer)
-      (goto-char (point-max)))))
-
-;; *** duplicate heading to other window
-
-;;;###autoload
-(defun treefactor-org-duplicate-heading-to-other-window ()
-  "Append heading at point to end of next window's buffer."
-  (interactive)
-
-  (save-restriction
-    (org-narrow-to-subtree)
-    (treefactor-region-ends-n-newlines 1)
-    (let ((home-buffer (current-buffer)))
-      (save-selected-window
-        (select-window (next-window))
-        (treefactor-region-ends-n-newlines 2)
-        (insert-buffer-substring home-buffer)))))
-
-;; *** Refactor heading
+;; **** Refactor heading
 
 (defun treefactor-org-refactor-heading ()
   "From a single-window frame in `org-mode', setup frame to refactor an heading.
@@ -625,8 +584,108 @@ INBOX heading. The user transfers text from the first window to the second."
              (org-show-all '(headings))
              (org-cycle-hide-drawers 1))))
 
-;; *** Org search scope
-;; **** Clear
+;; **** Duplicate heading to other window
+
+;;;###autoload
+(defun treefactor-org-duplicate-heading-to-other-window ()
+  "Append heading at point to end of next window's buffer."
+  (interactive)
+
+  (save-restriction
+    (org-narrow-to-subtree)
+    (treefactor-region-ends-n-newlines 1)
+    (let ((home-buffer (current-buffer)))
+      (save-selected-window
+        (select-window (next-window))
+        (treefactor-region-ends-n-newlines 2)
+        (insert-buffer-substring home-buffer)))))
+
+;; **** Insert heading divider
+
+(defun leo-org-insert-heading-divider ()
+  "Create a heading. Advance two paragraphs. Recenter view."
+  (interactive)
+
+  (org-open-line 2)
+  (org-insert-heading)
+  (insert "?")
+  (org-forward-paragraph)
+  (org-forward-paragraph)
+  (recenter-top-bottom 10))
+
+;; **** Rename next heading
+
+(defun leo-rename-next-heading ()
+  "Go to the end of the next headline, narrowed."
+  (interactive)
+
+  (org-narrow-to-subtree)
+  (org-previous-visible-heading 1)
+  (widen)
+  (org-cycle -1)
+  (org-next-visible-heading 1)
+  (org-narrow-to-subtree)
+  (goto-char (line-end-position)))
+
+;; **** Insert inactive timestamp of current time
+
+(defun leo-org-timestamp-now-inactive ()
+  "Insert inactive timestamp of current time"
+
+  ;; Calls org-time-stamp-inactive with universal prefix
+  (interactive)
+  (org-insert-time-stamp (current-time) t t))
+
+;; **** Advance checkboxes
+
+(defun leo-org-toggle-checkbox-forward-line ()
+  "Toggle checkbox and advance one line."
+  (interactive)
+
+  (org-toggle-checkbox)
+  (forward-line 1))
+
+;; **** Links
+;; ***** Store link and fold the PROPERTIES drawer
+
+;;;###autoload
+(defun treefactor-org-store-link-fold-drawer ()
+  "Store an org link to a heading, and fold the drawer."
+  (interactive)
+
+  (save-excursion
+    (save-restriction
+      (org-narrow-to-subtree)
+      (org-store-link nil t) ; Without interactive=t arg, no org link gets created.
+      (org-previous-visible-heading 1)
+      (org-cycle-hide-drawers 1))))
+
+;; ***** create Zinks.org
+
+;;;###autoload
+(defun treefactor-org-dired-zinks ()
+  "Make Zinks.org.  Insert org-id link.
+
+Link title's path is relative to `vc-root-dir' if present,
+else `user-home-directory'."
+  (interactive)
+
+  (let ((zinks-filename (concat default-directory "Zinks.org")))
+    (if (file-exists-p zinks-filename)
+        (user-error "%s" "Zinks.org already exists")
+      (find-file zinks-filename)
+      (insert (concat "*** "
+                      (file-relative-name (file-name-directory buffer-file-name)
+                                          (cond ((vc-root-dir) (vc-root-dir))
+                                                (user-home-directory user-home-directory) ; Spacemacs variable. If missing, no problem.
+                                                ))
+                      "\n\n"))
+      (treefactor-org-store-link-fold-drawer)
+      (save-buffer)
+      (goto-char (point-max)))))
+
+;; **** Search scope
+;; ***** Clear
 
 (defun treefactor-clear-org-search-scope ()
   "Clear `org' search scope file list."
@@ -635,7 +694,7 @@ INBOX heading. The user transfers text from the first window to the second."
   (setq org-agenda-files nil)
   (setq org-agenda-text-search-extra-files nil))
 
-;; **** Refresh
+;; ***** Refresh
 
 (defun treefactor-refresh-org-search-scope ()
   "Recursively refresh `org' search scope."
@@ -655,65 +714,7 @@ INBOX heading. The user transfers text from the first window to the second."
   (setq org-agenda-text-search-extra-files
         (directory-files-recursively treefactor-org-id-extra-dir ".org$")))
 
-;; *** Pipify lines
-
-(defun leo-pipify-lines (arg)
-  "Converts consecutive lines into one line separated by | "
-  (interactive "p")
-
-  (dotimes (number arg)
-    (end-of-line)
-    (insert " | ")
-    (delete-char 1)
-    (end-of-line)))
-
-;; *** Insert inactive timestamp of current time
-
-(defun leo-org-timestamp-now-inactive ()
-  "Insert inactive timestamp of current time"
-
-  ;; Calls org-time-stamp-inactive with universal prefix
-  (interactive)
-  (org-insert-time-stamp (current-time) t t))
-
-;; *** Checkboxes
-
-(defun leo-org-toggle-checkbox-forward-line ()
-  "Toggle checkbox and advance one line."
-  (interactive)
-
-  (org-toggle-checkbox)
-  (forward-line 1))
-
-;; *** Insert heading divider
-
-(defun leo-org-insert-heading-divider ()
-  "Create a heading. Advance two paragraphs. Recenter view."
-  (interactive)
-
-  (org-open-line 2)
-  (org-insert-heading)
-  (insert "?")
-  (org-forward-paragraph)
-  (org-forward-paragraph)
-  (recenter-top-bottom 10))
-
-;; *** Rename next heading
-
-(defun leo-rename-next-heading ()
-  "Go to the end of the next headline, narrowed."
-  (interactive)
-
-  (org-narrow-to-subtree)
-  (org-previous-visible-heading 1)
-  (widen)
-  (org-cycle -1)
-  (org-next-visible-heading 1)
-  (org-narrow-to-subtree)
-  (goto-char (line-end-position)))
-
-
-;; ** library
+;; ** Library
 
 ;; *** avy-isearch if multimatch
 
