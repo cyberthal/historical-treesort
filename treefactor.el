@@ -655,6 +655,18 @@ INBOX heading. The user transfers text from the first window to the second."
   (setq org-agenda-text-search-extra-files
         (directory-files-recursively treefactor-org-id-extra-dir ".org$")))
 
+;; *** Pipify lines
+
+(defun leo-pipify-lines (arg)
+  "Converts consecutive lines into one line separated by | "
+  (interactive "p")
+
+  (dotimes (number arg)
+    (end-of-line)
+    (insert " | ")
+    (delete-char 1)
+    (end-of-line)))
+
 ;; ** library
 
 ;; *** avy-isearch if multimatch
