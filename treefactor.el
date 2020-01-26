@@ -81,11 +81,11 @@ Do not set to treefactor or it will cause an infinite loop."
 ;; **** Org Agenda
 
 (defcustom treefactor-org-agenda-dir nil
-  "Directory containing `org-agenda-files'. Requires quotes and trailing slash."
+  "Directory of variable `org-agenda-files'. Requires quotes and trailing slash."
   :type 'directory)
 
 (defcustom treefactor-org-id-extra-dir nil
-  "Directory containing `org-id-extra-files'. Requires quotes and trailing slash."
+  "Directory of variable `org-id-extra-files'. Requires quotes and trailing slash."
   :type 'directory)
 
 ;; *** aliases
