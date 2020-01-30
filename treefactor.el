@@ -690,7 +690,7 @@ else `user-home-directory'."
   (interactive)
 
   (setq org-agenda-files nil)
-  (setq org-agenda-text-search-extra-files nil))
+  (setq org-id-extra-files nil))
 
 ;; ***** Refresh
 
@@ -709,7 +709,7 @@ else `user-home-directory'."
   (setq org-agenda-files
         (directory-files-recursively treefactor-org-agenda-dir "org$"))
 
-  (setq org-agenda-text-search-extra-files
+  (setq org-id-extra-files
         (directory-files-recursively treefactor-org-id-extra-dir ".org$")))
 
 ;; ** Library
