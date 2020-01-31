@@ -53,6 +53,7 @@
 (defvar user-home-directory) ; Spacemacs variable
 (defvar isearch-string)
 (defvar dired-isearch-filenames)
+(defvar org-id-extra-files)
 
 ;; *** customization
 
