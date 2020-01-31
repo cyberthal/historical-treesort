@@ -6,7 +6,7 @@
 ;; Keywords: outlines, files, convenience
 ;; Package-Requires: ((emacs "26.1") (dash "2.16.0") (f "0.20.0") (org "9.2.6") (avy "0.5.0"))
 ;; URL: https://github.com/cyberthal/treefactor
-;; Version: 3.2.0
+;; Version: 3.2.1
 
 ;;; Commentary:
 
@@ -79,7 +79,7 @@ Do not set to treefactor or it will cause an infinite loop."
 Do not set to treefactor or it will cause an infinite loop."
   :type 'string)
 
-;; **** Org Agenda
+;; **** Org search scope
 
 (defcustom treefactor-org-agenda-dir nil
   "Directory of variable `org-agenda-files'. Requires quotes and trailing slash."
