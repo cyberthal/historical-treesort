@@ -96,3 +96,114 @@ important bug to fix
 [2020-06-16 Tue 01:14]
 
 **** TODO add [[id:0117A4A0-6C64-43A1-BC81-5B31DF37601B][A GitHub Action for Emacs Lisp CI]] to Treefactor
+
+**** Selectrum better than Avy for Treefactor?
+
+https://github.com/raxod502/selectrum
+might be a better way to pick Treefactor targets than Avy!
+[2020-12-08 Tue 20:15]
+
+**** treefactor bugged outside Spacemacs
+
+#+begin_quote
+WhangdoodleToday at 3:54 AM
+Have you tested treefactor sans Spacemacs?
+ 
+WhangdoodleToday at 4:47 AM
+Attempting set up sans Spacemacs.
+ Working my way through treefactor commands.
+treefactor-throw doesn't make an Inbox.org if the directory in the next window doesn't already have one.
+[4:47 AM]
+treefactor-up does work, kind of. Succesfully moves a heading to Inbox.org, creating if needed, but
+[4:49 AM]
+1. Messages shows treefactor-insert-text-to-file-blind: Symbol's value as variable is void: user-home-directory
+(Not a default variable in vanilla emacs, but it exists in spacemacs.)
+[4:50 AM]
+2. treefactor-up leaves source org file narrowed to headline--which has been moved to Inbox.org. Gives the appearance of an empty buffer or file.
+[4:52 AM]
+3. treefactor-up switched the source window to the Inbox.org buffer even when that buffer appeared in another window of the same frame. This surprise meant it took a while to return to the original source buffer. 
+Inconvenient for day log processing
+ 
+WhangdoodleToday at 5:06 AM
+However, treefactor-throw seems to work AFTER copying
+(defconst user-home-directory (expand-file-name "~/") "User home directory (~/).") from spacemacs's .emacs.d/core/core-load-paths.el to emacs's scratch buffer and evaluating it there.
+[5:09 AM]
+As an aside, is the workflow to have two windows in one frame, one with the source and the other with the target?
+#+end_quote
+
+Very little testing outside Spacemacs.  Those sound like critical bugs.  I'll prioritize fixing them.
+really need to write a test suite.  maybe this would be the time, to avoid introducing further bugs.
+[2021-01-19 Tue 05:17]
+
+**** treefactor bug cont
+
+#+begin_quote
+prefcToday at 11:25 AM
+
+I had the same issues (although at the time I only identified issue #1), but I thought it was because of some specific configuration in Doom Emacs.  I think I tried it in vanilla Emacs, it worked then.  One of the early versions before the name changed.
+#+end_quote
+[2021-01-19 Tue 15:59]
+
+**** treefactor bug report
+
+#+begin_quote
+prefcToday at 7:13 PM
+
+This fixes it for me:
+(defun treefactor-text-inserted-to-buffer-path-message ()
+  "Report filename that text was inserted to.
+
+Reported path is relative to vd-root-dir or ~/."
+
+  (message "Inserted text into `%s'" ;; (if (vc-root-dir)
+                                         (expand-file-name buffer-file-name (vc-root-dir))
+                                       ;; (expand-file-name buffer-file-name user-home-directory))
+                                       ))
+
+Or one could just remove the %s until it's fixed upstream.
+[7:15 PM]
+removing user-home-directory in treefactor-org-dired-zinks fixes it.(edited)
+[7:20 PM]
+Not completely sure about Zinks.
+#+end_quote
+[2021-01-19 Tue 19:30]
+
+**** dev handbook | alphapapa@ | container & testing | useful for Treefactor
+
+https://alphapapa.github.io/emacs-package-dev-handbook/#outline-container-Testing
+
+This is great, and the libraries sound especially good for treefactor.
+
+Assess library probably has some code best practices Treefactor could adopt, as well.
+
+multiple of the libraries are useful.  cool.
+[2021-01-21 Thu 09:05]
+
+**** treefactor | testing setup | start by making a cask file
+
+cask manual
+https://cask.readthedocs.io/en/latest/index.html
+
+so, where to begin?
+Well, every Emacs package should have a cask file.
+I can agree to that principle.
+So that's an easy place to start.
+[2021-01-21 Thu 08:45]
+
+**** treefactor | testing | verification and validation | non-code questions
+
+https://en.wikipedia.org/wiki/Software_verification_and_validation
+
+verification and validation are soft concepts which don't require code for this stage.
+[2021-01-21 Thu 07:38]
+
+**** Treefactor | testing | tools to use | ecukes and buttercup
+
+https://en.wikipedia.org/wiki/Integration_testing
+
+sounds like I need both unit testing and integration testing
+integration is probably more important, given I care about results
+and that requires the interoperation of dired and org with treefactor.
+
+so I'm using ecukes certainly, and probably also buttercup
+[2021-01-21 Thu 07:35]
