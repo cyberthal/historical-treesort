@@ -11,3 +11,88 @@
 I'm concerned that the skill floor for FIIR - Fast Iterative Inductive Refiling - is too high. Making cascade the default would reduce ambiguity and therefore difficulty. It's impractical to adopt without an ergonomic means of renumbering Dired directories. Org already has this via org-move-item-up on a numbered list, so the code could be adapted. This should be part of Treefactor.
 
 Once the code is added to Treefactor, I'll need to refactor Littlebook's Textmind going forward to conform to the new convention.
+
+**** TODO fix treefactor up func
+
+throw-up is definitely broken when throwing from inside a 0-inbox
+need to fix that
+maybe it triggers false failure only when there's already a 0-inbox dir created at the destination, but not the identical filename within it.
+[2020-04-30 Thu 22:54]
+
+**** treefactor | functions | interactive | namespace | collisions | "heading" | don't fix
+
+***** collisions
+
+Should I rename treefactor-org-refactor-heading and treefactor-org-duplicate-heading-to-other-window
+so that leo-headingfy won't get collisions in M-x?
+  [2019-12-26 Thu 21:53]
+
+***** status quo | benefits
+
+descriptive function names are good. and it would be extra work.
+
+***** helm machine learning fixes collisions
+
+does helm learn what I want? try restarting to see.
+[2020-01-03 Fri 22:09]
+
+restarted emacs.
+yes, it appears helm does learn. headingfy ranked first for M-x head
+
+***** no change needed
+
+good enough.
+[2020-01-03 Fri 22:10]
+
+canceling task.
+
+even if there's some initial friction from M-x errors, headingfy is much less cognitively intense than refactor, and thus the friction isn't important enough to justify the required effort and resulting confusion.
+[2020-01-03 Fri 22:11]
+
+**** Treefactor | critical bugfix
+
+You're right, and this is a data-loss bug! I guess I'm going to have to write some tests to prevent this from happening again. Thank you for catching this. I don't know how much data I've lost this way. My inexperience is really showing here. I'll fix it ASAP.
+[2020-05-16 Sat 23:30]
+
+Ok, I've reliably reproduced the bug. This only affects a particular use of treefactor-up that is a very rare part of my workflow:
+
+in directory ~/foobar
+create file ~/foobar/baz
+add headings to it
+run treefactor-up on all the headings
+the first heading will correctly appear in ~/foobar/Inbox.org
+  UNLESS Inbox.org already exists. then the heading will disappear silently
+all subsequent headings will disappear silently.
+[2020-05-16 Sat 23:47]
+
+This bug also affects treefactor-refile a heading to a filename (not a directory) in Dired. Really bad. Also a rare part of my workflow.
+[2020-05-17 Sun 00:05]
+
+This bug also affects treefactor-refile a heading to a filename (not a directory) in Dired. Really bad. Also a rare part of my workflow.
+
+The culprit is treefactor-insert-text-to-file-blind, which was missing a progn. Fix should be out soon.
+
+whew, released the fix
+man, that was stupid.
+gotta write tests!
+[2020-05-17 Sun 00:34]
+
+**** treefactor needs a function that can reorder pretty path "directories" while pipified
+
+**** treefactor | FR | pipify | extension
+
+nice, M-t transpose works around pipes
+don't need to write the function after all
+[2020-06-08 Mon 00:34]
+
+eh it still helps a lot for multi-word titles though
+would be nice to have a function that decomposes pipes into lines as well
+
+**** Treefactor | bug | treefactor-up | within 0-Inbox | intermittent
+
+H-g runs the command leo-up
+fails when run on a file from within a 0-Inbox
+important bug to fix
+[2020-06-16 Tue 01:14]
+
+**** TODO add [[id:0117A4A0-6C64-43A1-BC81-5B31DF37601B][A GitHub Action for Emacs Lisp CI]] to Treefactor
