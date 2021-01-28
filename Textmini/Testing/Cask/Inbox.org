@@ -1,0 +1,15 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** treefactor | testing setup | start by making a cask file
+
+cask manual
+https://cask.readthedocs.io/en/latest/index.html
+
+so, where to begin?
+Well, every Emacs package should have a cask file.
+I can agree to that principle.
+So that's an easy place to start.
+[2021-01-21 Thu 08:45]

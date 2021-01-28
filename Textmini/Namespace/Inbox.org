@@ -1,0 +1,34 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** treefactor | functions | interactive | namespace | collisions | "heading" | don't fix
+
+***** collisions
+
+Should I rename treefactor-org-refactor-heading and treefactor-org-duplicate-heading-to-other-window
+so that leo-headingfy won't get collisions in M-x?
+  [2019-12-26 Thu 21:53]
+
+***** status quo | benefits
+
+descriptive function names are good. and it would be extra work.
+
+***** helm machine learning fixes collisions
+
+does helm learn what I want? try restarting to see.
+[2020-01-03 Fri 22:09]
+
+restarted emacs.
+yes, it appears helm does learn. headingfy ranked first for M-x head
+
+***** no change needed
+
+good enough.
+[2020-01-03 Fri 22:10]
+
+canceling task.
+
+even if there's some initial friction from M-x errors, headingfy is much less cognitively intense than refactor, and thus the friction isn't important enough to justify the required effort and resulting confusion.
+[2020-01-03 Fri 22:11]

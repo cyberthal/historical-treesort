@@ -1,0 +1,17 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** TODO add [[id:0117A4A0-6C64-43A1-BC81-5B31DF37601B][A GitHub Action for Emacs Lisp CI]] to Treefactor
+
+**** dev handbook | alphapapa@ | container & testing | useful for Treefactor
+
+https://alphapapa.github.io/emacs-package-dev-handbook/#outline-container-Testing
+
+This is great, and the libraries sound especially good for treefactor.
+
+Assess library probably has some code best practices Treefactor could adopt, as well.
+
+multiple of the libraries are useful.  cool.
+[2021-01-21 Thu 09:05]

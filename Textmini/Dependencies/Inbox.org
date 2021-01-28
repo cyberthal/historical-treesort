@@ -1,0 +1,10 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** Selectrum better than Avy for Treefactor?
+
+https://github.com/raxod502/selectrum
+might be a better way to pick Treefactor targets than Avy!
+[2020-12-08 Tue 20:15]

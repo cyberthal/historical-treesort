@@ -1,0 +1,11 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** treefactor | testing | verification and validation | non-code questions
+
+https://en.wikipedia.org/wiki/Software_verification_and_validation
+
+verification and validation are soft concepts which don't require code for this stage.
+[2021-01-21 Thu 07:38]

@@ -1,0 +1,15 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** Treefactor | testing | tools to use | ecukes and buttercup
+
+https://en.wikipedia.org/wiki/Integration_testing
+
+sounds like I need both unit testing and integration testing
+integration is probably more important, given I care about results
+and that requires the interoperation of dired and org with treefactor.
+
+so I'm using ecukes certainly, and probably also buttercup
+[2021-01-21 Thu 07:35]

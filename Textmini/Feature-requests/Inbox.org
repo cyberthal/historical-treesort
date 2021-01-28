@@ -1,0 +1,28 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** Treefactor | FR - enhancement | cascade by default
+:PROPERTIES:
+:ID:       4E43FDC0-B2EF-42A2-AC9D-40ED1382EDF6
+:END:
+
+I'm concerned that the skill floor for FIIR - Fast Iterative Inductive Refiling - is too high. Making cascade the default would reduce ambiguity and therefore difficulty. It's impractical to adopt without an ergonomic means of renumbering Dired directories. Org already has this via org-move-item-up on a numbered list, so the code could be adapted. This should be part of Treefactor.
+
+Once the code is added to Treefactor, I'll need to refactor Littlebook's Textmind going forward to conform to the new convention.
+
+**** treefactor needs a function that can reorder pretty path "directories" while pipified
+
+**** treefactor | FR | pipify | extension
+
+nice, M-t transpose works around pipes
+don't need to write the function after all
+[2020-06-08 Mon 00:34]
+
+eh it still helps a lot for multi-word titles though
+would be nice to have a function that decomposes pipes into lines as well
+
+**** treefactor | FR | pipify | reverse
+
+a reverse pipify would allow easy rearrangement.  I like that idea.
