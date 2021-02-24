@@ -503,18 +503,22 @@ line."
 
 ;;;###autoload
 (defun treefactor-delete-this-buffer-and-file ()
-  "Delete file visited by current buffer and kill buffer."
+  "Delete file visited by current buffer and kill buffer.
+
+Buffer text is saved to kill ring, in case of regrets."
+
   (interactive)
 
   (let ((filename (buffer-file-name)))
     (if (buffer-narrowed-p)
         (user-error "%s" "Buffer is narrowed")
       (when (yes-or-no-p "Are you sure you want to remove this file? ")
+        (kill-new (delete-and-extract-region (point-min) (point-max)))
         (kill-buffer (current-buffer))
         (delete-file filename)
         (message "File `%s' successfully removed" filename)))))
 
-;; *** Pipify lines
+;; *** Pipify lines DONE
 
 (defun treefactor-pipify-lines ()
   "Convert consecutive lines into a single line separated by pipes."
