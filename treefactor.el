@@ -50,7 +50,6 @@
 (defvar treefactor-object-text nil
   "Stores the last text Treefactor killed or copied.")
 
-(defvar user-home-directory) ; Spacemacs variable
 (defvar isearch-string)
 (defvar dired-isearch-filenames)
 (defvar org-id-extra-files)
@@ -760,13 +759,9 @@ INBOX heading. The user transfers text from the first window to the second."
 ;; *** text inserted confirmation message
 
 (defun treefactor-text-inserted-to-buffer-path-message ()
-  "Report filename that text was inserted to.
+  "Report filename that text was inserted to."
 
-Reported path is relative to vd-root-dir or ~/."
-
-  (message "Inserted text into `%s'" (if (vc-root-dir)
-                                         (expand-file-name buffer-file-name (vc-root-dir))
-                                       (expand-file-name buffer-file-name user-home-directory))))
+  (message "Inserted text into `%s'" (expand-file-name buffer-file-name)))
 
 ;; ** provide
 
