@@ -68,15 +68,11 @@
   :type 'boolean)
 
 (defcustom treefactor-alias-prefix-1 "tro"
-  "First prefix for aliased user commands. No dash needed.
-
-Do not set to treefactor or it will cause an infinite loop."
+  "First prefix for aliased user commands. No dash needed."
   :type 'string)
 
 (defcustom treefactor-alias-prefix-2 ""
-  "Second prefix for aliased user commands. No dash needed.
-
-Do not set to treefactor or it will cause an infinite loop."
+  "Second prefix for aliased user commands. No dash needed."
   :type 'string)
 
 ;; **** Org search scope
@@ -107,9 +103,9 @@ Do not set to treefactor or it will cause an infinite loop."
     (intern (concat "treefactor-" suffix))))
 
 (when treefactor-use-alias-prefixes
-  (when treefactor-alias-prefix-1
+  (unless (equal "" treefactor-alias-prefix-1)
     (mapc #'treefactor-defalias-1 treefactor-user-commands))
-  (when treefactor-alias-prefix-2
+  (unless (equal "" treefactor-alias-prefix-2)
     (mapc #'treefactor-defalias-2 treefactor-user-commands)))
 
 ;; ** Refile
