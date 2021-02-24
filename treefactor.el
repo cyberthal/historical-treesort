@@ -92,7 +92,7 @@ Do not set to treefactor or it will cause an infinite loop."
 ;; *** aliases
 
 (defvar treefactor-user-commands
-  (list "throw" "up" "delete-this-buffer-and-file" "org-store-link-fold-drawer" "org-dired-zinks" "org-duplicate-heading-to-other-window" "org-refactor-heading" "clear-org-search-scope" "refresh-org-search-scope" "pipify-lines" "org-insert-heading-divider" "rename-next-heading" "org-timestamp-now-inactive" "org-toggle-checkbox-forward-line"))
+  (list "throw" "up" "delete-this-buffer-and-file" "org-duplicate-heading-to-other-window" "org-refactor-heading" "clear-org-search-scope" "refresh-org-search-scope" "pipify-lines" "org-insert-heading-divider" "rename-next-heading" "org-timestamp-now-inactive" "org-toggle-checkbox-forward-line"))
 
 (defun treefactor-defalias-1 (suffix)
   "Alias `treefactor' function SUFFIX to `treefactor-alias-prefix-1'."
@@ -659,32 +659,8 @@ INBOX heading. The user transfers text from the first window to the second."
       (org-previous-visible-heading 1)
       (org-cycle-hide-drawers 1))))
 
-;; ***** create Zinks.org
-
-;;;###autoload
-(defun treefactor-org-dired-zinks ()
-  "Make Zinks.org.  Insert org-id link.
-
-Link title's path is relative to `vc-root-dir' if present,
-else `user-home-directory'."
-  (interactive)
-
-  (let ((zinks-filename (concat default-directory "Zinks.org")))
-    (if (file-exists-p zinks-filename)
-        (user-error "%s" "Zinks.org already exists")
-      (find-file zinks-filename)
-      (insert (concat "*** "
-                      (file-relative-name (file-name-directory buffer-file-name)
-                                          (cond ((vc-root-dir) (vc-root-dir))
-                                                (user-home-directory user-home-directory) ; Spacemacs variable. If missing, no problem.
-                                                ))
-                      "\n\n"))
-      (treefactor-org-store-link-fold-drawer)
-      (save-buffer)
-      (goto-char (point-max)))))
-
-;; **** Search scope
-;; ***** Clear
+;; **** Search scope DONE
+;; ***** Clear DONE
 
 (defun treefactor-clear-org-search-scope ()
   "Clear `org' search scope file list."
