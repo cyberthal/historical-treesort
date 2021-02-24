@@ -35,16 +35,12 @@ Very little testing outside Spacemacs.  Those sound like critical bugs.  I'll pr
 really need to write a test suite.  maybe this would be the time, to avoid introducing further bugs.
 [2021-01-19 Tue 05:17]
 
-**** treefactor bug cont
-
 #+begin_quote
 prefcToday at 11:25 AM
 
 I had the same issues (although at the time I only identified issue #1), but I thought it was because of some specific configuration in Doom Emacs.  I think I tried it in vanilla Emacs, it worked then.  One of the early versions before the name changed.
 #+end_quote
 [2021-01-19 Tue 15:59]
-
-**** treefactor bug report
 
 #+begin_quote
 prefcToday at 7:13 PM
