@@ -736,6 +736,9 @@ else `user-home-directory'."
   (when (< n 0)
     (user-error "N is too small: %s" n))
 
+  (unless (integerp n)
+    (user-error "N must be an integer: %s" n))
+
   (let ((m (- n 1)))
     (goto-char (point-max))
     (if (bolp)
