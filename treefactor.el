@@ -518,7 +518,7 @@ Buffer text is saved to kill ring, in case of regrets."
         (delete-file filename)
         (message "File `%s' successfully removed" filename)))))
 
-;; *** Pipify lines DONE
+;; *** Pipify lines
 
 (defun treefactor-pipify-lines ()
   "Convert consecutive lines into a single line separated by pipes."
@@ -648,8 +648,7 @@ INBOX heading. The user transfers text from the first window to the second."
   (org-toggle-checkbox)
   (forward-line 1))
 
-;; **** Links
-;; ***** Store link and fold the PROPERTIES drawer
+;; **** Store link and fold the PROPERTIES drawer
 
 ;;;###autoload
 (defun treefactor-org-store-link-fold-drawer ()
@@ -663,8 +662,8 @@ INBOX heading. The user transfers text from the first window to the second."
       (org-previous-visible-heading 1)
       (org-cycle-hide-drawers 1))))
 
-;; **** Search scope DONE
-;; ***** Clear DONE
+;; **** Search scope
+;; ***** Clear
 
 (defun treefactor-clear-org-search-scope ()
   "Clear `org' search scope file list."
