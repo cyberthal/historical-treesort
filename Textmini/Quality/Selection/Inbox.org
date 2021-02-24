@@ -1,0 +1,12 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** ace-isearch | A seamless bridge between isearch, ace-jump-mode, avy, and helm-swoop. | for Treefactor?
+
+https://github.com/tam17aki/ace-isearch
+A seamless bridge between isearch, ace-jump-mode, avy, and helm-swoop.
+
+MIght help with Treefactor.
+[2021-02-09 Tue 09:34]

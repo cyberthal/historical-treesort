@@ -1,0 +1,11 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** I should add an error for when treefactor expects text entered into the isearch form but there's none.
+
+I should add an error for when treefactor expects text entered into the isearch form but there's none.
+eh guess I can't though, because isearch handover
+but maybe after handback I can?  with isearch last-string variable
+[2021-02-08 Mon 16:50]

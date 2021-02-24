@@ -1,0 +1,11 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** emacs manual  | cl section | review compliance with treefactor
+
+I should read through
+https://www.gnu.org/software/emacs/manual/html_node/cl/index.html#Top
+with regard to Treefactor and ensure compliance and full utilization
+[2021-01-29 Fri 10:08]

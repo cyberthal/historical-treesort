@@ -1,0 +1,9 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** failure tolerance | engineering principle | apply to Treefactor
+
+> the fundamental idea with airplane design is not to design components that cannot fail, as that is impossible. The idea is to design the system to be tolerant of failure. Every part in the system is not "how can we make this part never fail" but "assume it failed. How does the airplane survive?"
+This is a fundamental shift in viewpoint.

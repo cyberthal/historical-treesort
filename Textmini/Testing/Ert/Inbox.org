@@ -1,0 +1,11 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** Treefactor | replace cl-assert with should
+
+> should is a macro with the same meaning as cl-assert but better error reporting
+
+I should replace any asserts in Treefactor with should.
+[2021-01-29 Fri 09:58]

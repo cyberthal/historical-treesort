@@ -3,48 +3,6 @@
 :VISIBILITY: children
 :END:
 
-**** TODO fix treefactor up func
-
-throw-up is definitely broken when throwing from inside a 0-inbox
-need to fix that
-maybe it triggers false failure only when there's already a 0-inbox dir created at the destination, but not the identical filename within it.
-[2020-04-30 Thu 22:54]
-
-**** Treefactor | critical bugfix
-
-You're right, and this is a data-loss bug! I guess I'm going to have to write some tests to prevent this from happening again. Thank you for catching this. I don't know how much data I've lost this way. My inexperience is really showing here. I'll fix it ASAP.
-[2020-05-16 Sat 23:30]
-
-Ok, I've reliably reproduced the bug. This only affects a particular use of treefactor-up that is a very rare part of my workflow:
-
-in directory ~/foobar
-create file ~/foobar/baz
-add headings to it
-run treefactor-up on all the headings
-the first heading will correctly appear in ~/foobar/Inbox.org
-  UNLESS Inbox.org already exists. then the heading will disappear silently
-all subsequent headings will disappear silently.
-[2020-05-16 Sat 23:47]
-
-This bug also affects treefactor-refile a heading to a filename (not a directory) in Dired. Really bad. Also a rare part of my workflow.
-[2020-05-17 Sun 00:05]
-
-This bug also affects treefactor-refile a heading to a filename (not a directory) in Dired. Really bad. Also a rare part of my workflow.
-
-The culprit is treefactor-insert-text-to-file-blind, which was missing a progn. Fix should be out soon.
-
-whew, released the fix
-man, that was stupid.
-gotta write tests!
-[2020-05-17 Sun 00:34]
-
-**** Treefactor | bug | treefactor-up | within 0-Inbox | intermittent
-
-H-g runs the command leo-up
-fails when run on a file from within a 0-Inbox
-important bug to fix
-[2020-06-16 Tue 01:14]
-
 **** treefactor bugged outside Spacemacs
 
 #+begin_quote

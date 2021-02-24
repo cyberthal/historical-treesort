@@ -1,0 +1,18 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** TODO fix treefactor up func
+
+throw-up is definitely broken when throwing from inside a 0-inbox
+need to fix that
+maybe it triggers false failure only when there's already a 0-inbox dir created at the destination, but not the identical filename within it.
+[2020-04-30 Thu 22:54]
+
+**** Treefactor | bug | treefactor-up | within 0-Inbox | intermittent
+
+H-g runs the command leo-up
+fails when run on a file from within a 0-Inbox
+important bug to fix
+[2020-06-16 Tue 01:14]
