@@ -1,0 +1,127 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** Treefactor | FR | Perhaps I should create a function to move a headline in and out of that editing mode
+
+***** how to easily rearrange pipified heading headlines:
+
+prepend a | and manipulate as an Org table, with e.g.
+<M-right> runs the command org-metaright
+move table column right.
+
+I mean this:  move point to beginning of headline prose, hit RET, insert |, and now it's a one-line Org table instead of a heading headline.  Now it's easy to rearrange the cells.
+
+**** broken aliases
+
+all my secondary aliases exist when they shouldn't
+fix that
+begin with a mere dash
+fixed
+[2021-02-24 Wed 18:25]
+
+**** treefactor | FR
+
+idea:
+make treefactor-object-text a more robust safeguard by implementing it as another kill ring, instead of merely a variable holding only the most recent kill.
+[2021-02-24 Wed 19:50]
+
+**** Treefactor | bug reports | resolved | announce after release
+
+github issue https://github.com/cyberthal/treefactor/issues/3 is now moot.
+just need to announce the fix after it's pushed to MELPA.
+[2021-02-24 Wed 19:51]
+
+bug reports for non-spacemacs resolved, AFAICT.  need new reports anyway.  nice :)
+[2021-02-24 Wed 20:00]
+
+**** Treefactor | path reporting | relative | removed
+
+futzing with the messages that inform path where file or text has gone
+but if it's gone somewhere unexpected, then a relative path won't do
+and if it's gone where it should, then the message is superfluous
+
+so don't try to make an intelligently relative path in the message
+[2021-02-24 Wed 19:47]
+
+Solved the issue of non-Spacemacs incompatibility by removing the misguided feature that attempted to report relative paths for filing destinations.
+[2021-02-24 Wed 19:53]
+
+**** Treefactor | broken aliases | bug report
+
+#+begin_quote
+-org-dired-zinks is an alias for ‘treefactor-org-dired-zinks’ in
+ ‘treefactor.el’.
+#+end_quote
+
+broken alias
+[2021-02-24 Wed 16:59]
+
+**** Treefactor | removed zinks | need to propagate change to docs, after release
+
+ok, I can see how zinks would be kind of useful...
+[2021-02-24 Wed 17:02]
+
+but no, zinks violates the Treefactor philosophy
+it creates invisibly-breakable associations between path and heading
+
+connections should be natural language, and navigation should be manual
+if that isn't sufficient, then brain-sync needs improvement via refactoring
+if info is buried too deep, or takes too long to find, then it should be surfaced
+
+zinks sounds useful, superficially, but is worthless in practice.
+
+just delete it.  or at minimum, comment it out.
+[2021-02-24 Wed 17:07]
+
+yep, removed it.
+[2021-02-24 Wed 17:12]
+
+Removing zinks feature from Treefactor.  I never use it, and it's contrary to the philosophy.  And bugged outside Spacemacs.
+[2021-02-24 Wed 17:17]
+
+**** I read Emacs ERT manual, and took notes for Treefactor TDD
+
+ERT: Emacs Lisp Regression Testing
+https://www.gnu.org/software/emacs/manual/html_node/ert/index.html
+
+I can try reading this.  It might be too advanced, in which case I should learn debugging first.
+[2021-02-24 Wed 13:27]
+
+Should I be learning this or is it obsolete?
+I suspect it's fundamental, not obsolete.  Continue.
+[2021-02-24 Wed 13:29]
+
+Ah good, elisp-koans did teach me quite a bit about using ERT, although I didn't realize it at the time.
+[2021-02-24 Wed 13:36]
+
+**** ERT manual | notes for Treefactor
+
+ERT: Emacs Lisp Regression Testing
+https://www.gnu.org/software/emacs/manual/html_node/ert/index.html
+
+> Each test should have a name that describes what functionality it tests. Test names can be chosen arbitrarily—they are in a namespace separate from functions and variables—but should follow the usual Emacs Lisp convention of having a prefix that indicates which package they belong to. 
+
+> When running tests interactively, the first line of the docstring is displayed for tests that fail, so it is good if the first line makes sense on its own.
+
+> It should have as few side effects as possible; each test should be written to clean up after itself, leaving Emacs in the same state as it was before the test. Tests should clean up even if they fail. 
+
+> You can run tests either in the Emacs you are working in, or on the command line in a separate Emacs process in batch mode (i.e., with no user interface). The former mode is convenient during interactive development, the latter is useful to make sure that tests pass independently of your customizations; and it allows you to invoke tests from makefiles, and to write scripts that run tests in several different Emacs versions
+
+> By default, long expressions in the failure details are abbreviated using print-length and print-level. Pressing L while point is on a test failure will increase the limits to show more of the expression.
+
+> If the code under test has side effects on Emacs’s current state, such as on the current buffer or window configuration, the test should create a temporary buffer for the code to manipulate (using with-temp-buffer), or save and restore the window configuration (using save-window-excursion), respectively. For aspects of the state that can not be preserved with such macros, cleanup should be performed with unwind-protect, to ensure that the cleanup occurs even if the test fails.
+
+> Instead, it is better to use lower-level mechanisms with simple and predictable semantics like with-temp-buffer, insert or insert-file-contents-literally, and to activate any desired mode by calling the corresponding function directly, after binding the hook variables to nil. This avoids the above problems.
+
+> You can instrument tests for debugging the same way you instrument defuns for debugging: go to the source code of the test and type C-u C-M-x. Then, go back to the ERT buffer and re-run the test with r or d.
+
+**** apply ERT TDD to Treefactor first, then other tools
+
+ERT manual:  6.2 Fixtures and Test Suites
+argues that additional tools for fixtures and test suites are superfluous in elisp.
+
+I can decide after evaluating ecukes and buttercup.
+
+I should probably do what I can with vanilla ERT first, then add el-mock, then add the next layer.
