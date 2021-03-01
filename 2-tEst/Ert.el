@@ -1,15 +1,20 @@
 ;;; treefactor ERT test file     -*- lexical-binding: t; -*-
 
 (ert-deftest treefactor-org-refactor-heading ()
-  (UNWIND ALL 
-          (COPY START.ORG TO TARGET.ORG)
-          (OPEN TARGET.ORG)
-          (SOLE WINDOW)
-          (treefactor-org-refactor-heading)
-          (should (EQUAL START.ORG END.ORG))
-          (REVERT START.ORG BUFFER SOMEHOW)
-          )
-  )
+  (save-window-excursion
+  (switch-to-buffer "treefactor-org-refactor-heading-test.org" t)
+  (erase-buffer)
+  (insert-file-contents (concat default-directory "Scratch/Treefactor/Org-refactor-heading/Start.org"))
+  (goto-char (search-forward "**** target heading"))
+  (delete-other-windows)
+  (org-mode)
+  (treefactor-org-refactor-heading)
+  (widen)
+  (should (equal (buffer-string)
+                 (with-temp-buffer (insert-file-contents
+                                    (concat default-directory "Scratch/Treefactor/Org-refactor-heading/End.org"))
+                                   (buffer-string))))
+  (kill-buffer "treefactor-org-refactor-heading-test.org")))
 
 
 (ert-deftest treefactor-refresh-org-search-scope ()
