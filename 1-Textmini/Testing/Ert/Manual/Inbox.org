@@ -1,0 +1,25 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** ERT manual | notes for Treefactor
+
+ERT: Emacs Lisp Regression Testing
+https://www.gnu.org/software/emacs/manual/html_node/ert/index.html
+
+> Each test should have a name that describes what functionality it tests. Test names can be chosen arbitrarily—they are in a namespace separate from functions and variables—but should follow the usual Emacs Lisp convention of having a prefix that indicates which package they belong to. 
+
+> When running tests interactively, the first line of the docstring is displayed for tests that fail, so it is good if the first line makes sense on its own.
+
+> It should have as few side effects as possible; each test should be written to clean up after itself, leaving Emacs in the same state as it was before the test. Tests should clean up even if they fail. 
+
+> You can run tests either in the Emacs you are working in, or on the command line in a separate Emacs process in batch mode (i.e., with no user interface). The former mode is convenient during interactive development, the latter is useful to make sure that tests pass independently of your customizations; and it allows you to invoke tests from makefiles, and to write scripts that run tests in several different Emacs versions
+
+> By default, long expressions in the failure details are abbreviated using print-length and print-level. Pressing L while point is on a test failure will increase the limits to show more of the expression.
+
+> If the code under test has side effects on Emacs’s current state, such as on the current buffer or window configuration, the test should create a temporary buffer for the code to manipulate (using with-temp-buffer), or save and restore the window configuration (using save-window-excursion), respectively. For aspects of the state that can not be preserved with such macros, cleanup should be performed with unwind-protect, to ensure that the cleanup occurs even if the test fails.
+
+> Instead, it is better to use lower-level mechanisms with simple and predictable semantics like with-temp-buffer, insert or insert-file-contents-literally, and to activate any desired mode by calling the corresponding function directly, after binding the hook variables to nil. This avoids the above problems.
+
+> You can instrument tests for debugging the same way you instrument defuns for debugging: go to the source code of the test and type C-u C-M-x. Then, go back to the ERT buffer and re-run the test with r or d.

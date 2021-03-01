@@ -1,0 +1,10 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** treefactor | FR
+
+idea:
+make treefactor-object-text a more robust safeguard by implementing it as another kill ring, instead of merely a variable holding only the most recent kill.
+[2021-02-24 Wed 19:50]

@@ -1,0 +1,29 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** treefactor needs a function that can reorder pretty path "directories" while pipified
+
+**** treefactor | FR | pipify | extension
+
+nice, M-t transpose works around pipes
+don't need to write the function after all
+[2020-06-08 Mon 00:34]
+
+eh it still helps a lot for multi-word titles though
+would be nice to have a function that decomposes pipes into lines as well
+
+**** treefactor | FR | pipify | reverse
+
+a reverse pipify would allow easy rearrangement.  I like that idea.
+
+**** Treefactor | FR | Perhaps I should create a function to move a headline in and out of that editing mode
+
+***** how to easily rearrange pipified heading headlines:
+
+prepend a | and manipulate as an Org table, with e.g.
+<M-right> runs the command org-metaright
+move table column right.
+
+I mean this:  move point to beginning of headline prose, hit RET, insert |, and now it's a one-line Org table instead of a heading headline.  Now it's easy to rearrange the cells.

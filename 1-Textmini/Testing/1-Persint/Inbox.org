@@ -1,0 +1,28 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** apply ERT TDD to Treefactor first, then other tools
+
+ERT manual:  6.2 Fixtures and Test Suites
+argues that additional tools for fixtures and test suites are superfluous in elisp.
+
+I can decide after evaluating ecukes and buttercup.
+
+I should probably do what I can with vanilla ERT first, then add el-mock, then add the next layer.
+
+**** I read Emacs ERT manual, and took notes for Treefactor TDD
+
+ERT: Emacs Lisp Regression Testing
+https://www.gnu.org/software/emacs/manual/html_node/ert/index.html
+
+I can try reading this.  It might be too advanced, in which case I should learn debugging first.
+[2021-02-24 Wed 13:27]
+
+Should I be learning this or is it obsolete?
+I suspect it's fundamental, not obsolete.  Continue.
+[2021-02-24 Wed 13:29]
+
+Ah good, elisp-koans did teach me quite a bit about using ERT, although I didn't realize it at the time.
+[2021-02-24 Wed 13:36]

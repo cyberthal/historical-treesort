@@ -1,0 +1,27 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** Treefactor | removed zinks | need to propagate change to docs, after release
+
+ok, I can see how zinks would be kind of useful...
+[2021-02-24 Wed 17:02]
+
+but no, zinks violates the Treefactor philosophy
+it creates invisibly-breakable associations between path and heading
+
+connections should be natural language, and navigation should be manual
+if that isn't sufficient, then brain-sync needs improvement via refactoring
+if info is buried too deep, or takes too long to find, then it should be surfaced
+
+zinks sounds useful, superficially, but is worthless in practice.
+
+just delete it.  or at minimum, comment it out.
+[2021-02-24 Wed 17:07]
+
+yep, removed it.
+[2021-02-24 Wed 17:12]
+
+Removing zinks feature from Treefactor.  I never use it, and it's contrary to the philosophy.  And bugged outside Spacemacs.
+[2021-02-24 Wed 17:17]

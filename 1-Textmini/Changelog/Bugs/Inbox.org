@@ -1,0 +1,43 @@
+*** Inbox.org
+:PROPERTIES:
+:VISIBILITY: children
+:END:
+
+**** Treefactor | path reporting | relative | removed
+
+futzing with the messages that inform path where file or text has gone
+but if it's gone somewhere unexpected, then a relative path won't do
+and if it's gone where it should, then the message is superfluous
+
+so don't try to make an intelligently relative path in the message
+[2021-02-24 Wed 19:47]
+
+Solved the issue of non-Spacemacs incompatibility by removing the misguided feature that attempted to report relative paths for filing destinations.
+[2021-02-24 Wed 19:53]
+
+**** broken aliases
+
+all my secondary aliases exist when they shouldn't
+fix that
+begin with a mere dash
+fixed
+[2021-02-24 Wed 18:25]
+
+**** Treefactor | bug reports | resolved | announce after release
+
+github issue https://github.com/cyberthal/treefactor/issues/3 is now moot.
+just need to announce the fix after it's pushed to MELPA.
+[2021-02-24 Wed 19:51]
+
+bug reports for non-spacemacs resolved, AFAICT.  need new reports anyway.  nice :)
+[2021-02-24 Wed 20:00]
+
+**** Treefactor | broken aliases | bug report
+
+#+begin_quote
+-org-dired-zinks is an alias for ‘treefactor-org-dired-zinks’ in
+ ‘treefactor.el’.
+#+end_quote
+
+broken alias
+[2021-02-24 Wed 16:59]
