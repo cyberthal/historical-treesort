@@ -12,7 +12,7 @@
   (widen)
   (should (equal (buffer-string)
                  (with-temp-buffer (insert-file-contents
-                                    (concat default-directory "Scratch/Treefactor/Org-refactor-heading/End.org"))
+                                    (concat default-directory "Mock/Treefactor/Org-refactor-heading/End.org"))
                                    (buffer-string))))
   (kill-buffer "treefactor-org-refactor-heading-test.org")))
 
@@ -20,8 +20,8 @@
 (ert-deftest treefactor-refresh-org-search-scope ()
 
   (let ( (org-agenda-files) (org-id-extra-files)
-         (treefactor-org-agenda-dir (concat default-directory "Scratch/Org/Agenda"))
-         (treefactor-org-id-extra-dir (concat default-directory "Scratch/Org/Extra")))
+         (treefactor-org-agenda-dir (concat default-directory "Mock/Org/Agenda"))
+         (treefactor-org-id-extra-dir (concat default-directory "Mock/Org/Extra")))
     (should
      (equal '(("/Users/leo3/1-Mansort/2-Other-text/Git-/Hub/Emacs/My/Treefactor/Dev/2-tEst/Scratch/Org/Agenda/1/2/3.org" "/Users/leo3/1-Mansort/2-Other-text/Git-/Hub/Emacs/My/Treefactor/Dev/2-tEst/Scratch/Org/Agenda/1/2.org" "/Users/leo3/1-Mansort/2-Other-text/Git-/Hub/Emacs/My/Treefactor/Dev/2-tEst/Scratch/Org/Agenda/1.org")
               ("/Users/leo3/1-Mansort/2-Other-text/Git-/Hub/Emacs/My/Treefactor/Dev/2-tEst/Scratch/Org/Extra/1/2/3.org" "/Users/leo3/1-Mansort/2-Other-text/Git-/Hub/Emacs/My/Treefactor/Dev/2-tEst/Scratch/Org/Extra/1/2.org" "/Users/leo3/1-Mansort/2-Other-text/Git-/Hub/Emacs/My/Treefactor/Dev/2-tEst/Scratch/Org/Extra/1.org"))
