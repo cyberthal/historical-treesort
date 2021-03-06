@@ -1,15 +1,16 @@
 ;;; treefactor ERT test file     -*- lexical-binding: t; -*-
 
 (ert-deftest treefactor-up ()
-    (REMOVE TARGET DIR, WITH ERROR HANDLING)
-    (COPY TARGET DIR)
-  (save-window-excursion
-    (find-file (concat default-directory "Mock/Treefactor/Up/File/A/Target/1"))
-    (MOVE POINT TO OBJECT)
-    (TREEFACTOR-UP)
-    (DIFF TARGET AND END DIRS, WITH SHOULD)
-    )
-  )
+  (let ((root (concat default-directory "Mock/Treefactor/Up/File/A/")))
+    (delete-directory (concat root "Target") t)
+    (copy-directory (concat root "Start") (concat root "Target") nil nil t)
+    (save-window-excursion
+      (find-file (concat root "Target/1"))
+      (goto-char (region-end))
+      (search-backward "object")
+      (treefactor-up)
+      ;; test fails here, uncovering bug that treefactor-up requires COUNT argument
+      (should (file-exists-p (concat root "Target/0-Inbox/object"))))))
 
 (ert-deftest treefactor-org-refactor-heading ()
   (save-window-excursion
